@@ -1,0 +1,53 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "h_sync_m",
+					"strict" : false
+				},
+				{
+					"name" : "v_sync_m",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[0]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[1]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[2]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[3]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[4]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[5]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[6]",
+					"strict" : false
+				},
+				{
+					"name" : "green_m[7]",
+					"strict" : false
+				},
+				{
+					"name" : "reset_n_m",
+					"strict" : false
+				}
+			]
+		}
+	]
+}
