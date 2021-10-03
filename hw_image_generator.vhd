@@ -32,13 +32,31 @@ use ieee.numeric_std.all;
 ENTITY hw_image_generator IS
   GENERIC(
     
-	topBar : INTEGER := 90;
-	line1  : INTEGER := 99;
-	line2  : INTEGER := 102;
-	line3  : INTEGER := 441;
-	line4  : INTEGER := 444;
-	playField : INTEGER := 440;
-	bottomBar : INTEGER := 480
+	topBar : INTEGER := 60;
+	line1  : INTEGER := 61;
+	line2  : INTEGER := 64;
+	line3  : INTEGER := 421;
+	line4  : INTEGER := 424;
+	playField : INTEGER := 420;
+	bottomBar : INTEGER := 480;
+	
+	leftShipRowTop : INTEGER := 30;
+	middleShipRowTop : INTEGER := 30;
+	rightShipRowTop : INTEGER := 30;
+
+	leftShipRowBottom : INTEGER := 50;
+	middleShipRowBottom : INTEGER := 50;
+	rightShipRowBottom : INTEGER := 50;
+	
+	
+	leftShipColumnStart : INTEGER := 30;
+	leftShipColumnEnd   : INTEGER := 60;
+	middleShipColumnStart : INTEGER := 70;
+	middleShipColumnEnd   : INTEGER := 100;
+	rightShipColumnStart : INTEGER := 110;
+	rightShipColumnEnd   : INTEGER := 140
+	
+	
 	
 
 	);  --:)
@@ -52,20 +70,40 @@ ENTITY hw_image_generator IS
 END hw_image_generator;
 
 ARCHITECTURE behavior OF hw_image_generator IS
+
+
+
+
+
+
+
+Signal ShipLength : INTEGER := 50;
+
+
+
+
+
+
 BEGIN
 	PROCESS(disp_ena, row, column)
    BEGIN
 	IF(disp_ena = '1') THEN        --display time
 
 	 
-	 	if(row < topBar) then
+	 
+	 
+		--Bottom and top line display
+	 	if(row < leftShipRowTop and row > leftShipRowBottom) then
         red <= (OTHERS => '0');
         green  <= (OTHERS => '0');
         blue <= (OTHERS => '0');
+		   
 		elsif(row >= line1 and row < line2) then
         red <= (OTHERS => '0');
         green  <= (OTHERS => '1');
         blue <= (OTHERS => '0');
+		  
+		  
 		elsif(row >= line3 and row < line4) then
 		  red <= (OTHERS => '0');
         green  <= (OTHERS => '1');
@@ -74,6 +112,23 @@ BEGIN
         red <= (OTHERS => '0');
         green  <= (OTHERS => '0');
         blue <= (OTHERS => '0');
+		  
+		  
+		elsif((row >= leftShipRowTop and row <= leftShipRowBottom) and (column >= leftShipColumnStart and column <= leftShipColumnEnd)) then
+		  red <= (OTHERS => '0');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '1');
+		
+		elsif((row >= middleShipRowTop and row <= middleShipRowBottom) and (column >= middleShipColumnStart and column <= middleShipColumnEnd)) then
+		  red <= (OTHERS => '0');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '1');
+		
+		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= rightShipColumnStart and column <= rightShipColumnEnd)) then
+		  red <= (OTHERS => '0');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '1');
+		
 		else
         red <= (OTHERS => '0');
         green  <= (OTHERS => '0');

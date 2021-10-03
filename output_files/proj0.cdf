@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(10M50DAF484) Path("C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/output_files/") File("proj0.sof") MfrSpec(OpMask(1));
+		Device PartName(10M50DAF484) Path("C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/output_files/") File("proj0.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 

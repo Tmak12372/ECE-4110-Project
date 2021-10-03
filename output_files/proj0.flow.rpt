@@ -1,5 +1,5 @@
 Flow report for proj0
-Fri Oct 01 10:17:48 2021
+Sat Oct 02 11:34:53 2021
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -41,18 +41,18 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Fri Oct 01 10:17:44 2021       ;
+; Flow Status                        ; Successful - Sat Oct 02 11:34:48 2021       ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; proj0                                       ;
 ; Top-level Entity Name              ; proj0                                       ;
 ; Family                             ; MAX 10                                      ;
 ; Device                             ; 10M50DAF484C7G                              ;
 ; Timing Models                      ; Final                                       ;
-; Total logic elements               ; 66 / 49,760 ( < 1 % )                       ;
-;     Total combinational functions  ; 61 / 49,760 ( < 1 % )                       ;
-;     Dedicated logic registers      ; 32 / 49,760 ( < 1 % )                       ;
-; Total registers                    ; 32                                          ;
-; Total pins                         ; 28 / 360 ( 8 % )                            ;
+; Total logic elements               ; 81 / 49,760 ( < 1 % )                       ;
+;     Total combinational functions  ; 75 / 49,760 ( < 1 % )                       ;
+;     Dedicated logic registers      ; 42 / 49,760 ( < 1 % )                       ;
+; Total registers                    ; 42                                          ;
+; Total pins                         ; 86 / 360 ( 24 % )                           ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0 / 1,677,312 ( 0 % )                       ;
 ; Embedded Multiplier 9-bit elements ; 0 / 288 ( 0 % )                             ;
@@ -67,30 +67,45 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 10/01/2021 10:17:07 ;
+; Start date & time ; 10/02/2021 11:34:16 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; proj0               ;
 +-------------------+---------------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------+
-; Flow Non-Default Global Settings                                                                                        ;
-+-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
-+-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 192123327304435.163310142706860        ; --            ; --          ; --         ;
-; MAX_CORE_JUNCTION_TEMP              ; 85                                     ; --            ; --          ; --         ;
-; MIN_CORE_JUNCTION_TEMP              ; 0                                      ; --            ; --          ; --         ;
-; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; vga_top     ; Top        ;
-; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; vga_top     ; Top        ;
-; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; vga_top     ; Top        ;
-; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                    ; --            ; --          ; --         ;
-; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW  ; --            ; --          ; --         ;
-; PROJECT_OUTPUT_DIRECTORY            ; output_files                           ; --            ; --          ; --         ;
-+-------------------------------------+----------------------------------------+---------------+-------------+------------+
++-------------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                              ;
++-------------------------------------+----------------------------------------+---------------+-------------------+------------+
+; Assignment Name                     ; Value                                  ; Default Value ; Entity Name       ; Section Id ;
++-------------------------------------+----------------------------------------+---------------+-------------------+------------+
+; COMPILER_SIGNATURE_ID               ; 192123327304435.163319245601952        ; --            ; --                ; --         ;
+; MAX_CORE_JUNCTION_TEMP              ; 85                                     ; --            ; --                ; --         ;
+; MIN_CORE_JUNCTION_TEMP              ; 0                                      ; --            ; --                ; --         ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; ADXL345_Driver    ; Top        ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; accelerometer_top ; Top        ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; hw8p3             ; Top        ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; hw9p1             ; Top        ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; hw9p2             ; Top        ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; --                ; Top        ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; vga_top           ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; ADXL345_Driver    ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; accelerometer_top ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; hw8p3             ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; hw9p1             ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; hw9p2             ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; --                ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; vga_top           ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; ADXL345_Driver    ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; accelerometer_top ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; hw8p3             ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; hw9p1             ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; hw9p2             ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; --                ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; vga_top           ; Top        ;
+; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                    ; --            ; --                ; --         ;
+; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW  ; --            ; --                ; --         ;
+; PROJECT_OUTPUT_DIRECTORY            ; output_files                           ; --            ; --                ; --         ;
++-------------------------------------+----------------------------------------+---------------+-------------------+------------+
 
 
 +--------------------------------------------------------------------------------------------------------------------------+
@@ -98,11 +113,11 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:18     ; 1.0                     ; 4786 MB             ; 00:00:30                           ;
-; Fitter               ; 00:00:13     ; 1.0                     ; 5375 MB             ; 00:00:13                           ;
-; Assembler            ; 00:00:04     ; 1.0                     ; 4685 MB             ; 00:00:04                           ;
-; Timing Analyzer      ; 00:00:03     ; 1.0                     ; 4799 MB             ; 00:00:03                           ;
-; Total                ; 00:00:38     ; --                      ; --                  ; 00:00:50                           ;
+; Analysis & Synthesis ; 00:00:13     ; 1.0                     ; 4786 MB             ; 00:00:29                           ;
+; Fitter               ; 00:00:12     ; 1.0                     ; 5379 MB             ; 00:00:14                           ;
+; Assembler            ; 00:00:04     ; 1.0                     ; 4688 MB             ; 00:00:04                           ;
+; Timing Analyzer      ; 00:00:04     ; 1.0                     ; 4801 MB             ; 00:00:04                           ;
+; Total                ; 00:00:33     ; --                      ; --                  ; 00:00:51                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

@@ -17,24 +17,6 @@ entity proj0 is
 		h_sync_m		:	OUT	STD_LOGIC;	--horiztonal sync pulse
 		v_sync_m		:	OUT	STD_LOGIC;	--vertical sync pulse 
 		
-		
-		dFix         : OUT STD_LOGIC_VECTOR(5 downto 0) := "111111";
-		ledFix       : OUT STD_LOGIC_VECTOR(9 downto 0) := "0000000000";
-		
-		
-		
-		
-		hex5         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
-		hex4         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
-		
-		hex3         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
-		
-		hex2         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
-		hex1         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
-		hex0         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
-		
-		
-		
 		red_m      :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
 		green_m    :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --green magnitude output to DAC
 		blue_m     :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0') --blue magnitude output to DAC

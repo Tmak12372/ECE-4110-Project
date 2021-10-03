@@ -44,6 +44,38 @@
 					"strict" : false
 				},
 				{
+					"name" : "blue_m[0]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[1]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[2]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[3]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[4]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[5]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[6]",
+					"strict" : false
+				},
+				{
+					"name" : "blue_m[7]",
+					"strict" : false
+				},
+				{
 					"name" : "reset_n_m",
 					"strict" : false
 				}

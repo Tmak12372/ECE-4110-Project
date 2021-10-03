@@ -1,5 +1,5 @@
 Analysis & Synthesis report for proj0
-Fri Oct 01 10:17:24 2021
+Sat Oct 02 11:34:30 2021
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -51,16 +51,16 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Fri Oct 01 10:17:24 2021       ;
+; Analysis & Synthesis Status        ; Successful - Sat Oct 02 11:34:30 2021       ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; proj0                                       ;
 ; Top-level Entity Name              ; proj0                                       ;
 ; Family                             ; MAX 10                                      ;
-; Total logic elements               ; 69                                          ;
-;     Total combinational functions  ; 60                                          ;
-;     Dedicated logic registers      ; 32                                          ;
-; Total registers                    ; 32                                          ;
-; Total pins                         ; 28                                          ;
+; Total logic elements               ; 93                                          ;
+;     Total combinational functions  ; 74                                          ;
+;     Dedicated logic registers      ; 42                                          ;
+; Total registers                    ; 42                                          ;
+; Total pins                         ; 86                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
 ; Embedded Multiplier 9-bit elements ; 0                                           ;
@@ -196,23 +196,23 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------+-------------------------------------------------------------------------------------------------+
 ; Resource                                    ; Usage                                                                                           ;
 +---------------------------------------------+-------------------------------------------------------------------------------------------------+
-; Estimated Total logic elements              ; 69                                                                                              ;
+; Estimated Total logic elements              ; 93                                                                                              ;
 ;                                             ;                                                                                                 ;
-; Total combinational functions               ; 60                                                                                              ;
+; Total combinational functions               ; 74                                                                                              ;
 ; Logic element usage by number of LUT inputs ;                                                                                                 ;
-;     -- 4 input functions                    ; 25                                                                                              ;
-;     -- 3 input functions                    ; 3                                                                                               ;
-;     -- <=2 input functions                  ; 32                                                                                              ;
+;     -- 4 input functions                    ; 36                                                                                              ;
+;     -- 3 input functions                    ; 8                                                                                               ;
+;     -- <=2 input functions                  ; 30                                                                                              ;
 ;                                             ;                                                                                                 ;
 ; Logic elements by mode                      ;                                                                                                 ;
-;     -- normal mode                          ; 42                                                                                              ;
+;     -- normal mode                          ; 56                                                                                              ;
 ;     -- arithmetic mode                      ; 18                                                                                              ;
 ;                                             ;                                                                                                 ;
-; Total registers                             ; 32                                                                                              ;
-;     -- Dedicated logic registers            ; 32                                                                                              ;
+; Total registers                             ; 42                                                                                              ;
+;     -- Dedicated logic registers            ; 42                                                                                              ;
 ;     -- I/O registers                        ; 0                                                                                               ;
 ;                                             ;                                                                                                 ;
-; I/O pins                                    ; 28                                                                                              ;
+; I/O pins                                    ; 86                                                                                              ;
 ;                                             ;                                                                                                 ;
 ; Embedded Multiplier 9-bit elements          ; 0                                                                                               ;
 ;                                             ;                                                                                                 ;
@@ -220,9 +220,9 @@ https://fpgasoftware.intel.com/eula.
 ;     -- PLLs                                 ; 1                                                                                               ;
 ;                                             ;                                                                                                 ;
 ; Maximum fan-out node                        ; vga_pll_25_175:U1|altpll:altpll_component|vga_pll_25_175_altpll:auto_generated|wire_pll1_clk[0] ;
-; Maximum fan-out                             ; 33                                                                                              ;
-; Total fan-out                               ; 316                                                                                             ;
-; Average fan-out                             ; 2.12                                                                                            ;
+; Maximum fan-out                             ; 43                                                                                              ;
+; Total fan-out                               ; 477                                                                                             ;
+; Average fan-out                             ; 1.65                                                                                            ;
 +---------------------------------------------+-------------------------------------------------------------------------------------------------+
 
 
@@ -231,9 +231,9 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------------------------------------------------------------------+-----------------------+--------------+
 ; Compilation Hierarchy Node                      ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name                                                                   ; Entity Name           ; Library Name ;
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------------------------------------------------------------------+-----------------------+--------------+
-; |proj0                                          ; 60 (0)              ; 32 (0)                    ; 0           ; 0          ; 0            ; 0       ; 0         ; 28   ; 0            ; 0          ; |proj0                                                                                ; proj0                 ; work         ;
-;    |hw_image_generator:U3|                      ; 4 (4)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|hw_image_generator:U3                                                          ; hw_image_generator    ; work         ;
-;    |vga_controller:U2|                          ; 56 (56)             ; 32 (32)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_controller:U2                                                              ; vga_controller        ; work         ;
+; |proj0                                          ; 74 (0)              ; 42 (0)                    ; 0           ; 0          ; 0            ; 0       ; 0         ; 86   ; 0            ; 0          ; |proj0                                                                                ; proj0                 ; work         ;
+;    |hw_image_generator:U3|                      ; 18 (18)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|hw_image_generator:U3                                                          ; hw_image_generator    ; work         ;
+;    |vga_controller:U2|                          ; 56 (56)             ; 42 (42)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_controller:U2                                                              ; vga_controller        ; work         ;
 ;    |vga_pll_25_175:U1|                          ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_pll_25_175:U1                                                              ; vga_pll_25_175        ; work         ;
 ;       |altpll:altpll_component|                 ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_pll_25_175:U1|altpll:altpll_component                                      ; altpll                ; work         ;
 ;          |vga_pll_25_175_altpll:auto_generated| ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_pll_25_175:U1|altpll:altpll_component|vga_pll_25_175_altpll:auto_generated ; vga_pll_25_175_altpll ; work         ;
@@ -246,8 +246,10 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------+----------------------------------------+
 ; Register name                          ; Reason for Removal                     ;
 +----------------------------------------+----------------------------------------+
+; vga_controller:U2|column[10..30]       ; Stuck at GND due to stuck port data_in ;
 ; vga_controller:U2|row[9..31]           ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 23 ;                                        ;
+; vga_controller:U2|column[31]           ; Stuck at GND due to stuck port data_in ;
+; Total Number of Removed Registers = 45 ;                                        ;
 +----------------------------------------+----------------------------------------+
 
 
@@ -256,12 +258,12 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 32    ;
+; Total registers                              ; 42    ;
 ; Number of registers using Synchronous Clear  ; 0     ;
 ; Number of registers using Synchronous Load   ; 0     ;
-; Number of registers using Asynchronous Clear ; 32    ;
+; Number of registers using Asynchronous Clear ; 42    ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 9     ;
+; Number of registers using Clock Enable       ; 19    ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -681,17 +683,29 @@ Note: In order to hide this table in the UI and the text report file, please set
 
 +--------------------------------------------------------------------+
 ; Parameter Settings for User Entity Instance: hw_image_generator:U3 ;
-+----------------+-------+-------------------------------------------+
-; Parameter Name ; Value ; Type                                      ;
-+----------------+-------+-------------------------------------------+
-; topBar         ; 90    ; Signed Integer                            ;
-; line1          ; 99    ; Signed Integer                            ;
-; line2          ; 102   ; Signed Integer                            ;
-; line3          ; 441   ; Signed Integer                            ;
-; line4          ; 444   ; Signed Integer                            ;
-; playField      ; 440   ; Signed Integer                            ;
-; bottomBar      ; 480   ; Signed Integer                            ;
-+----------------+-------+-------------------------------------------+
++-----------------------+-------+------------------------------------+
+; Parameter Name        ; Value ; Type                               ;
++-----------------------+-------+------------------------------------+
+; topBar                ; 60    ; Signed Integer                     ;
+; line1                 ; 61    ; Signed Integer                     ;
+; line2                 ; 64    ; Signed Integer                     ;
+; line3                 ; 421   ; Signed Integer                     ;
+; line4                 ; 424   ; Signed Integer                     ;
+; playField             ; 420   ; Signed Integer                     ;
+; bottomBar             ; 480   ; Signed Integer                     ;
+; leftShipRowTop        ; 30    ; Signed Integer                     ;
+; middleShipRowTop      ; 30    ; Signed Integer                     ;
+; rightShipRowTop       ; 30    ; Signed Integer                     ;
+; leftShipRowBottom     ; 50    ; Signed Integer                     ;
+; middleShipRowBottom   ; 50    ; Signed Integer                     ;
+; rightShipRowBottom    ; 50    ; Signed Integer                     ;
+; leftShipColumnStart   ; 30    ; Signed Integer                     ;
+; leftShipColumnEnd     ; 60    ; Signed Integer                     ;
+; middleShipColumnStart ; 70    ; Signed Integer                     ;
+; middleShipColumnEnd   ; 100   ; Signed Integer                     ;
+; rightShipColumnStart  ; 110   ; Signed Integer                     ;
+; rightShipColumnEnd    ; 140   ; Signed Integer                     ;
++-----------------------+-------+------------------------------------+
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
@@ -727,23 +741,23 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; boundary_port         ; 28                          ;
-; cycloneiii_ff         ; 32                          ;
+; boundary_port         ; 86                          ;
+; cycloneiii_ff         ; 42                          ;
 ;     CLR               ; 23                          ;
-;     ENA CLR           ; 9                           ;
-; cycloneiii_lcell_comb ; 63                          ;
+;     ENA CLR           ; 19                          ;
+; cycloneiii_lcell_comb ; 78                          ;
 ;     arith             ; 18                          ;
 ;         2 data inputs ; 18                          ;
-;     normal            ; 45                          ;
-;         0 data inputs ; 1                           ;
+;     normal            ; 60                          ;
+;         0 data inputs ; 2                           ;
 ;         1 data inputs ; 4                           ;
-;         2 data inputs ; 12                          ;
-;         3 data inputs ; 3                           ;
-;         4 data inputs ; 25                          ;
+;         2 data inputs ; 10                          ;
+;         3 data inputs ; 8                           ;
+;         4 data inputs ; 36                          ;
 ; cycloneiii_pll        ; 1                           ;
 ;                       ;                             ;
 ; Max LUT depth         ; 6.00                        ;
-; Average LUT depth     ; 4.01                        ;
+; Average LUT depth     ; 4.15                        ;
 +-----------------------+-----------------------------+
 
 
@@ -762,7 +776,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Fri Oct 01 10:17:05 2021
+    Info: Processing started: Sat Oct 02 11:34:16 2021
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off proj0 -c proj0
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
@@ -773,13 +787,21 @@ Info (12021): Found 2 design units, including 1 entities, in source file vga_con
     Info (12022): Found design unit 1: vga_controller-behavior File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 52
     Info (12023): Found entity 1: vga_controller File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 28
 Info (12021): Found 2 design units, including 1 entities, in source file hw_image_generator.vhd
-    Info (12022): Found design unit 1: hw_image_generator-behavior File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 54
+    Info (12022): Found design unit 1: hw_image_generator-behavior File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 72
     Info (12023): Found entity 1: hw_image_generator File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 32
 Info (12021): Found 2 design units, including 1 entities, in source file proj0.vhd
-    Info (12022): Found design unit 1: proj0-arch File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Info (12022): Found design unit 1: proj0-arch File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 47
     Info (12023): Found entity 1: proj0 File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 6
 Info (12127): Elaborating entity "proj0" for the top level hierarchy
-Info (12128): Elaborating entity "vga_pll_25_175" for hierarchy "vga_pll_25_175:U1" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 83
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(21): used explicit default value for signal "dFix" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(22): used explicit default value for signal "ledFix" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(27): used explicit default value for signal "hex5" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(28): used explicit default value for signal "hex4" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(30): used explicit default value for signal "hex3" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(32): used explicit default value for signal "hex2" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(33): used explicit default value for signal "hex1" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(34): used explicit default value for signal "hex0" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+Info (12128): Elaborating entity "vga_pll_25_175" for hierarchy "vga_pll_25_175:U1" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 101
 Info (12128): Elaborating entity "altpll" for hierarchy "vga_pll_25_175:U1|altpll:altpll_component" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 133
 Info (12130): Elaborated megafunction instantiation "vga_pll_25_175:U1|altpll:altpll_component" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 133
 Info (12133): Instantiated megafunction "vga_pll_25_175:U1|altpll:altpll_component" with the following parameter: File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 133
@@ -840,31 +862,208 @@ Info (12133): Instantiated megafunction "vga_pll_25_175:U1|altpll:altpll_compone
 Info (12021): Found 1 design units, including 1 entities, in source file db/vga_pll_25_175_altpll.v
     Info (12023): Found entity 1: vga_pll_25_175_altpll File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/db/vga_pll_25_175_altpll.v Line: 30
 Info (12128): Elaborating entity "vga_pll_25_175_altpll" for hierarchy "vga_pll_25_175:U1|altpll:altpll_component|vga_pll_25_175_altpll:auto_generated" File: c:/intelfpga_lite/20.1/quartus/libraries/megafunctions/altpll.tdf Line: 898
-Info (12128): Elaborating entity "vga_controller" for hierarchy "vga_controller:U2" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 84
-Info (12128): Elaborating entity "hw_image_generator" for hierarchy "hw_image_generator:U3" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 85
+Info (12128): Elaborating entity "vga_controller" for hierarchy "vga_controller:U2" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 102
+Info (12128): Elaborating entity "hw_image_generator" for hierarchy "hw_image_generator:U3" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 103
 Info (13000): Registers with preset signals will power-up high File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 43
 Info (13003): DEV_CLRn pin will set, and not reset, register with preset signal due to NOT Gate Push-Back
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "red_m[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "red_m[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 20
-    Warning (13410): Pin "blue_m[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "blue_m[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "dFix[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+    Warning (13410): Pin "dFix[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+    Warning (13410): Pin "dFix[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+    Warning (13410): Pin "dFix[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+    Warning (13410): Pin "dFix[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+    Warning (13410): Pin "dFix[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
+    Warning (13410): Pin "ledFix[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[8]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[9]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "hex5[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex5[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex5[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex5[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex5[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex5[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex5[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
+    Warning (13410): Pin "hex4[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex3[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex3[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex3[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex3[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex3[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex3[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex3[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
+    Warning (13410): Pin "hex2[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex2[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex2[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex2[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex2[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex2[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex2[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
+    Warning (13410): Pin "hex1[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex0[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "red_m[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "red_m[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
 Info (286030): Timing-Driven Synthesis is running
 Critical Warning (18061): Ignored Power-Up Level option on the following registers
-    Critical Warning (18010): Register vga_controller:U2|row[31] will power up to Low File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 65
     Critical Warning (18010): Register vga_controller:U2|row[0] will power up to Low File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 65
+    Critical Warning (18010): Register vga_controller:U2|row[31] will power up to Low File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 65
+    Critical Warning (18010): Register vga_controller:U2|column[31] will power up to Low File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 65
+    Critical Warning (18010): Register vga_controller:U2|column[0] will power up to Low File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 65
+Warning (20013): Ignored 24 assignments for entity "ADXL345_Driver" -- entity does not exist in design
+    Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_PRESERVE_HIGH_SPEED_TILES ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IGNORE_SOURCE_FILE_CHANGES OFF -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ALWAYS_USE_QXP_NETLIST OFF -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_COLOR 16764057 -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_ASSIGNMENTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_ASSIGNMENTS REPLACE_CONFLICTING -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_LOGICLOCK_REGIONS UPDATE_CONFLICTING -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PIN_ASSIGNMENTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PROMOTE_ASSIGNMENTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_TYPE STANDARD_PARTITION -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ALLOW_MULTIPLE_PERSONAS OFF -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ASD_REGION_ID 1 -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name CROSS_BOUNDARY_OPTIMIZATIONS OFF -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_CONSTANTS_ON_INPUTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_INVERSIONS_ON_INPUTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name REMOVE_LOGIC_ON_UNCONNECTED_OUTPUTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_INPUTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_BIDIRS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ABSORB_PATHS_FROM_OUTPUTS_TO_INPUTS ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_EXTRACT_HARD_BLOCK_NODES ON -entity ADXL345_Driver -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity ADXL345_Driver -section_id Top was ignored
+Warning (20013): Ignored 24 assignments for entity "accelerometer_top" -- entity does not exist in design
+    Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_PRESERVE_HIGH_SPEED_TILES ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IGNORE_SOURCE_FILE_CHANGES OFF -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ALWAYS_USE_QXP_NETLIST OFF -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_COLOR 16764057 -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_ASSIGNMENTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_ASSIGNMENTS REPLACE_CONFLICTING -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_LOGICLOCK_REGIONS UPDATE_CONFLICTING -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PIN_ASSIGNMENTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PROMOTE_ASSIGNMENTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_TYPE STANDARD_PARTITION -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ALLOW_MULTIPLE_PERSONAS OFF -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ASD_REGION_ID 1 -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name CROSS_BOUNDARY_OPTIMIZATIONS OFF -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_CONSTANTS_ON_INPUTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_INVERSIONS_ON_INPUTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name REMOVE_LOGIC_ON_UNCONNECTED_OUTPUTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_INPUTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_BIDIRS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ABSORB_PATHS_FROM_OUTPUTS_TO_INPUTS ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_EXTRACT_HARD_BLOCK_NODES ON -entity accelerometer_top -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity accelerometer_top -section_id Top was ignored
+Warning (20013): Ignored 24 assignments for entity "hw8p3" -- entity does not exist in design
+    Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_PRESERVE_HIGH_SPEED_TILES ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IGNORE_SOURCE_FILE_CHANGES OFF -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ALWAYS_USE_QXP_NETLIST OFF -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_COLOR 16764057 -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_ASSIGNMENTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_ASSIGNMENTS REPLACE_CONFLICTING -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_LOGICLOCK_REGIONS UPDATE_CONFLICTING -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PIN_ASSIGNMENTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PROMOTE_ASSIGNMENTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_TYPE STANDARD_PARTITION -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ALLOW_MULTIPLE_PERSONAS OFF -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ASD_REGION_ID 1 -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name CROSS_BOUNDARY_OPTIMIZATIONS OFF -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_CONSTANTS_ON_INPUTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_INVERSIONS_ON_INPUTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name REMOVE_LOGIC_ON_UNCONNECTED_OUTPUTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_INPUTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_BIDIRS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ABSORB_PATHS_FROM_OUTPUTS_TO_INPUTS ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_EXTRACT_HARD_BLOCK_NODES ON -entity hw8p3 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity hw8p3 -section_id Top was ignored
+Warning (20013): Ignored 24 assignments for entity "hw9p1" -- entity does not exist in design
+    Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_PRESERVE_HIGH_SPEED_TILES ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IGNORE_SOURCE_FILE_CHANGES OFF -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ALWAYS_USE_QXP_NETLIST OFF -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_COLOR 16764057 -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_ASSIGNMENTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_ASSIGNMENTS REPLACE_CONFLICTING -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_LOGICLOCK_REGIONS UPDATE_CONFLICTING -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PIN_ASSIGNMENTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PROMOTE_ASSIGNMENTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_TYPE STANDARD_PARTITION -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ALLOW_MULTIPLE_PERSONAS OFF -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ASD_REGION_ID 1 -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name CROSS_BOUNDARY_OPTIMIZATIONS OFF -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_CONSTANTS_ON_INPUTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_INVERSIONS_ON_INPUTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name REMOVE_LOGIC_ON_UNCONNECTED_OUTPUTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_INPUTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_BIDIRS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ABSORB_PATHS_FROM_OUTPUTS_TO_INPUTS ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_EXTRACT_HARD_BLOCK_NODES ON -entity hw9p1 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity hw9p1 -section_id Top was ignored
+Warning (20013): Ignored 24 assignments for entity "hw9p2" -- entity does not exist in design
+    Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_PRESERVE_HIGH_SPEED_TILES ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IGNORE_SOURCE_FILE_CHANGES OFF -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ALWAYS_USE_QXP_NETLIST OFF -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_COLOR 16764057 -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_ASSIGNMENTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_ASSIGNMENTS REPLACE_CONFLICTING -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_EXISTING_LOGICLOCK_REGIONS UPDATE_CONFLICTING -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PIN_ASSIGNMENTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_IMPORT_PROMOTE_ASSIGNMENTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_TYPE STANDARD_PARTITION -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ALLOW_MULTIPLE_PERSONAS OFF -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ASD_REGION_ID 1 -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name CROSS_BOUNDARY_OPTIMIZATIONS OFF -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_CONSTANTS_ON_INPUTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PROPAGATE_INVERSIONS_ON_INPUTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name REMOVE_LOGIC_ON_UNCONNECTED_OUTPUTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_INPUTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name MERGE_EQUIVALENT_BIDIRS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name ABSORB_PATHS_FROM_OUTPUTS_TO_INPUTS ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_EXTRACT_HARD_BLOCK_NODES ON -entity hw9p2 -section_id Top was ignored
+    Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity hw9p2 -section_id Top was ignored
 Warning (20013): Ignored 24 assignments for entity "vga_top" -- entity does not exist in design
     Warning (20014): Assignment for entity set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity vga_top -section_id Top was ignored
     Warning (20014): Assignment for entity set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -entity vga_top -section_id Top was ignored
@@ -892,15 +1091,15 @@ Warning (20013): Ignored 24 assignments for entity "vga_top" -- entity does not 
     Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity vga_top -section_id Top was ignored
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 1 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 111 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 200 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 2 input pins
-    Info (21059): Implemented 26 output pins
-    Info (21061): Implemented 82 logic cells
+    Info (21059): Implemented 84 output pins
+    Info (21061): Implemented 113 logic cells
     Info (21065): Implemented 1 PLLs
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 46 warnings
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 231 warnings
     Info: Peak virtual memory: 4786 megabytes
-    Info: Processing ended: Fri Oct 01 10:17:24 2021
-    Info: Elapsed time: 00:00:19
+    Info: Processing ended: Sat Oct 02 11:34:30 2021
+    Info: Elapsed time: 00:00:14
     Info: Total CPU time (on all processors): 00:00:30
 
 
