@@ -8,7 +8,8 @@ entity proj0 is
 	port(
 	
 		-- Inputs for image generation
-		
+		key            :  IN STD_LOGIC;
+		SW0            :  IN STD_LOGIC;
 		pixel_clk_m		:	IN	STD_LOGIC;     -- pixel clock for VGA mode being used 
 		reset_n_m		:	IN	STD_LOGIC; --active low asycnchronous reset
 		
@@ -61,7 +62,7 @@ Architecture arch of proj0 is
 	component vga_controller is 
 	
 		port(
-		
+			
 			pixel_clk	:	IN	STD_LOGIC;	--pixel clock at frequency of VGA mode being used
 			reset_n		:	IN	STD_LOGIC;	--active low asycnchronous reset
 			h_sync		:	OUT	STD_LOGIC;	--horiztonal sync pulse
@@ -79,7 +80,8 @@ Architecture arch of proj0 is
 	component hw_image_generator is
 	
 		port(
-		
+			SW0    :  IN  STD_LOGIC;
+		   key      :  IN  STD_LOGIC;
 			disp_ena :  IN  STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
 			row      :  IN  INTEGER;    --row pixel coordinate
 			column   :  IN  INTEGER;    --column pixel coordinate
@@ -100,7 +102,7 @@ begin
 -- Just need 3 components for VGA system 
 	U1	:	vga_pll_25_175 port map(pixel_clk_m, pll_OUT_to_vga_controller_IN);
 	U2	:	vga_controller port map(pll_OUT_to_vga_controller_IN, reset_n_m, h_sync_m, v_sync_m, dispEn, colSignal, rowSignal, open, open);
-	U3	:	hw_image_generator port map(dispEn, rowSignal, colSignal, red_m, green_m, blue_m);
+	U3	:	hw_image_generator port map(SW0,key,dispEn, rowSignal, colSignal, red_m, green_m, blue_m);
 
 	
 end arch;

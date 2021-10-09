@@ -1,5 +1,5 @@
 Analysis & Synthesis report for proj0
-Sat Oct 02 11:34:30 2021
+Sat Oct 09 14:56:08 2021
 Quartus Prime Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
 
 
@@ -51,16 +51,16 @@ https://fpgasoftware.intel.com/eula.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Sat Oct 02 11:34:30 2021       ;
+; Analysis & Synthesis Status        ; Successful - Sat Oct 09 14:56:08 2021       ;
 ; Quartus Prime Version              ; 20.1.1 Build 720 11/11/2020 SJ Lite Edition ;
 ; Revision Name                      ; proj0                                       ;
 ; Top-level Entity Name              ; proj0                                       ;
 ; Family                             ; MAX 10                                      ;
-; Total logic elements               ; 93                                          ;
-;     Total combinational functions  ; 74                                          ;
-;     Dedicated logic registers      ; 42                                          ;
-; Total registers                    ; 42                                          ;
-; Total pins                         ; 86                                          ;
+; Total logic elements               ; 286                                         ;
+;     Total combinational functions  ; 267                                         ;
+;     Dedicated logic registers      ; 75                                          ;
+; Total registers                    ; 75                                          ;
+; Total pins                         ; 88                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
 ; Embedded Multiplier 9-bit elements ; 0                                           ;
@@ -196,23 +196,23 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------+-------------------------------------------------------------------------------------------------+
 ; Resource                                    ; Usage                                                                                           ;
 +---------------------------------------------+-------------------------------------------------------------------------------------------------+
-; Estimated Total logic elements              ; 93                                                                                              ;
+; Estimated Total logic elements              ; 286                                                                                             ;
 ;                                             ;                                                                                                 ;
-; Total combinational functions               ; 74                                                                                              ;
+; Total combinational functions               ; 267                                                                                             ;
 ; Logic element usage by number of LUT inputs ;                                                                                                 ;
-;     -- 4 input functions                    ; 36                                                                                              ;
-;     -- 3 input functions                    ; 8                                                                                               ;
-;     -- <=2 input functions                  ; 30                                                                                              ;
+;     -- 4 input functions                    ; 134                                                                                             ;
+;     -- 3 input functions                    ; 28                                                                                              ;
+;     -- <=2 input functions                  ; 105                                                                                             ;
 ;                                             ;                                                                                                 ;
 ; Logic elements by mode                      ;                                                                                                 ;
-;     -- normal mode                          ; 56                                                                                              ;
-;     -- arithmetic mode                      ; 18                                                                                              ;
+;     -- normal mode                          ; 218                                                                                             ;
+;     -- arithmetic mode                      ; 49                                                                                              ;
 ;                                             ;                                                                                                 ;
-; Total registers                             ; 42                                                                                              ;
-;     -- Dedicated logic registers            ; 42                                                                                              ;
+; Total registers                             ; 75                                                                                              ;
+;     -- Dedicated logic registers            ; 75                                                                                              ;
 ;     -- I/O registers                        ; 0                                                                                               ;
 ;                                             ;                                                                                                 ;
-; I/O pins                                    ; 86                                                                                              ;
+; I/O pins                                    ; 88                                                                                              ;
 ;                                             ;                                                                                                 ;
 ; Embedded Multiplier 9-bit elements          ; 0                                                                                               ;
 ;                                             ;                                                                                                 ;
@@ -221,8 +221,8 @@ https://fpgasoftware.intel.com/eula.
 ;                                             ;                                                                                                 ;
 ; Maximum fan-out node                        ; vga_pll_25_175:U1|altpll:altpll_component|vga_pll_25_175_altpll:auto_generated|wire_pll1_clk[0] ;
 ; Maximum fan-out                             ; 43                                                                                              ;
-; Total fan-out                               ; 477                                                                                             ;
-; Average fan-out                             ; 1.65                                                                                            ;
+; Total fan-out                               ; 1179                                                                                            ;
+; Average fan-out                             ; 2.27                                                                                            ;
 +---------------------------------------------+-------------------------------------------------------------------------------------------------+
 
 
@@ -231,9 +231,9 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------------------------------------------------------------------+-----------------------+--------------+
 ; Compilation Hierarchy Node                      ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name                                                                   ; Entity Name           ; Library Name ;
 +-------------------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+---------------------------------------------------------------------------------------+-----------------------+--------------+
-; |proj0                                          ; 74 (0)              ; 42 (0)                    ; 0           ; 0          ; 0            ; 0       ; 0         ; 86   ; 0            ; 0          ; |proj0                                                                                ; proj0                 ; work         ;
-;    |hw_image_generator:U3|                      ; 18 (18)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|hw_image_generator:U3                                                          ; hw_image_generator    ; work         ;
-;    |vga_controller:U2|                          ; 56 (56)             ; 42 (42)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_controller:U2                                                              ; vga_controller        ; work         ;
+; |proj0                                          ; 267 (0)             ; 75 (0)                    ; 0           ; 0          ; 0            ; 0       ; 0         ; 88   ; 0            ; 0          ; |proj0                                                                                ; proj0                 ; work         ;
+;    |hw_image_generator:U3|                      ; 213 (213)           ; 33 (33)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|hw_image_generator:U3                                                          ; hw_image_generator    ; work         ;
+;    |vga_controller:U2|                          ; 54 (54)             ; 42 (42)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_controller:U2                                                              ; vga_controller        ; work         ;
 ;    |vga_pll_25_175:U1|                          ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_pll_25_175:U1                                                              ; vga_pll_25_175        ; work         ;
 ;       |altpll:altpll_component|                 ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_pll_25_175:U1|altpll:altpll_component                                      ; altpll                ; work         ;
 ;          |vga_pll_25_175_altpll:auto_generated| ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |proj0|vga_pll_25_175:U1|altpll:altpll_component|vga_pll_25_175_altpll:auto_generated ; vga_pll_25_175_altpll ; work         ;
@@ -258,12 +258,12 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 42    ;
+; Total registers                              ; 75    ;
 ; Number of registers using Synchronous Clear  ; 0     ;
 ; Number of registers using Synchronous Load   ; 0     ;
 ; Number of registers using Asynchronous Clear ; 42    ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 19    ;
+; Number of registers using Clock Enable       ; 52    ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
 
@@ -275,7 +275,9 @@ Note: For table entries with two numbers listed, the numbers in parentheses indi
 +----------------------------------------+---------+
 ; vga_controller:U2|h_sync               ; 1       ;
 ; vga_controller:U2|v_sync               ; 1       ;
-; Total number of inverted registers = 2 ;         ;
+; hw_image_generator:U3|Lives[1]         ; 5       ;
+; hw_image_generator:U3|Lives[0]         ; 4       ;
+; Total number of inverted registers = 4 ;         ;
 +----------------------------------------+---------+
 
 
@@ -683,29 +685,41 @@ Note: In order to hide this table in the UI and the text report file, please set
 
 +--------------------------------------------------------------------+
 ; Parameter Settings for User Entity Instance: hw_image_generator:U3 ;
-+-----------------------+-------+------------------------------------+
-; Parameter Name        ; Value ; Type                               ;
-+-----------------------+-------+------------------------------------+
-; topBar                ; 60    ; Signed Integer                     ;
-; line1                 ; 61    ; Signed Integer                     ;
-; line2                 ; 64    ; Signed Integer                     ;
-; line3                 ; 421   ; Signed Integer                     ;
-; line4                 ; 424   ; Signed Integer                     ;
-; playField             ; 420   ; Signed Integer                     ;
-; bottomBar             ; 480   ; Signed Integer                     ;
-; leftShipRowTop        ; 30    ; Signed Integer                     ;
-; middleShipRowTop      ; 30    ; Signed Integer                     ;
-; rightShipRowTop       ; 30    ; Signed Integer                     ;
-; leftShipRowBottom     ; 50    ; Signed Integer                     ;
-; middleShipRowBottom   ; 50    ; Signed Integer                     ;
-; rightShipRowBottom    ; 50    ; Signed Integer                     ;
-; leftShipColumnStart   ; 30    ; Signed Integer                     ;
-; leftShipColumnEnd     ; 60    ; Signed Integer                     ;
-; middleShipColumnStart ; 70    ; Signed Integer                     ;
-; middleShipColumnEnd   ; 100   ; Signed Integer                     ;
-; rightShipColumnStart  ; 110   ; Signed Integer                     ;
-; rightShipColumnEnd    ; 140   ; Signed Integer                     ;
-+-----------------------+-------+------------------------------------+
++------------------------+-------+-----------------------------------+
+; Parameter Name         ; Value ; Type                              ;
++------------------------+-------+-----------------------------------+
+; topBar                 ; 60    ; Signed Integer                    ;
+; Top_Line_Top_Row       ; 61    ; Signed Integer                    ;
+; Top_Line_Bottom_Row    ; 64    ; Signed Integer                    ;
+; Bottom_Line_Top_Row    ; 421   ; Signed Integer                    ;
+; Bottom_Line_Bottom_Row ; 424   ; Signed Integer                    ;
+; playField              ; 420   ; Signed Integer                    ;
+; bottomBar              ; 480   ; Signed Integer                    ;
+; leftShipRowTop         ; 20    ; Signed Integer                    ;
+; middleShipRowTop       ; 20    ; Signed Integer                    ;
+; rightShipRowTop        ; 20    ; Signed Integer                    ;
+; leftShipRowBottom      ; 50    ; Signed Integer                    ;
+; middleShipRowBottom    ; 50    ; Signed Integer                    ;
+; rightShipRowBottom     ; 50    ; Signed Integer                    ;
+; leftShipColumnStart    ; 30    ; Signed Integer                    ;
+; leftShipColumnEnd      ; 60    ; Signed Integer                    ;
+; middleShipColumnStart  ; 70    ; Signed Integer                    ;
+; middleShipColumnEnd    ; 100   ; Signed Integer                    ;
+; rightShipColumnStart   ; 110   ; Signed Integer                    ;
+; rightShipColumnEnd     ; 140   ; Signed Integer                    ;
+; score_letter_5_left    ; 380   ; Signed Integer                    ;
+; score_letter_5_right   ; 410   ; Signed Integer                    ;
+; score_letter_4_left    ; 420   ; Signed Integer                    ;
+; score_letter_4_right   ; 450   ; Signed Integer                    ;
+; score_letter_3_left    ; 460   ; Signed Integer                    ;
+; score_letter_3_right   ; 490   ; Signed Integer                    ;
+; score_letter_2_left    ; 500   ; Signed Integer                    ;
+; score_letter_2_right   ; 530   ; Signed Integer                    ;
+; score_letter_1_left    ; 540   ; Signed Integer                    ;
+; score_letter_1_right   ; 570   ; Signed Integer                    ;
+; score_letter_0_left    ; 580   ; Signed Integer                    ;
+; score_letter_0_right   ; 610   ; Signed Integer                    ;
++------------------------+-------+-----------------------------------+
 Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
 
 
@@ -741,23 +755,24 @@ Note: In order to hide this table in the UI and the text report file, please set
 +-----------------------+-----------------------------+
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
-; boundary_port         ; 86                          ;
-; cycloneiii_ff         ; 42                          ;
+; boundary_port         ; 88                          ;
+; cycloneiii_ff         ; 75                          ;
 ;     CLR               ; 23                          ;
+;     ENA               ; 33                          ;
 ;     ENA CLR           ; 19                          ;
-; cycloneiii_lcell_comb ; 78                          ;
-;     arith             ; 18                          ;
-;         2 data inputs ; 18                          ;
-;     normal            ; 60                          ;
+; cycloneiii_lcell_comb ; 271                         ;
+;     arith             ; 49                          ;
+;         2 data inputs ; 49                          ;
+;     normal            ; 222                         ;
 ;         0 data inputs ; 2                           ;
-;         1 data inputs ; 4                           ;
-;         2 data inputs ; 10                          ;
-;         3 data inputs ; 8                           ;
-;         4 data inputs ; 36                          ;
+;         1 data inputs ; 5                           ;
+;         2 data inputs ; 53                          ;
+;         3 data inputs ; 28                          ;
+;         4 data inputs ; 134                         ;
 ; cycloneiii_pll        ; 1                           ;
 ;                       ;                             ;
-; Max LUT depth         ; 6.00                        ;
-; Average LUT depth     ; 4.15                        ;
+; Max LUT depth         ; 9.00                        ;
+; Average LUT depth     ; 6.07                        ;
 +-----------------------+-----------------------------+
 
 
@@ -766,7 +781,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 +----------------+--------------+
 ; Partition Name ; Elapsed Time ;
 +----------------+--------------+
-; Top            ; 00:00:00     ;
+; Top            ; 00:00:01     ;
 +----------------+--------------+
 
 
@@ -776,10 +791,13 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
-    Info: Processing started: Sat Oct 02 11:34:16 2021
+    Info: Processing started: Sat Oct 09 14:55:53 2021
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off proj0 -c proj0
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 2 of the 2 processors detected
+Info (12021): Found 2 design units, including 1 entities, in source file bin2bcd_6digits.vhd
+    Info (12022): Found design unit 1: Bin2BCD_6Digits-BEHAVIOURAL File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/Bin2BCD_6Digits.vhd Line: 15
+    Info (12023): Found entity 1: Bin2BCD_6Digits File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/Bin2BCD_6Digits.vhd Line: 5
 Info (12021): Found 2 design units, including 1 entities, in source file vga_pll_25_175.vhd
     Info (12022): Found design unit 1: vga_pll_25_175-SYN File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 51
     Info (12023): Found entity 1: vga_pll_25_175 File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 42
@@ -787,21 +805,21 @@ Info (12021): Found 2 design units, including 1 entities, in source file vga_con
     Info (12022): Found design unit 1: vga_controller-behavior File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 52
     Info (12023): Found entity 1: vga_controller File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 28
 Info (12021): Found 2 design units, including 1 entities, in source file hw_image_generator.vhd
-    Info (12022): Found design unit 1: hw_image_generator-behavior File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 72
+    Info (12022): Found design unit 1: hw_image_generator-behavior File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 85
     Info (12023): Found entity 1: hw_image_generator File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 32
 Info (12021): Found 2 design units, including 1 entities, in source file proj0.vhd
-    Info (12022): Found design unit 1: proj0-arch File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 47
+    Info (12022): Found design unit 1: proj0-arch File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 48
     Info (12023): Found entity 1: proj0 File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 6
 Info (12127): Elaborating entity "proj0" for the top level hierarchy
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(21): used explicit default value for signal "dFix" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(22): used explicit default value for signal "ledFix" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(27): used explicit default value for signal "hex5" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(28): used explicit default value for signal "hex4" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(30): used explicit default value for signal "hex3" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(32): used explicit default value for signal "hex2" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(33): used explicit default value for signal "hex1" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-Warning (10540): VHDL Signal Declaration warning at proj0.vhd(34): used explicit default value for signal "hex0" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-Info (12128): Elaborating entity "vga_pll_25_175" for hierarchy "vga_pll_25_175:U1" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 101
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(22): used explicit default value for signal "dFix" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(23): used explicit default value for signal "ledFix" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(28): used explicit default value for signal "hex5" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(29): used explicit default value for signal "hex4" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(31): used explicit default value for signal "hex3" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(33): used explicit default value for signal "hex2" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(34): used explicit default value for signal "hex1" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+Warning (10540): VHDL Signal Declaration warning at proj0.vhd(35): used explicit default value for signal "hex0" because signal was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+Info (12128): Elaborating entity "vga_pll_25_175" for hierarchy "vga_pll_25_175:U1" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 103
 Info (12128): Elaborating entity "altpll" for hierarchy "vga_pll_25_175:U1|altpll:altpll_component" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 133
 Info (12130): Elaborated megafunction instantiation "vga_pll_25_175:U1|altpll:altpll_component" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 133
 Info (12133): Instantiated megafunction "vga_pll_25_175:U1|altpll:altpll_component" with the following parameter: File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_pll_25_175.vhd Line: 133
@@ -862,77 +880,145 @@ Info (12133): Instantiated megafunction "vga_pll_25_175:U1|altpll:altpll_compone
 Info (12021): Found 1 design units, including 1 entities, in source file db/vga_pll_25_175_altpll.v
     Info (12023): Found entity 1: vga_pll_25_175_altpll File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/db/vga_pll_25_175_altpll.v Line: 30
 Info (12128): Elaborating entity "vga_pll_25_175_altpll" for hierarchy "vga_pll_25_175:U1|altpll:altpll_component|vga_pll_25_175_altpll:auto_generated" File: c:/intelfpga_lite/20.1/quartus/libraries/megafunctions/altpll.tdf Line: 898
-Info (12128): Elaborating entity "vga_controller" for hierarchy "vga_controller:U2" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 102
-Info (12128): Elaborating entity "hw_image_generator" for hierarchy "hw_image_generator:U3" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 103
+Info (12128): Elaborating entity "vga_controller" for hierarchy "vga_controller:U2" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 104
+Info (12128): Elaborating entity "hw_image_generator" for hierarchy "hw_image_generator:U3" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 105
+Warning (10036): Verilog HDL or VHDL warning at hw_image_generator.vhd(103): object "Paused" assigned a value but never read File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 103
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(168): used initial value expression for variable "startWord" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 168
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(170): used initial value expression for variable "colLength" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 170
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(171): used initial value expression for variable "row_A_top" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 171
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(172): used initial value expression for variable "row_A_bot" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 172
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(173): used initial value expression for variable "row_B_top" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 173
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(174): used initial value expression for variable "row_B_bot" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 174
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(175): used initial value expression for variable "row_C_top" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 175
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(176): used initial value expression for variable "row_C_bot" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 176
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(179): used initial value expression for variable "T1topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 179
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(180): used initial value expression for variable "T1topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 180
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(181): used initial value expression for variable "NLtopStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 181
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(182): used initial value expression for variable "NLtopEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 182
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(183): used initial value expression for variable "NRtopStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 183
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(184): used initial value expression for variable "NRtopEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 184
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(185): used initial value expression for variable "T2topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 185
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(186): used initial value expression for variable "T2topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 186
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(187): used initial value expression for variable "E1topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 187
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(188): used initial value expression for variable "E1topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 188
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(189): used initial value expression for variable "C1topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 189
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(190): used initial value expression for variable "C1topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 190
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(191): used initial value expression for variable "HLtopStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 191
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(192): used initial value expression for variable "HLtopEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 192
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(193): used initial value expression for variable "HRtopStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 193
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(194): used initial value expression for variable "HRtopEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 194
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(195): used initial value expression for variable "E2topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 195
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(196): used initial value expression for variable "E2topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 196
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(197): used initial value expression for variable "C2topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 197
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(198): used initial value expression for variable "C2topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 198
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(199): used initial value expression for variable "E3topStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 199
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(200): used initial value expression for variable "E3topEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 200
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(203): used initial value expression for variable "T1midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 203
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(204): used initial value expression for variable "T1midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 204
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(205): used initial value expression for variable "NLmidStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 205
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(206): used initial value expression for variable "NLmidEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 206
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(207): used initial value expression for variable "NRmidStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 207
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(208): used initial value expression for variable "NRmidEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 208
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(210): used initial value expression for variable "T2midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 210
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(211): used initial value expression for variable "T2midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 211
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(212): used initial value expression for variable "E1midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 212
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(213): used initial value expression for variable "E1midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 213
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(214): used initial value expression for variable "C1midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 214
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(215): used initial value expression for variable "C1midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 215
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(216): used initial value expression for variable "HmidStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 216
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(217): used initial value expression for variable "HmidEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 217
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(218): used initial value expression for variable "E2midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 218
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(219): used initial value expression for variable "E2midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 219
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(220): used initial value expression for variable "C2midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 220
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(221): used initial value expression for variable "C2midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 221
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(222): used initial value expression for variable "E3midStart" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 222
+Warning (10542): VHDL Variable Declaration warning at hw_image_generator.vhd(223): used initial value expression for variable "E3midEnd" because variable was never assigned a value File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 223
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(248): signal "Lives" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 248
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(253): signal "Lives" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 253
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(258): signal "Lives" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 258
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(269): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 269
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(274): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 274
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(280): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 280
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(285): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 285
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(291): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 291
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(296): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 296
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(523): signal "key" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 523
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(523): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 523
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(525): signal "Lives" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 525
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(525): signal "key" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 525
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(527): signal "Game_Over" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 527
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(527): signal "key" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 527
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(531): signal "Lives" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 531
+Warning (10492): VHDL Process Statement warning at hw_image_generator.vhd(535): signal "SW0" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/hw_image_generator.vhd Line: 535
 Info (13000): Registers with preset signals will power-up high File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 43
 Info (13003): DEV_CLRn pin will set, and not reset, register with preset signal due to NOT Gate Push-Back
 Warning (13024): Output pins are stuck at VCC or GND
-    Warning (13410): Pin "dFix[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-    Warning (13410): Pin "dFix[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-    Warning (13410): Pin "dFix[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-    Warning (13410): Pin "dFix[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-    Warning (13410): Pin "dFix[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-    Warning (13410): Pin "dFix[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 21
-    Warning (13410): Pin "ledFix[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[8]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "ledFix[9]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
-    Warning (13410): Pin "hex5[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex5[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex5[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex5[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex5[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex5[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex5[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 27
-    Warning (13410): Pin "hex4[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex4[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex4[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex4[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex4[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex4[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex4[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
-    Warning (13410): Pin "hex3[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex3[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex3[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex3[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex3[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex3[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex3[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 30
-    Warning (13410): Pin "hex2[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex2[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex2[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex2[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex2[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex2[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex2[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 32
-    Warning (13410): Pin "hex1[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex1[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex1[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex1[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex1[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex1[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex1[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
-    Warning (13410): Pin "hex0[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "hex0[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "hex0[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "hex0[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "hex0[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "hex0[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "hex0[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
-    Warning (13410): Pin "red_m[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
-    Warning (13410): Pin "red_m[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 38
+    Warning (13410): Pin "dFix[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "dFix[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "dFix[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "dFix[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "dFix[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "dFix[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 22
+    Warning (13410): Pin "ledFix[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[8]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "ledFix[9]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 23
+    Warning (13410): Pin "hex5[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex5[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex5[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex5[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex5[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex5[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex5[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 28
+    Warning (13410): Pin "hex4[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex4[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex4[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex4[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex4[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex4[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex4[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 29
+    Warning (13410): Pin "hex3[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex3[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex3[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex3[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex3[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex3[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex3[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 31
+    Warning (13410): Pin "hex2[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex2[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex2[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex2[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex2[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex2[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex2[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 33
+    Warning (13410): Pin "hex1[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex1[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex1[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex1[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex1[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex1[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex1[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 34
+    Warning (13410): Pin "hex0[0]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "hex0[1]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "hex0[2]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "hex0[3]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "hex0[4]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "hex0[5]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "hex0[6]" is stuck at VCC File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 35
+    Warning (13410): Pin "red_m[0]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[1]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[2]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[3]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[4]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[5]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[6]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
+    Warning (13410): Pin "red_m[7]" is stuck at GND File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 39
 Info (286030): Timing-Driven Synthesis is running
 Critical Warning (18061): Ignored Power-Up Level option on the following registers
     Critical Warning (18010): Register vga_controller:U2|row[0] will power up to Low File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/vga_controller.vhd Line: 65
@@ -1091,15 +1177,17 @@ Warning (20013): Ignored 24 assignments for entity "vga_top" -- entity does not 
     Warning (20014): Assignment for entity set_global_assignment -name PARTITION_ENABLE_STRICT_PRESERVATION OFF -entity vga_top -section_id Top was ignored
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 1 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
-Info (21057): Implemented 200 device resources after synthesis - the final resource count might be different
-    Info (21058): Implemented 2 input pins
+Warning (21074): Design contains 1 input pin(s) that do not drive logic
+    Warning (15610): No output dependent on input pin "SW0" File: C:/Users/Tyler McCormick/Desktop/ECE 4110/Project/ECE-4110-Project/proj0.vhd Line: 12
+Info (21057): Implemented 395 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 4 input pins
     Info (21059): Implemented 84 output pins
-    Info (21061): Implemented 113 logic cells
+    Info (21061): Implemented 306 logic cells
     Info (21065): Implemented 1 PLLs
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 231 warnings
-    Info: Peak virtual memory: 4786 megabytes
-    Info: Processing ended: Sat Oct 02 11:34:30 2021
-    Info: Elapsed time: 00:00:14
-    Info: Total CPU time (on all processors): 00:00:30
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 301 warnings
+    Info: Peak virtual memory: 4790 megabytes
+    Info: Processing ended: Sat Oct 09 14:56:08 2021
+    Info: Elapsed time: 00:00:15
+    Info: Total CPU time (on all processors): 00:00:31
 
 

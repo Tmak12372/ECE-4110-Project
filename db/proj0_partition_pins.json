@@ -78,6 +78,10 @@
 				{
 					"name" : "reset_n_m",
 					"strict" : false
+				},
+				{
+					"name" : "key",
+					"strict" : false
 				}
 			]
 		}
