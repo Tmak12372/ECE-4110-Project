@@ -1,0 +1,6 @@
+**/db/
+**/incremental_db/
+**/devkits/
+**/output_files/
+**/simulation/
+*.rpt
