@@ -1,0 +1,128 @@
+-- Main control unit for RAM and display pattern test
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.NUMERIC_STD.all;
+
+ENTITY main_control IS
+    PORT(
+        i_clock, i_reset    : in  std_logic;
+        i_row, i_column : in integer;
+        i_disp_en : in std_logic;
+        i_vga_ram_read_req : in std_logic;
+        i_vga_ram_addr : in std_logic_vector(25 downto 0);
+
+        o_ram_address         : out std_logic_vector(25 downto 0);
+        o_ram_byte_enable     : out std_logic_vector(1 downto 0);
+        o_ram_read            : out std_logic;
+        o_ram_write           : out std_logic;
+        o_ram_write_data      : out std_logic_vector(15 downto 0);
+        i_ram_acknowledge     : in std_logic;
+        i_ram_read_data       : in std_logic_vector(15 downto 0);
+        o_fb_start_addr : out integer
+    );
+END main_control;
+
+ARCHITECTURE rtl OF main_control IS
+    -- Constants
+    constant fb0_start : integer := 16#0#;
+    constant fb1_start : integer := 16#96000#;
+    constant fb_size : integer := 16#96000#;
+
+    -- Types
+
+    -- Component declarations
+
+    -- Signal declarations
+    signal r_disp_en_d : std_logic := '0';   -- Registered disp_en input
+    signal r_disp_en_fe : std_logic;         -- Falling edge of disp_en input
+    signal r_framebuffSel : std_logic := '0'; -- 0: Writing FB0, Reading FB1 |  1:   Writing FB1, Reading FB0
+    
+BEGIN
+
+    -- disp_en falling edge
+    r_disp_en_d <= i_disp_en when rising_edge(i_clock); -- DFF
+    r_disp_en_fe <= r_disp_en_d and not i_disp_en;   -- One-cycle strobe
+
+    PROCESS (i_clock, i_reset)
+        -- Variables
+        VARIABLE addr_cnt     	:	INTEGER;
+        variable ram_init_comp : boolean := false;
+        variable frame_cnt : integer := 0;
+    BEGIN
+        -- Asynch reset
+        IF (i_reset = '1') THEN
+            ram_init_comp := false;
+            addr_cnt := 0;
+
+        -- State actions and transitions
+        ELSIF (rising_edge(i_clock)) THEN
+
+            -- Init RAM
+            if (ram_init_comp = false) then
+
+                if (addr_cnt < fb1_start) then
+                    o_ram_write_data <= X"0F00"; -- Red
+                else
+                    o_ram_write_data <= X"00F0"; -- Green
+                end if;
+
+                o_ram_address <= std_logic_vector(to_unsigned(addr_cnt, o_ram_address'length));
+                o_ram_write <= '1';
+                o_ram_read <= '0';
+
+
+                -- Wait for ack before moving to next addr
+                if (i_ram_acknowledge = '1') then
+                    addr_cnt := addr_cnt + 2;
+                end if;
+
+                -- Reached end of FB
+                if (addr_cnt >= fb1_start + fb_size) then
+                    ram_init_comp := true;
+                end if;
+
+            end if;
+
+            -- Allow image_gen to read from RAM
+            if (ram_init_comp = true and i_vga_ram_read_req = '1') then
+                o_ram_address <= i_vga_ram_addr;
+                o_ram_write <= '0';
+                o_ram_read <= '1';
+            end if;
+
+            -- FB flip trigger, start drawing next frame
+            if ((r_disp_en_fe = '1') and (i_row = 479) and (i_column = 639)) then
+                frame_cnt := frame_cnt + 1;
+
+                if (frame_cnt = 60) then
+                    frame_cnt := 0;
+                    r_framebuffSel <= not r_framebuffSel;
+                end if;
+
+            end if;
+
+        END IF;
+    END PROCESS;
+
+    -- Output logic, combi
+    process (r_framebuffSel) begin
+
+        -- Set FB address for reading (currently being displayed)
+        case (r_framebuffSel) is
+            when '0' =>
+                o_fb_start_addr <= fb1_start;
+            when '1' =>
+                o_fb_start_addr <= fb0_start;
+            when others =>
+                o_fb_start_addr <= fb1_start;
+        end case;
+
+    end process;
+
+    -- Instantiation AND port mapping
+
+    -- Concurrent assignments
+    o_ram_byte_enable <= "11";
+    
+END rtl;
+

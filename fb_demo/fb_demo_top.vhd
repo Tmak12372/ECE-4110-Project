@@ -1,0 +1,208 @@
+-- Dual framebuffer demo
+-- Top level entity
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity fb_demo_top is
+    PORT( 
+        KEY                                : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+        SW                                 : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+        MAX10_CLK1_50                      : IN STD_LOGIC; -- 50 MHz clock input
+        LEDR                               : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
+        ARDUINO_IO                         : INOUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        HEX5, HEX4, HEX3, HEX2, HEX1, HEX0 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        -- Accelerometer I/O
+        GSENSOR_CS_N          : OUT   STD_LOGIC;
+        GSENSOR_SCLK          : OUT   STD_LOGIC;
+        GSENSOR_SDI           : INOUT STD_LOGIC;
+        GSENSOR_SDO           : INOUT STD_LOGIC;
+        
+        -- VGA I/O  
+        VGA_HS		         :	OUT	 STD_LOGIC;	-- horizontal sync pulse
+        VGA_VS		         :	OUT	 STD_LOGIC;	-- vertical sync pulse 
+        
+        VGA_R                 :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  -- red magnitude output to DAC
+        VGA_G                 :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  -- green magnitude output to DAC
+        VGA_B                 :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');   -- blue magnitude output to DAC
+
+        -- SDRAM I/O
+        DRAM_ADDR : OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
+        DRAM_BA : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+        DRAM_CAS_N : OUT STD_LOGIC;
+        DRAM_CKE : OUT STD_LOGIC;
+        DRAM_CLK : OUT STD_LOGIC;
+        DRAM_CS_N : OUT STD_LOGIC;
+        DRAM_DQ : INOUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        DRAM_LDQM : OUT STD_LOGIC;
+        DRAM_RAS_N : OUT STD_LOGIC;
+        DRAM_UDQM : OUT STD_LOGIC;
+        DRAM_WE_N : OUT STD_LOGIC
+    );
+end fb_demo_top;
+
+architecture top_level of fb_demo_top is
+
+    -- Constants
+
+    -- Component declarations
+    component vga_pll_25_175 is 
+        port(
+            inclk0		:	IN  STD_LOGIC := '0';  -- Input clock that gets divided (50 MHz for max10)
+            c0			:	OUT STD_LOGIC          -- Output clock for vga timing (25.175 MHz)
+        );
+    end component;
+    
+    component vga_controller is 
+        port(
+            pixel_clk	:	IN	STD_LOGIC;	--pixel clock at frequency of VGA mode being used
+            reset_n		:	IN	STD_LOGIC;	--active low asycnchronous reset
+            h_sync		:	OUT	STD_LOGIC;	--horiztonal sync pulse
+            v_sync		:	OUT	STD_LOGIC;	--vertical sync pulse
+            disp_ena	:	OUT	STD_LOGIC;	--display enable ('1' = display time, '0' = blanking time)
+            column		:	OUT	INTEGER;	--horizontal pixel coordinate
+            row			:	OUT	INTEGER;	--vertical pixel coordinate
+            n_blank		:	OUT	STD_LOGIC;	--direct blacking output to DAC
+            n_sync		:	OUT	STD_LOGIC   --sync-on-green output to DAC
+        );
+    end component;
+    
+    component image_gen is
+        port(
+            disp_en     :  IN   STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
+            row      :  IN   INTEGER;    --row pixel coordinate (0 to 479)
+            column   :  IN   INTEGER;    --column pixel coordinate (0 to 639)
+            red      :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
+            green    :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --green magnitude output to DAC
+            blue     :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0'); --blue magnitude output to DAC
+
+            o_ram_read_req : out std_logic;
+            o_ram_addr : out std_logic_vector(25 downto 0);
+            i_ram_data : in std_logic_vector(15 downto 0);
+            i_fb_start_addr : integer
+        );
+    end component;
+
+    component qsys_system is
+        port (
+            bridge_0_external_interface_address     : in    std_logic_vector(25 downto 0) := (others => '0'); -- bridge_0_external_interface.address
+            bridge_0_external_interface_byte_enable : in    std_logic_vector(1 downto 0)  := (others => '0'); --                            .byte_enable
+            bridge_0_external_interface_read        : in    std_logic                     := '0';             --                            .read
+            bridge_0_external_interface_write       : in    std_logic                     := '0';             --                            .write
+            bridge_0_external_interface_write_data  : in    std_logic_vector(15 downto 0) := (others => '0'); --                            .write_data
+            bridge_0_external_interface_acknowledge : out   std_logic;                                        --                            .acknowledge
+            bridge_0_external_interface_read_data   : out   std_logic_vector(15 downto 0);                    --                            .read_data
+            clk_clk                                 : in    std_logic                     := '0';             --                         clk.clk
+            dram_clk_ext_clk                        : out   std_logic;                                        --                dram_clk_ext.clk
+            dram_export_addr                        : out   std_logic_vector(12 downto 0);                    --                 dram_export.addr
+            dram_export_ba                          : out   std_logic_vector(1 downto 0);                     --                            .ba
+            dram_export_cas_n                       : out   std_logic;                                        --                            .cas_n
+            dram_export_cke                         : out   std_logic;                                        --                            .cke
+            dram_export_cs_n                        : out   std_logic;                                        --                            .cs_n
+            dram_export_dq                          : inout std_logic_vector(15 downto 0) := (others => '0'); --                            .dq
+            dram_export_dqm                         : out   std_logic_vector(1 downto 0);                     --                            .dqm
+            dram_export_ras_n                       : out   std_logic;                                        --                            .ras_n
+            dram_export_we_n                        : out   std_logic;                                        --                            .we_n
+            reset_reset_n                           : in    std_logic                     := '0'              --                       reset.reset_n
+        );
+    end component;
+
+    component main_control IS
+        PORT(
+            i_clock, i_reset    : in  std_logic;
+            i_row, i_column : in integer;
+            i_disp_en : in std_logic;
+            i_vga_ram_read_req : in std_logic;
+            i_vga_ram_addr : in std_logic_vector(25 downto 0);
+
+            o_ram_address         : out std_logic_vector(25 downto 0);
+            o_ram_byte_enable     : out std_logic_vector(1 downto 0);
+            o_ram_read            : out std_logic;
+            o_ram_write           : out std_logic;
+            o_ram_write_data      : out std_logic_vector(15 downto 0);
+            i_ram_acknowledge     : in std_logic;
+            i_ram_read_data       : in std_logic_vector(15 downto 0);
+            o_fb_start_addr : out integer
+        );
+    END component;
+    
+    -- Signal declarations
+    SIGNAL KEY_b         : STD_LOGIC_VECTOR(1 DOWNTO 0);
+    signal clk_25_175_MHz, disp_en : STD_LOGIC;
+    signal row, column : INTEGER;
+    signal DRAM_DQM : std_logic_vector(1 downto 0);
+
+    -- RAM interface
+    signal ram_address : std_logic_vector(25 downto 0) := (others => '0');
+    signal ram_byte_enable : std_logic_vector(1 downto 0)  := (others => '0');
+    signal ram_read : std_logic                     := '0'; 
+    signal ram_write : std_logic                     := '0'; 
+    signal ram_write_data : std_logic_vector(15 downto 0) := (others => '0');
+    signal ram_acknowledge :  std_logic;
+    signal ram_read_data : std_logic_vector(15 downto 0);
+
+    -- VGA control signals
+    signal vga_ram_read_req : std_logic;
+    signal vga_ram_addr : std_logic_vector(25 downto 0);
+    signal fb_start_addr : integer;
+
+    
+begin
+
+    -- Concurrent assignments
+    KEY_b <= NOT KEY;
+    DRAM_LDQM <= DRAM_DQM(0); -- Lower
+    DRAM_UDQM <= DRAM_DQM(1); -- Upper
+
+
+    -- Instantiation and port mapping
+    U1 : vga_pll_25_175 port map (
+        inclk0 => MAX10_CLK1_50, c0 => clk_25_175_MHz
+    );
+    U2 : vga_controller port map (
+        pixel_clk => clk_25_175_MHz, reset_n => KEY(0), h_sync => VGA_HS, v_sync => VGA_VS, disp_ena => disp_en, column => column, row => row, n_blank => open, n_sync => open
+    );
+    U3 : image_gen port map (
+        disp_en => disp_en, row => row, column => column, red => VGA_R, green => VGA_G, blue => VGA_B, o_ram_read_req => vga_ram_read_req, o_ram_addr => vga_ram_addr, i_ram_data => ram_read_data, i_fb_start_addr => fb_start_addr
+    );
+    U4 : qsys_system port map (
+        bridge_0_external_interface_address => ram_address,
+        bridge_0_external_interface_byte_enable => ram_byte_enable,
+        bridge_0_external_interface_read => ram_read,
+        bridge_0_external_interface_write => ram_write,
+        bridge_0_external_interface_write_data => ram_write_data,
+        bridge_0_external_interface_acknowledge => ram_acknowledge,
+        bridge_0_external_interface_read_data => ram_read_data,
+        clk_clk => MAX10_CLK1_50,
+        dram_clk_ext_clk => DRAM_CLK,
+        dram_export_addr => DRAM_ADDR,
+        dram_export_ba => DRAM_BA,
+        dram_export_cas_n => DRAM_CAS_N,
+        dram_export_cke => DRAM_CKE,
+        dram_export_cs_n => DRAM_CS_N,
+        dram_export_dq => DRAM_DQ,
+        dram_export_dqm => DRAM_DQM,
+        dram_export_ras_n => DRAM_RAS_N,
+        dram_export_we_n => DRAM_WE_N,
+        reset_reset_n =>  KEY(0)
+    );
+    U5 : main_control port map(
+        i_clock => MAX10_CLK1_50,
+        i_reset => KEY_b(0),
+        i_row => row,
+        i_column => column,
+        i_disp_en => disp_en,
+        i_vga_ram_read_req => vga_ram_read_req,
+        i_vga_ram_addr => vga_ram_addr,
+
+        o_ram_address     =>     ram_address,
+        o_ram_byte_enable    =>  ram_byte_enable,
+        o_ram_read            => ram_read,
+        o_ram_write           => ram_write,
+        o_ram_write_data      => ram_write_data,
+        i_ram_acknowledge     => ram_acknowledge,
+        i_ram_read_data       => ram_read_data,
+        o_fb_start_addr => fb_start_addr
+    );
+
+end top_level;
