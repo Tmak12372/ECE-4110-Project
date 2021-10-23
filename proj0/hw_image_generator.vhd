@@ -101,58 +101,6 @@ SIGNAL Lives : INTEGER := 3;
 SIGNAL Score_count : std_logic_vector(7 downto 0);
 SIGNAL bcd_score5, bcd_score4, bcd_score3, bcd_score2, bcd_score1, bcd_score0 : std_logic_vector(3 downto 0);
 SIGNAL Game_Over, Paused : std_logic := '0';
-
-
-
-
---CONSTANT SHIP_SIZE : INTEGER := 30; 
----- ship left and right boundary
---SIGNAL ship_x_l, ship_x_r : unsigned(9 downto 0);
----- ship up and down boundary
---SIGNAL ship_y_t, ship_y_b : unsigned(9 downto 0);
----- ship image ROM
---TYPE rom_type is array(0 to 29) of std_logic_vector(0 to 29);
---CONSTANT SHIP_ROM : rom_type := (
---	"100000000000000000000000000000", --0
---	"110000000000000000000000000000", --1
---	"111000000000000000000000000000", --2
---	"111100000000000000000000000000", --3
---	"111110000000000000000000000000", --4
---	"111111000000000000000000000000", --5
---	"111111100000000000000000000000", --6
---	"111111110000000000000000000000", --7
---	"111111111000000000000000000000", --8
---	"111111111100000000000000000000", --9
---	"111111111110000000000000000000", --10
---	"111111111111000000000000000000", --11
---	"111111111111100000000000000000", --12
---	"111111111111110000000000000000", --13
---	"111111111111111000000000000000", --14
---	"111111111111111100000000000000", --15
---	"111111111111111110000000000000", --16
---	"111111111111111111000000000000", --17
---	"111111111111111111100000000000", --18
---	"111111111111111111110000000000", --19
---	"111111111111111111111000000000", --20
---	"111111111111111111111100000000", --21
---	"111111111111111111111110000000", --22
---	"111111111111111111111111000000", --23
---	"111111111111111111111111100000", --24
---	"111111111111111111111111110000", --25
---	"111111111111111111111111111000", --26
---	"111111111111111111111111111100", --27
---	"111111111111111111111111111110", --28
---	"111111111111111111111111111111"); --29
---
---SIGNAL rom_addr, rom_col: unsigned(4 downto 0);
---SIGNAL rom_data: std_logic_vector(29 downto 0);
---SIGNAL rom_bit : std_logic;
--- --signal to indicate if scan coord is within ship
---SIGNAL rd_ship_on : std_logic;
-
-
-
-
 signal s_char_2       : std_logic_vector(6 downto 0);
 signal s_score_digit_row 			  : std_logic_vector(3 downto 0);
 signal s_score_digit_column 		  : std_logic_vector(3 downto 0);
@@ -229,13 +177,13 @@ BEGIN
 		--Top line display
 		if(row >= Top_Line_Top_Row and row < Top_Line_Bottom_Row) then
         red <= (OTHERS => '0');
-        green  <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
         blue <= (OTHERS => '0');
 		  
 		--Bottom line display  
 		elsif(row >= Bottom_Line_Top_Row and row < Bottom_Line_Bottom_Row ) then
 		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
         blue <= (OTHERS => '0');
 		  
 		  
@@ -245,61 +193,377 @@ BEGIN
 
 			
 		--Last Ship Live  
-		elsif((row >= leftShipRowTop and row <= leftShipRowBottom) and (column >= leftShipColumnStart and column <= leftShipColumnEnd) and (Lives > 0)) then
-		  red <= (OTHERS => '0');
+		elsif((row >= leftShipRowTop and row <= (leftShipRowBottom-29)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-29)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
         green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+1) and row <= (leftShipRowBottom-28)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-28)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+2) and row <= (leftShipRowBottom-27)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-27)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+3) and row <= (leftShipRowBottom-26)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-26)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+4) and row <= (leftShipRowBottom-25)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-25)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+5) and row <= (leftShipRowBottom-24)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-24)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+6) and row <= (leftShipRowBottom-23)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-23)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+7) and row <= (leftShipRowBottom-22)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-22)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+8) and row <= (leftShipRowBottom-21)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-21)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+9) and row <= (leftShipRowBottom-20)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-20)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		elsif((row >= (leftShipRowTop+10) and row <= (leftShipRowBottom-19)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-19)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+11) and row <= (leftShipRowBottom-18)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-18)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+12) and row <= (leftShipRowBottom-17)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-17)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+13) and row <= (leftShipRowBottom-16)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-16)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+14) and row <= (leftShipRowBottom-15)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-15)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+15) and row <= (leftShipRowBottom-14)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-14)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		elsif((row >= (leftShipRowTop+16) and row <= (leftShipRowBottom-13)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-13)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+17) and row <= (leftShipRowBottom-12)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-12)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+18) and row <= (leftShipRowBottom-11)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-11)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+19) and row <= (leftShipRowBottom-10)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-10)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+20) and row <= (leftShipRowBottom-9)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-9)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+21) and row <= (leftShipRowBottom-8)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-8)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+22) and row <= (leftShipRowBottom-7)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-7)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+23) and row <= (leftShipRowBottom-6)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-6)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+24) and row <= (leftShipRowBottom-5)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-5)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+25) and row <= (leftShipRowBottom-4)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-4)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');  
+		elsif((row >= (leftShipRowTop+26) and row <= (leftShipRowBottom-3)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-3)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+27) and row <= (leftShipRowBottom-2)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-2)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (leftShipRowTop+28) and row <= (leftShipRowBottom-1)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-1)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (leftShipRowTop+29) and row <= (leftShipRowBottom)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd)) and (Lives > 0)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		  
+		  
+		  
+		 
 		--Middle Ship Live 
-		elsif((row >= middleShipRowTop and row <= middleShipRowBottom) and (column >= middleShipColumnStart and column <= middleShipColumnEnd) and (Lives > 1)) then
-		  red <= (OTHERS => '0');
+		elsif((row >= middleShipRowTop and row <= (middleShipRowBottom-29)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-29)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
         green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-		--3 Lives
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= rightShipColumnStart and column <= rightShipColumnEnd) and (Lives > 2)) then
-		  red <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+1) and row <= (middleShipRowBottom-28)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-28)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
         green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-		  
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+2) and row <= (middleShipRowBottom-27)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-27)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+3) and row <= (middleShipRowBottom-26)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-26)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+4) and row <= (middleShipRowBottom-25)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-25)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+5) and row <= (middleShipRowBottom-24)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-24)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+6) and row <= (middleShipRowBottom-23)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-23)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+7) and row <= (middleShipRowBottom-22)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-22)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+8) and row <= (middleShipRowBottom-21)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-21)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+9) and row <= (middleShipRowBottom-20)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-20)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		elsif((row >= (middleShipRowTop+10) and row <= (middleShipRowBottom-19)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-19)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+11) and row <= (middleShipRowBottom-18)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-18)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+12) and row <= (middleShipRowBottom-17)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-17)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+13) and row <= (middleShipRowBottom-16)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-16)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+14) and row <= (middleShipRowBottom-15)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-15)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+15) and row <= (middleShipRowBottom-14)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-14)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		elsif((row >= (middleShipRowTop+16) and row <= (middleShipRowBottom-13)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-13)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+17) and row <= (middleShipRowBottom-12)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-12)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+18) and row <= (middleShipRowBottom-11)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-11)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+19) and row <= (middleShipRowBottom-10)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-10)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+20) and row <= (middleShipRowBottom-9)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-9)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+21) and row <= (middleShipRowBottom-8)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-8)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+22) and row <= (middleShipRowBottom-7)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-7)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+23) and row <= (middleShipRowBottom-6)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-6)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+24) and row <= (middleShipRowBottom-5)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-5)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+25) and row <= (middleShipRowBottom-4)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-4)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');  
+		elsif((row >= (middleShipRowTop+26) and row <= (middleShipRowBottom-3)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-3)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+27) and row <= (middleShipRowBottom-2)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-2)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (middleShipRowTop+28) and row <= (middleShipRowBottom-1)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-1)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (middleShipRowTop+29) and row <= (middleShipRowBottom)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd)) and (Lives >= 2)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
 		  
 		 
+		--Full Lives
+		elsif((row >= rightShipRowTop and row <= (rightShipRowBottom-29)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-29)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+1) and row <= (rightShipRowBottom-28)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-28)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+2) and row <= (rightShipRowBottom-27)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-27)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+3) and row <= (rightShipRowBottom-26)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-26)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+4) and row <= (rightShipRowBottom-25)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-25)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+5) and row <= (rightShipRowBottom-24)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-24)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+6) and row <= (rightShipRowBottom-23)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-23)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+7) and row <= (rightShipRowBottom-22)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-22)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+8) and row <= (rightShipRowBottom-21)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-21)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+9) and row <= (rightShipRowBottom-20)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-20)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		elsif((row >= (rightShipRowTop+10) and row <= (rightShipRowBottom-19)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-19)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+11) and row <= (rightShipRowBottom-18)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-18)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+12) and row <= (rightShipRowBottom-17)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-17)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+13) and row <= (rightShipRowBottom-16)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-16)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+14) and row <= (rightShipRowBottom-15)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-15)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+15) and row <= (rightShipRowBottom-14)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-14)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');		  
+		elsif((row >= (rightShipRowTop+16) and row <= (rightShipRowBottom-13)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-13)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+17) and row <= (rightShipRowBottom-12)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-12)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+18) and row <= (rightShipRowBottom-11)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-11)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+19) and row <= (rightShipRowBottom-10)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-10)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+20) and row <= (rightShipRowBottom-9)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-9)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+21) and row <= (rightShipRowBottom-8)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-8)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+22) and row <= (rightShipRowBottom-7)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-7)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+23) and row <= (rightShipRowBottom-6)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-6)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+24) and row <= (rightShipRowBottom-5)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-5)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+25) and row <= (rightShipRowBottom-4)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-4)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');  
+		elsif((row >= (rightShipRowTop+26) and row <= (rightShipRowBottom-3)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-3)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+27) and row <= (rightShipRowBottom-2)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-2)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
+		elsif((row >= (rightShipRowTop+28) and row <= (rightShipRowBottom-1)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-1)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');	
+		elsif((row >= (rightShipRowTop+29) and row <= (rightShipRowBottom)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd)) and (Lives = 3)) then
+		  red <= (OTHERS => '1');
+        green  <= (OTHERS => '0');
+        blue <= (OTHERS => '0');
 		  
 		  
-		--Score section  
 		
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= score_letter_5_left and column <= score_letter_5_right) and Game_Over = '0') then
-		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-		 
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= score_letter_4_left and column <= score_letter_4_right) and Game_Over = '0') then
-		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-		
-		
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= score_letter_3_left and column <= score_letter_3_right) and Game_Over = '0') then
-		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-		 
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= score_letter_2_left and column <= score_letter_2_right) and Game_Over = '0') then
-		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-		
-	
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= score_letter_1_left and column <= score_letter_1_right) and Game_Over = '0') then
-		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-	
-		elsif((row >= rightShipRowTop and row <= rightShipRowBottom) and (column >= score_letter_0_left and column <= score_letter_0_right) and Game_Over = '0' ) then
-		  red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '1');
-	
-	
-	
 		--TNTECH ECE
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= T1topStart and column <= T1topEnd)) then 
 		  red <= (OTHERS => '0');
@@ -508,9 +772,9 @@ BEGIN
 	
 	
 		else
-        red <= (OTHERS => '0');
-        green  <= (OTHERS => '0');
-        blue <= (OTHERS => '0');
+        red <= (OTHERS => '1');
+        green  <= (OTHERS => '1');
+        blue <= (OTHERS => '1');
 		end if;
 		
 	
