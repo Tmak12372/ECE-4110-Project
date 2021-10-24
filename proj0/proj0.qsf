@@ -152,16 +152,18 @@ set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity h
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -entity hw9p2 -section_id Top
 set_location_assignment PIN_B8 -to key
 set_location_assignment PIN_C10 -to SW0
-set_global_assignment -name VHDL_FILE "Sound Effects/effect_test_top.vhd"
-set_global_assignment -name VHDL_FILE "Sound Effects/effect_mem.vhd"
-set_global_assignment -name QIP_FILE "Sound Effects/effect_mem.qip"
-set_global_assignment -name SOURCE_FILE "Sound Effects/effect_mem.cmp"
-set_global_assignment -name VHDL_FILE "Sound Effects/effect_gen.vhd"
-set_global_assignment -name VERILOG_FILE "Sound Effects/DE10_LITE_Golden_Top.v"
-set_global_assignment -name VHDL_FILE "Sound Effects/clock_div.vhd"
-set_global_assignment -name VHDL_FILE Bin2BCD_6Digits.vhd
+set_global_assignment -name SYSTEMVERILOG_FILE Acceleramoter/spi.sv
+set_global_assignment -name SYSTEMVERILOG_FILE Acceleramoter/gsensor.sv
+set_global_assignment -name VHDL_FILE Acceleramoter/ADXL345_controller.vhd
+set_global_assignment -name VHDL_FILE Acceleramoter/accelerometer_top.vhd
 set_global_assignment -name VHDL_FILE vga_pll_25_175.vhd
 set_global_assignment -name VHDL_FILE vga_controller.vhd
 set_global_assignment -name VHDL_FILE hw_image_generator.vhd
 set_global_assignment -name VHDL_FILE proj0.vhd
+set_location_assignment PIN_V11 -to GSENSOR_SDI
+set_location_assignment PIN_AB15 -to GSENSOR_SCLK
+set_location_assignment PIN_AB16 -to GSENSOR_CS_N
+set_location_assignment PIN_V12 -to GSENSOR_SDO
+set_location_assignment PIN_P11 -to max10_clk
+set_location_assignment PIN_B8 -to clear
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
