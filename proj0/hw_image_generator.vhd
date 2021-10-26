@@ -910,7 +910,6 @@ BEGIN
 			red <= std_logic_vector(to_unsigned(redVal, red'length));
 			green <= std_logic_vector(to_unsigned(greenVal, green'length));
 			blue <= std_logic_vector(to_unsigned(blueVal, blue'length));
-	 
 		ELSE                           --blanking time
 			red <= (OTHERS => '0');
 			green <= (OTHERS => '0');
