@@ -69,7 +69,7 @@ ENTITY hw_image_generator IS
 	score_letter_0_left  : INTEGER := 580;
 	score_letter_0_right  : INTEGER := 610;
 	MainShipRowTop	   : INTEGER := 240;
-   MainShipRowBottom	: INTEGER := 270;
+    MainShipRowBottom	: INTEGER := 270;
 	MainShipColumnStart : INTEGER := 30;
 	MainShipColumnEnd   : INTEGER := 60
 	
@@ -81,42 +81,43 @@ ENTITY hw_image_generator IS
     disp_ena :  IN   STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
     row      :  IN   INTEGER;    --row pixel coordinate
     column   :  IN   INTEGER;    --column pixel coordinate
-    red      :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
-    green    :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --green magnitude output to DAC
-    blue     :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); --blue magnitude output to DAC
-	 mainClock:	IN	 STD_LOGIC;
-	 data_x      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
-	 data_y      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
-	 data_z      : BUFFER STD_LOGIC_VECTOR(15 downto 0));
+    red      :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --red magnitude OUTput to DAC
+    green    :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --green magnitude OUTput to DAC
+    blue     :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); --blue magnitude OUTput to DAC
+	mainClock:	IN	 STD_LOGIC;
+	data_x      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0);
+	data_y      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0);
+	data_z      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0)
+	);
 END hw_image_generator;
 
 ARCHITECTURE behavior OF hw_image_generator IS
 
 
 COMPONENT Bin2BCD_6Digits IS
-	PORT(binIn : in std_logic_vector(7 downto 0);
-		  bcd5  : out std_logic_vector(3 downto 0); --left most bit of score
-		  bcd4  : out std_logic_vector(3 downto 0); 
-		  bcd3  : out std_logic_vector(3 downto 0);
-		  bcd2  : out std_logic_vector(3 downto 0);
-		  bcd1  : out std_logic_vector(3 downto 0);
-		  bcd0  : out std_logic_vector(3 downto 0)); --right most bit of score
+	PORT( binIn : IN std_logic_vector(7 DOWNTO 0);
+		  bcd5  : OUT std_logic_vector(3 DOWNTO 0); --left most bit of score
+		  bcd4  : OUT std_logic_vector(3 DOWNTO 0); 
+		  bcd3  : OUT std_logic_vector(3 DOWNTO 0);
+		  bcd2  : OUT std_logic_vector(3 DOWNTO 0);
+		  bcd1  : OUT std_logic_vector(3 DOWNTO 0);
+		  bcd0  : OUT std_logic_vector(3 DOWNTO 0)); --right most bit of score
 END COMPONENT;
 
 	
 	
 SIGNAL Lives : INTEGER := 3;
-SIGNAL Score_count : std_logic_vector(7 downto 0);
-SIGNAL bcd_score5, bcd_score4, bcd_score3, bcd_score2, bcd_score1, bcd_score0 : std_logic_vector(3 downto 0);
+SIGNAL Score_count : std_logic_vector(7 DOWNTO 0);
+SIGNAL bcd_score5, bcd_score4, bcd_score3, bcd_score2, bcd_score1, bcd_score0 : std_logic_vector(3 DOWNTO 0);
 SIGNAL Game_Over, Paused : std_logic := '0';
-signal s_char_2       : std_logic_vector(6 downto 0);
-signal s_score_digit_row 			  : std_logic_vector(3 downto 0);
-signal s_score_digit_column 		  : std_logic_vector(3 downto 0);
+SIGNAL s_char_2       : std_logic_vector(6 DOWNTO 0);
+SIGNAL s_score_digit_row 			  : std_logic_vector(3 DOWNTO 0);
+SIGNAL s_score_digit_column 		  : std_logic_vector(3 DOWNTO 0);
 SIGNAL shipPOS : INTEGER;
-signal clockSlow : STD_LOGIC;
-signal signed_bit,enable : std_logic;
-signal direction : std_logic;
-signal ShipMoveSpeed : integer;
+SIGNAL clockSlow : STD_LOGIC;
+SIGNAL signed_bit,enable : std_logic;
+SIGNAL direction : std_logic;
+SIGNAL ShipMoveSpeed : integer;
 
 BEGIN
 
@@ -200,7 +201,7 @@ BEGIN
 	
 
 	
-			--Top line display
+		--Top line display
 		if(row >= Top_Line_Top_Row and row < Top_Line_Bottom_Row) then
 			redVal := 0;
 			greenVal := 0;
@@ -213,699 +214,691 @@ BEGIN
 		  
 		--Last Ship Live  
 		elsif((row >= leftShipRowTop and row <= (leftShipRowBottom-29)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-29)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		  	redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+1) and row <= (leftShipRowBottom-28)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-28)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (leftShipRowTop+2) and row <= (leftShipRowBottom-27)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-27)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		 	redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+3) and row <= (leftShipRowBottom-26)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-26)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+			redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;
 		elsif((row >= (leftShipRowTop+4) and row <= (leftShipRowBottom-25)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-25)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+5) and row <= (leftShipRowBottom-24)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-24)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+6) and row <= (leftShipRowBottom-23)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-23)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (leftShipRowTop+7) and row <= (leftShipRowBottom-22)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-22)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+8) and row <= (leftShipRowBottom-21)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-21)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+9) and row <= (leftShipRowBottom-20)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-20)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;		  
 		elsif((row >= (leftShipRowTop+10) and row <= (leftShipRowBottom-19)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-19)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+11) and row <= (leftShipRowBottom-18)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-18)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+12) and row <= (leftShipRowBottom-17)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-17)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;
 		elsif((row >= (leftShipRowTop+13) and row <= (leftShipRowBottom-16)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-16)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+14) and row <= (leftShipRowBottom-15)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-15)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+15) and row <= (leftShipRowBottom-14)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-14)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;		  
 		elsif((row >= (leftShipRowTop+16) and row <= (leftShipRowBottom-13)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-13)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+17) and row <= (leftShipRowBottom-12)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-12)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+18) and row <= (leftShipRowBottom-11)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-11)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;
 		elsif((row >= (leftShipRowTop+19) and row <= (leftShipRowBottom-10)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-10)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (leftShipRowTop+20) and row <= (leftShipRowBottom-9)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-9)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (leftShipRowTop+21) and row <= (leftShipRowBottom-8)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-8)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (leftShipRowTop+22) and row <= (leftShipRowBottom-7)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-7)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (leftShipRowTop+23) and row <= (leftShipRowBottom-6)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-6)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (leftShipRowTop+24) and row <= (leftShipRowBottom-5)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-5)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (leftShipRowTop+25) and row <= (leftShipRowBottom-4)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-4)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;  
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;  
 		elsif((row >= (leftShipRowTop+26) and row <= (leftShipRowBottom-3)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-3)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+27) and row <= (leftShipRowBottom-2)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-2)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (leftShipRowTop+28) and row <= (leftShipRowBottom-1)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd-1)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (leftShipRowTop+29) and row <= (leftShipRowBottom)) and (column >= leftShipColumnStart and column <= (leftShipColumnEnd)) and (Lives > 0)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;		  
 		  
-		  
-		  
-		 
 		--Middle Ship Live 
 		elsif((row >= middleShipRowTop and row <= (middleShipRowBottom-29)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-29)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (middleShipRowTop+1) and row <= (middleShipRowBottom-28)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-28)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (middleShipRowTop+2) and row <= (middleShipRowBottom-27)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-27)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (middleShipRowTop+3) and row <= (middleShipRowBottom-26)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-26)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;
 		elsif((row >= (middleShipRowTop+4) and row <= (middleShipRowBottom-25)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-25)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+5) and row <= (middleShipRowBottom-24)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-24)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+6) and row <= (middleShipRowBottom-23)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-23)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (middleShipRowTop+7) and row <= (middleShipRowBottom-22)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-22)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+8) and row <= (middleShipRowBottom-21)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-21)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+9) and row <= (middleShipRowBottom-20)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-20)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;		  
 		elsif((row >= (middleShipRowTop+10) and row <= (middleShipRowBottom-19)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-19)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+11) and row <= (middleShipRowBottom-18)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-18)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+12) and row <= (middleShipRowBottom-17)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-17)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (middleShipRowTop+13) and row <= (middleShipRowBottom-16)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-16)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+14) and row <= (middleShipRowBottom-15)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-15)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+15) and row <= (middleShipRowBottom-14)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-14)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;		  
 		elsif((row >= (middleShipRowTop+16) and row <= (middleShipRowBottom-13)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-13)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+17) and row <= (middleShipRowBottom-12)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-12)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+18) and row <= (middleShipRowBottom-11)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-11)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (middleShipRowTop+19) and row <= (middleShipRowBottom-10)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-10)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+20) and row <= (middleShipRowBottom-9)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-9)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+21) and row <= (middleShipRowBottom-8)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-8)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (middleShipRowTop+22) and row <= (middleShipRowBottom-7)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-7)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+23) and row <= (middleShipRowBottom-6)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-6)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (middleShipRowTop+24) and row <= (middleShipRowBottom-5)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-5)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+25) and row <= (middleShipRowBottom-4)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-4)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;  
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;  
 		elsif((row >= (middleShipRowTop+26) and row <= (middleShipRowBottom-3)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-3)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+27) and row <= (middleShipRowBottom-2)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-2)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (middleShipRowTop+28) and row <= (middleShipRowBottom-1)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd-1)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (middleShipRowTop+29) and row <= (middleShipRowBottom)) and (column >= middleShipColumnStart and column <= (middleShipColumnEnd)) and (Lives >= 2)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		  
-		 
 		--Full Lives
 		elsif((row >= rightShipRowTop and row <= (rightShipRowBottom-29)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-29)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+1) and row <= (rightShipRowBottom-28)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-28)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+2) and row <= (rightShipRowBottom-27)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-27)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+3) and row <= (rightShipRowBottom-26)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-26)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+4) and row <= (rightShipRowBottom-25)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-25)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+5) and row <= (rightShipRowBottom-24)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-24)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+6) and row <= (rightShipRowBottom-23)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-23)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+7) and row <= (rightShipRowBottom-22)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-22)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+8) and row <= (rightShipRowBottom-21)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-21)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+9) and row <= (rightShipRowBottom-20)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-20)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;		  
 		elsif((row >= (rightShipRowTop+10) and row <= (rightShipRowBottom-19)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-19)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+11) and row <= (rightShipRowBottom-18)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-18)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+12) and row <= (rightShipRowBottom-17)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-17)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+13) and row <= (rightShipRowBottom-16)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-16)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+14) and row <= (rightShipRowBottom-15)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-15)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+15) and row <= (rightShipRowBottom-14)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-14)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;		  
 		elsif((row >= (rightShipRowTop+16) and row <= (rightShipRowBottom-13)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-13)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+17) and row <= (rightShipRowBottom-12)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-12)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+18) and row <= (rightShipRowBottom-11)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-11)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+19) and row <= (rightShipRowBottom-10)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-10)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+20) and row <= (rightShipRowBottom-9)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-9)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+21) and row <= (rightShipRowBottom-8)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-8)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+22) and row <= (rightShipRowBottom-7)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-7)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+23) and row <= (rightShipRowBottom-6)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-6)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+24) and row <= (rightShipRowBottom-5)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-5)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+25) and row <= (rightShipRowBottom-4)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-4)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;  
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;  
 		elsif((row >= (rightShipRowTop+26) and row <= (rightShipRowBottom-3)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-3)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+27) and row <= (rightShipRowBottom-2)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-2)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (rightShipRowTop+28) and row <= (rightShipRowBottom-1)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd-1)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (rightShipRowTop+29) and row <= (rightShipRowBottom)) and (column >= rightShipColumnStart and column <= (rightShipColumnEnd)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		  
 		  
 		
 		--TNTECH ECE
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= T1topStart and column <= T1topEnd)) then 
-		  redVal := 0;
-        greenVal := 0;
-        blueVal := 15;
+		    redVal := 0;
+        	greenVal := 0;
+        	blueVal := 15;
 		--Na	
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= NLtopStart and column <=NLtopEnd)) then
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Nb
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= NRtopStart and column <= NRtopEnd )) then
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--T2
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= T2topStart and column <= T2topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E1
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= E1topStart and column <= E1topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--C
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= C1topStart and column <= C1topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Ha
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= HLtopStart and column <= HLtopEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Hb
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= HRtopStart and column <= HRtopEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E2
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= E2topStart and column <= E2topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--C
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= C2topStart and column <= C2topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E3
 		elsif((row >= row_A_top and row <= row_A_bot) and (column >= E3topStart and column <= E3topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 			
 		--Row_B -------------------------------------------------------------------------------------------
 		--T1
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= T1midStart and column <= T1midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Na
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= NLmidStart and column <= NLmidEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Nmid1
 		elsif((row >= row_B_top-3 and row <= row_B_bot-3) and (column >= NLmidEnd and column <= NLmidEnd+3)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Nmid2
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= NLmidEnd+3 and column <= NLmidEnd+6)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Nmid3
 		elsif((row >= row_B_top+3 and row <= row_B_bot+3) and (column >= NLmidEnd+6 and column <= NLmidEnd+9)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;	
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;	
 		--Nb
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= NRmidStart and column <= NRmidEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--T2
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= T2midStart and column <= T2midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E1
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= E1midStart and column <= E1midStart+9)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E1mid
 		elsif((row > row_B_top and row < row_B_bot) and (column >= E1midStart+9 and column <= E1midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--C1
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= C1midStart and column <= C1midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--H
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= HmidStart and column <= HmidEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E2
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= E2midStart and column <= E2midStart+9)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E2mid
 		elsif((row > row_B_top and row < row_B_bot) and (column >= E2midStart+9 and column <= E2midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--C2
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= C2midStart and column <= C2midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E3
 		elsif((row >= row_B_top and row <= row_B_bot) and (column >= E3midStart and column <= E3midStart+9)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E3mid	
 		elsif((row > row_B_top and row < row_B_bot) and (column >= E3midStart+9 and column <= E3midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 
 
 		-- Row_C -------------------------------------------------------------------------------------------
 		--T1
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= T1midStart and column <= T1midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;	
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;	
 		--Na
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= NLtopStart and column <= NLtopEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Nb
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= NRtopStart and column <= NRtopEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--T2
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= T2midStart and column <= T2midEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E1
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= E1topStart and column <= E1topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--C1
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= C1topStart and column <= C1topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;	
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;	
 		--Ha
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= HLtopStart and column <= HLtopEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--Hb
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= HRtopStart and column <= HRtopEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E2
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= E2topStart and column <= E2topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--C2
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= C2topStart and column <= C2topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;
 		--E3
 		elsif((row >= row_C_top and row <= row_C_bot) and (column >= E3topStart and column <= E3topEnd)) then 
-			  redVal := 0;
-			  greenVal := 0;
-			  blueVal := 15;	  
+			redVal := 0;
+			greenVal := 0;
+			blueVal := 15;	  
 			    
 				 
 		
 		elsif((row >= MainShipRowTop and row <= (MainShipRowBottom-29)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-29)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+        	greenVal := 0;
+        	blueVal := 0;	
 		elsif((row >= (MainShipRowTop+1) and row <= (MainShipRowBottom-28)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-28)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+2) and row <= (MainShipRowBottom-27)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-27)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+3) and row <= (MainShipRowBottom-26)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-26)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+4) and row <= (MainShipRowBottom-25)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-25)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+5) and row <= (MainShipRowBottom-24)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-24)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+6) and row <= (MainShipRowBottom-23)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-23)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+7) and row <= (MainShipRowBottom-22)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-22)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		    redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+8) and row <= (MainShipRowBottom-21)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-21)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+		  	redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+9) and row <= (MainShipRowBottom-20)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-20)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;		  
 		elsif((row >= (MainShipRowTop+10) and row <= (MainShipRowBottom-19)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-19)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+11) and row <= (MainShipRowBottom-18)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-18)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+12) and row <= (MainShipRowBottom-17)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-17)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+13) and row <= (MainShipRowBottom-16)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-16)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+14) and row <= (MainShipRowBottom-15)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-15)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+15) and row <= (MainShipRowBottom-14)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-14)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;		  
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;		  
 		elsif((row >= (MainShipRowTop+16) and row <= (MainShipRowBottom-13)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-13)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+17) and row <= (MainShipRowBottom-12)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-12)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+18) and row <= (MainShipRowBottom-11)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-11)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+19) and row <= (MainShipRowBottom-10)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-10)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+20) and row <= (MainShipRowBottom-9)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-9)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+21) and row <= (MainShipRowBottom-8)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-8)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+22) and row <= (MainShipRowBottom-7)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-7)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+23) and row <= (MainShipRowBottom-6)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-6)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+24) and row <= (MainShipRowBottom-5)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-5)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+25) and row <= (MainShipRowBottom-4)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-4)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;  
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;  
 		elsif((row >= (MainShipRowTop+26) and row <= (MainShipRowBottom-3)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-3)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+27) and row <= (MainShipRowBottom-2)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-2)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;
 		elsif((row >= (MainShipRowTop+28) and row <= (MainShipRowBottom-1)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-1)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;	
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;	
 		elsif((row >= (MainShipRowTop+29) and row <= (MainShipRowBottom)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd)) and (Lives = 3)) then
-		  redVal := 15;
-        greenVal := 0;
-        blueVal := 0;				 
+			redVal := 15;
+			greenVal := 0;
+			blueVal := 0;				 
 			 
-				 
-				  
-			  
-	  
 		else 	 
 			redVal := 15;
 			greenVal := 15;
@@ -913,16 +906,16 @@ BEGIN
 		end if;
 	
 	
-	IF(disp_ena = '1') THEN        --display time
-		red <= std_logic_vector(to_unsigned(redVal, red'length));
-		green <= std_logic_vector(to_unsigned(greenVal, green'length));
-		blue <= std_logic_vector(to_unsigned(blueVal, blue'length));
+		IF(disp_ena = '1') THEN        --display time
+			red <= std_logic_vector(to_unsigned(redVal, red'length));
+			green <= std_logic_vector(to_unsigned(greenVal, green'length));
+			blue <= std_logic_vector(to_unsigned(blueVal, blue'length));
 	 
-   ELSE                           --blanking time
-      red <= (OTHERS => '0');
-      green <= (OTHERS => '0');
-      blue <= (OTHERS => '0');
-    END IF;
+		ELSE                           --blanking time
+			red <= (OTHERS => '0');
+			green <= (OTHERS => '0');
+			blue <= (OTHERS => '0');
+    	END IF;
   END PROCESS;
   
   
