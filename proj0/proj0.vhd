@@ -36,7 +36,9 @@ entity proj0 is
 		hex1         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
 		hex0         : OUT STD_LOGIC_VECTOR(6 downto 0) := "1111111";
 		
-		
+		data_x      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
+		data_y      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
+		data_z      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
 		
 		red_m      :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
 		green_m    :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --green magnitude output to DAC
@@ -82,18 +84,19 @@ Architecture arch of proj0 is
 	component hw_image_generator is
 	
 		port(
+			directionx : in std_logic;
+			directiony : in std_logic;
+			enable  : in std_logic;
 			SW0         : IN  STD_LOGIC;
-		    key         : IN  STD_LOGIC;
+		   key         : IN  STD_LOGIC;
 			disp_ena    : IN  STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
 			row         : IN  INTEGER;    --row pixel coordinate
 			column      : IN  INTEGER;    --column pixel coordinate
 			red         : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
 			green       : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --green magnitude output to DAC
 			blue        : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');   --blue magnitude output to DAC
-			mainClock   : IN	 STD_LOGIC;
-			data_x      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
-		    data_y      : BUFFER STD_LOGIC_VECTOR(15 downto 0);
-		    data_z      : BUFFER STD_LOGIC_VECTOR(15 downto 0)
+			mainClock   : IN	 STD_LOGIC
+			
 		);
 		
 	end component;
@@ -115,18 +118,41 @@ component accelerometer_top is
 end component;
 
 
-	
+	Signal directionx,signed_bitx,enable,directiony,signed_bity : std_logic;
 	signal pll_OUT_to_vga_controller_IN, dispEn : STD_LOGIC;
 	signal rowSignal, colSignal : INTEGER;
-	signal data_x,data_y,data_z      : STD_LOGIC_VECTOR(15 downto 0);
-	
 begin
 
 -- Just need 3 components for VGA system 
 	U1	:	vga_pll_25_175 port map(pixel_clk_m, pll_OUT_to_vga_controller_IN);
 	U2	:	vga_controller port map(pll_OUT_to_vga_controller_IN, reset_n_m, h_sync_m, v_sync_m, dispEn, colSignal, rowSignal, open, open);
-	U3	:	hw_image_generator port map(SW0,key,dispEn, rowSignal, colSignal, red_m, green_m, blue_m,pixel_clk_m,data_x,data_y,data_z);
-	U4  :   accelerometer_top port map(pixel_clk_m,GSENSOR_CS_N,GSENSOR_SCLK,GSENSOR_SDI,GSENSOR_SDO,data_x,data_y,data_z);
+	U3	:	hw_image_generator port map(directionx,directiony,enable,SW0,key,dispEn, rowSignal, colSignal, red_m, green_m, blue_m,pixel_clk_m);
+	U4  : accelerometer_top port map(pixel_clk_m,GSENSOR_CS_N,GSENSOR_SCLK,GSENSOR_SDI,GSENSOR_SDO,data_x,data_y,data_z);
+	
+	
+	dx : process(data_x,data_y)
+	Begin
+		signed_bitx <= data_x(15);
+		signed_bity <= data_y(15);
+		if((data_x(11 downto 4) = "11111111") and (data_y(11 downto 4) = "11111111")) then
+			enable <= '0';
+		else
+			enable <= '1';
+		end if;
+		IF ((signed_bitx = '0')) then
+			directionx <= '1';
+		else
+			directionx <= '0';
+		end if;
+		IF ((signed_bity = '0')) then
+			directiony <= '0';
+		else
+			directiony <= '1';
+		end if;
+		
+	end process;
+	
+	
 end arch;
 
 

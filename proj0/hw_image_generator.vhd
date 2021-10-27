@@ -44,6 +44,7 @@ ENTITY hw_image_generator IS
 	middleShipRowTop : INTEGER := 20;
 	rightShipRowTop : INTEGER := 20;
 
+	
 	leftShipRowBottom : INTEGER := 50;
 	middleShipRowBottom : INTEGER := 50;
 	rightShipRowBottom : INTEGER := 50;
@@ -68,14 +69,17 @@ ENTITY hw_image_generator IS
 	score_letter_1_right  : INTEGER := 570;
 	score_letter_0_left  : INTEGER := 580;
 	score_letter_0_right  : INTEGER := 610;
-	MainShipRowTop	   : INTEGER := 240;
-    MainShipRowBottom	: INTEGER := 270;
+	MainShipLeftLimit     : INTEGER := 0;
+	MainShipRightLimit     : INTEGER := 320;
 	MainShipColumnStart : INTEGER := 30;
 	MainShipColumnEnd   : INTEGER := 60
 	
 	
 	);  --:)
   PORT(
+	 directionx : in std_logic;
+	 directiony : in std_logic;
+	 enable  : in std_logic;
     SW0    :  IN   STD_LOGIC;
     key      :  IN   STD_LOGIC;
     disp_ena :  IN   STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
@@ -84,10 +88,10 @@ ENTITY hw_image_generator IS
     red      :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --red magnitude OUTput to DAC
     green    :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');  --green magnitude OUTput to DAC
     blue     :  OUT  STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); --blue magnitude OUTput to DAC
-	mainClock:	IN	 STD_LOGIC;
-	data_x      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0);
-	data_y      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0);
-	data_z      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0)
+	 mainClock:	IN	 STD_LOGIC;
+	 data_x      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0);
+	 data_y      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0);
+	 data_z      : BUFFER STD_LOGIC_VECTOR(15 DOWNTO 0)
 	);
 END hw_image_generator;
 
@@ -105,7 +109,8 @@ COMPONENT Bin2BCD_6Digits IS
 END COMPONENT;
 
 	
-	
+SIGNAL shipPOS_HOR : INTEGER := 180;
+SIGNAL shipPOS_VER : INTEGER := 180;	
 SIGNAL Lives : INTEGER := 3;
 SIGNAL Score_count : std_logic_vector(7 DOWNTO 0);
 SIGNAL bcd_score5, bcd_score4, bcd_score3, bcd_score2, bcd_score1, bcd_score0 : std_logic_vector(3 DOWNTO 0);
@@ -113,25 +118,10 @@ SIGNAL Game_Over, Paused : std_logic := '0';
 SIGNAL s_char_2       : std_logic_vector(6 DOWNTO 0);
 SIGNAL s_score_digit_row 			  : std_logic_vector(3 DOWNTO 0);
 SIGNAL s_score_digit_column 		  : std_logic_vector(3 DOWNTO 0);
-SIGNAL shipPOS : INTEGER;
 SIGNAL clockSlow : STD_LOGIC;
-SIGNAL signed_bit,enable : std_logic;
-SIGNAL direction : std_logic;
 SIGNAL ShipMoveSpeed : integer;
 
 BEGIN
-
-	
-	signed_bit <= data_x(15);
-	
-	directi : process(data_x,data_y)
-	Begin
-		IF ((signed_bit = '0')) then
-			direction <= '1';
-		else
-			direction <= '0';
-		end if;
-	end process;
 	
 	PROCESS(disp_ena, row, column, Lives)
 	
@@ -778,123 +768,123 @@ BEGIN
 			    
 				 
 		
-		elsif((row >= MainShipRowTop and row <= (MainShipRowBottom-29)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-29)) and (Lives = 3)) then
+		elsif((row >= shipPOS_VER and row <= (shipPOS_VER + shipLen -29)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-29)) and (Lives = 3)) then
 			redVal := 15;
         	greenVal := 0;
         	blueVal := 0;	
-		elsif((row >= (MainShipRowTop+1) and row <= (MainShipRowBottom-28)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-28)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+1) and row <= (shipPOS_VER + shipLen -28)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-28) )and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+2) and row <= (MainShipRowBottom-27)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-27)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+2) and row <= (shipPOS_VER + shipLen -27)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-27)) and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+3) and row <= (MainShipRowBottom-26)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-26)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+3) and row <= (shipPOS_VER + shipLen -26)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-26)) and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+4) and row <= (MainShipRowBottom-25)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-25)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+4) and row <= (shipPOS_VER + shipLen -25)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-25)) and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+5) and row <= (MainShipRowBottom-24)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-24)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+5) and row <= (shipPOS_VER + shipLen -24)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-24)) and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+6) and row <= (MainShipRowBottom-23)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-23)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+6) and row <= (shipPOS_VER + shipLen -23)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-23)) and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+7) and row <= (MainShipRowBottom-22)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-22)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+7) and row <= (shipPOS_VER + shipLen -22)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-22)) and (Lives = 3)) then
 		    redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+8) and row <= (MainShipRowBottom-21)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-21)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+8) and row <= (shipPOS_VER + shipLen -21)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-21)) and (Lives = 3)) then
 		  	redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+9) and row <= (MainShipRowBottom-20)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-20)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+9) and row <= (shipPOS_VER + shipLen -20)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-20)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;		  
-		elsif((row >= (MainShipRowTop+10) and row <= (MainShipRowBottom-19)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-19)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+10) and row <= (shipPOS_VER + shipLen -19)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-19)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+11) and row <= (MainShipRowBottom-18)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-18)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+11) and row <= (shipPOS_VER + shipLen -18)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-18 )) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+12) and row <= (MainShipRowBottom-17)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-17)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+12) and row <= (shipPOS_VER + shipLen -17)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-17)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+13) and row <= (MainShipRowBottom-16)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-16)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+13) and row <= (shipPOS_VER + shipLen -16)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-16)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+14) and row <= (MainShipRowBottom-15)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-15)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+14) and row <= (shipPOS_VER + shipLen -15)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-15)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+15) and row <= (MainShipRowBottom-14)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-14)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+15) and row <= (shipPOS_VER + shipLen -14)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-14)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;		  
-		elsif((row >= (MainShipRowTop+16) and row <= (MainShipRowBottom-13)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-13)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+16) and row <= (shipPOS_VER + shipLen -13)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-13)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+17) and row <= (MainShipRowBottom-12)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-12)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+17) and row <= (shipPOS_VER + shipLen -12)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-12)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+18) and row <= (MainShipRowBottom-11)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-11)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+18) and row <= (shipPOS_VER + shipLen -11)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-11)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+19) and row <= (MainShipRowBottom-10)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-10)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+19) and row <= (shipPOS_VER + shipLen -10)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-10)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+20) and row <= (MainShipRowBottom-9)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-9)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+20) and row <= (shipPOS_VER + shipLen -9)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-9)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+21) and row <= (MainShipRowBottom-8)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-8)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+21) and row <= (shipPOS_VER + shipLen -8)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-8)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+22) and row <= (MainShipRowBottom-7)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-7)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+22) and row <= (shipPOS_VER + shipLen -7)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-7)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+23) and row <= (MainShipRowBottom-6)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-6)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+23) and row <= (shipPOS_VER + shipLen -6)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-6)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+24) and row <= (MainShipRowBottom-5)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-5)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+24) and row <= (shipPOS_VER + shipLen -5)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-5)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+25) and row <= (MainShipRowBottom-4)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-4)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+25) and row <= (shipPOS_VER + shipLen -4)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-4)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;  
-		elsif((row >= (MainShipRowTop+26) and row <= (MainShipRowBottom-3)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-3)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+26) and row <= (shipPOS_VER + shipLen -3)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-3)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+27) and row <= (MainShipRowBottom-2)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-2)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+27) and row <= (shipPOS_VER + shipLen -2)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-2)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;
-		elsif((row >= (MainShipRowTop+28) and row <= (MainShipRowBottom-1)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd-1)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+28) and row <= (shipPOS_VER + shipLen -1)) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen-1)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;	
-		elsif((row >= (MainShipRowTop+29) and row <= (MainShipRowBottom)) and (column >= (MainShipColumnStart) and column <= (MainShipColumnEnd)) and (Lives = 3)) then
+		elsif((row >= (shipPOS_VER+29) and row <= (shipPOS_VER + shipLen )) and (column >= (shipPOS_HOR) and column <= (shipPOS_HOR + shipLen)) and (Lives = 3)) then
 			redVal := 15;
 			greenVal := 0;
 			blueVal := 0;				 
@@ -916,41 +906,67 @@ BEGIN
 			blue <= (OTHERS => '0');
     	END IF;
   END PROCESS;
+	
   
   
-  --Moves the cart
-	process(direction)
+  --Moves the ship left and right
+	process(directionx,mainClock,shipPOS_HOR)
 	variable counter : integer := 0;
+	variable hor_position : integer := 180;
 	begin
-		if(Paused = '0') then
+		if(Paused = '0' and enable = '1') then
 			if(mainClock = '1' and mainClock'event) then
 				counter := counter + 1;
-				if (counter > ShipMoveSpeed-100 and Paused = '0') then
+				if (counter > 3000000 and Paused = '0') then
 					if (clockSlow = '1') then
 						clockSlow <= '0';
 					else
 						clockSlow <= '1';
 					end if;
-					--Do stuff here
-					case direction is
-						when '0' => shipPOS <= shipPOS + 1;
-						when '1' => shipPOS <= shipPOS - 1;
-					end case;
 					
-					if((shipPOS = (320) and direction = '0')) then
-						shipPOS <= shipPOS;
-					elsif((shipPOS = 0 and direction = '1')) then
-						shipPOS <= shipPOS;
-				end if;
-				
+					if (directionx = '1') then 
+						if ((hor_position + 1) /= 0) then
+							hor_position := hor_position - 1;
+						end if;
+					elsif (directionx = '0') then
+						if ((hor_position + 30) /= 320) then
+							hor_position := hor_position + 1;
+						end if;
+					end if;
+		
+				shipPOS_HOR <= hor_position;
 				counter := 0 ;
             end if;
         end if;
-		end if;
+	end if;
 	end process;
   
   
-  
+	--Moves the ship up and down
+	process(directiony,mainClock,shipPOS_VER)
+	variable dcounter : integer := 0;
+	variable ver_position : integer := 180;
+	begin
+		if(Paused = '0' and enable = '1') then
+			if(mainClock = '1' and mainClock'event) then
+				dcounter := dcounter + 1;
+				if (dcounter > 3000000 and Paused = '0') then
+					if (directiony = '1') then 
+						if ((ver_position) /= 64) then
+							ver_position := ver_position - 1;
+						end if;
+					elsif (directiony = '0') then
+						if ((ver_position+30) /= 421) then
+							ver_position := ver_position + 1;
+						end if;
+					end if;
+		
+				shipPOS_VER <= ver_position;
+				dcounter := 0 ;
+            end if;
+        end if;
+	end if;
+	end process;
   
   
   	--Does the pausing logic
