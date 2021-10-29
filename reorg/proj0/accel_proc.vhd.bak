@@ -7,9 +7,9 @@ entity accel_proc is
     generic(
 
         -- Top value for input range
-        g_in_max_val : integer := 1;
+        g_in_max_val : integer := 2**15;
         -- Top value for output range
-        g_out_max_val : integer := 1
+        g_out_max_val : integer := 100;
 
     );
     port (
@@ -21,7 +21,7 @@ entity accel_proc is
         -- Direction of tilt
         -- x+ : left,    x- : right
         -- y+ : forward, y- : backward
-        accel_scale_x, accel_scale_y          : OUT integer := 0 -- A scaled version of data
+        accel_scale_x, accel_scale_y          : OUT integer := 0; -- A scaled version of data
     );
 end accel_proc;
 
@@ -39,8 +39,8 @@ BEGIN
 
         -- Sample new data if it's valid, or hold old data
         if (data_valid = '1') then
-            accel_scale_x <= to_integer(signed(data_x))*g_out_max_val/g_in_max_val;
-            accel_scale_y <= to_integer(signed(data_y))*g_out_max_val/g_in_max_val;
+            accel_scale_x <= to_integer(signed(data_x))*(g_out_max_val/g_in_max_val);
+            accel_scale_y <= to_integer(signed(data_y))*(g_out_max_val/g_in_max_val)
         end if;
 
     end process;

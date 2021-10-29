@@ -72,8 +72,7 @@ architecture top_level of proj0_top is
             blue     :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --blue magnitude output to DAC
 
             -- HMI Inputs
-            accel_x_dir, accel_y_dir     : IN STD_LOGIC;
-            accel_scale_x, accel_scale_y : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+            accel_scale_x, accel_scale_y : integer;
             KEY                          : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
             SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0)
         );
@@ -100,11 +99,10 @@ architecture top_level of proj0_top is
             data_valid  : IN STD_LOGIC;
     
             -- Direction of tilt
-            -- x_dir = '0' : left,    x_dir = '1' : right
-            -- y_dir = '0' : forward, y_dir = '1' : backward
-            accel_x_dir, accel_y_dir    : OUT STD_LOGIC;
-            accel_scale_x, accel_scale_y          : OUT STD_LOGIC_VECTOR(3 DOWNTO 0) -- A low-res scaled version of data
-        );
+            -- x+ : left,    x- : right
+            -- y+ : forward, y- : backward
+            accel_scale_x, accel_scale_y          : OUT integer := 0 -- A scaled version of data
+		);
     end COMPONENT;
 
     component dual_boot is
@@ -132,9 +130,8 @@ architecture top_level of proj0_top is
 
     -- Accelerometer
     signal data_x, data_y                   : STD_LOGIC_VECTOR(15 DOWNTO 0);
-    signal accel_x_dir, accel_y_dir         : STD_LOGIC;
-    signal accel_scale_x, accel_scale_y     : STD_LOGIC_VECTOR(3 DOWNTO 0);
     signal data_valid : STD_LOGIC;
+    signal accel_scale_x, accel_scale_y     : integer;
     
 begin
 
@@ -144,13 +141,13 @@ begin
     -- Instantiation and port mapping
 
     -- 7Seg Displays
-    U1 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
+    U1 : bin2seg7  PORT MAP ( inData => data_x(15 downto 12), blanking => '0', dispHex => '1', 
             dispPoint => '0', dispDash => '0', outSegs => HEX5 );
-    U2 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
+    U2 : bin2seg7  PORT MAP ( inData => data_x(11 downto 8), blanking => '0', dispHex => '1', 
             dispPoint => '0', dispDash => '0', outSegs => HEX4 );
-    U3 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
+    U3 : bin2seg7  PORT MAP ( inData => data_x(7 downto 4), blanking => '0', dispHex => '1', 
             dispPoint => '0', dispDash => '0', outSegs => HEX3 );
-    U4 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
+    U4 : bin2seg7  PORT MAP ( inData => data_x(3 downto 0), blanking => '0', dispHex => '1', 
             dispPoint => '0', dispDash => '0', outSegs => HEX2 );
     U5 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
             dispPoint => '0', dispDash => '0', outSegs => HEX1 );
@@ -166,8 +163,7 @@ begin
 
     -- Accel
     U10 : ADXL345_controller PORT MAP (reset_n => '1', clk => MAX10_CLK1_50, data_valid => data_valid, data_x => data_x,  data_y => data_y, data_z => open, SPI_SDI => GSENSOR_SDI, SPI_SDO => GSENSOR_SDO, SPI_CSN => GSENSOR_CS_N, SPI_CLK => GSENSOR_SCLK );
-    U11 : accel_proc  PORT MAP ( data_x => data_x, data_y => data_y, data_valid => data_valid, accel_x_dir => accel_x_dir, 
-                              accel_y_dir => accel_y_dir, accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y );
+    U11 : accel_proc  PORT MAP ( data_x => data_x, data_y => data_y, data_valid => data_valid, accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y );
     
     -- Game Logic
     U12	: image_gen port map (
@@ -179,8 +175,6 @@ begin
         green => VGA_G, 
         blue => VGA_B,
 
-        accel_x_dir => accel_x_dir,
-        accel_y_dir => accel_y_dir,
         accel_scale_x => accel_scale_x,
         accel_scale_y => accel_scale_y,
         KEY => KEY,

@@ -8,7 +8,6 @@ ENTITY image_gen IS
 
         -- RGB, 4 bits each
         g_bg_color : integer := 16#FFF#;
-        g_ship_color : integer := 16#F00#;
         g_score_color : integer := 16#0F0#;
         g_logo_color : integer := 16#00F#;
 
@@ -31,14 +30,29 @@ ENTITY image_gen IS
         blue     :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --blue magnitude output to DAC
 
         -- HMI Inputs
-        accel_x_dir, accel_y_dir     : IN STD_LOGIC;
-        accel_scale_x, accel_scale_y : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        accel_scale_x, accel_scale_y : integer;
         KEY                          : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0)
     );
 END image_gen;
 
 ARCHITECTURE behavior OF image_gen IS
+    -- Components
+    component player_ship is
+        port (
+            i_clock : in std_logic;
+            i_update_pulse : in std_logic;
+    
+            -- HMI Inputs
+            accel_scale_x, accel_scale_y : in integer;
+    
+            i_row : in integer;
+            i_column : in integer;
+    
+            o_color : out integer range 0 to 4095;
+            o_draw : out std_logic
+        );
+    end component;
 
     -- Constants
 
@@ -47,6 +61,9 @@ ARCHITECTURE behavior OF image_gen IS
     signal r_disp_en_d : std_logic := '0';   -- Registered disp_en input
     signal r_disp_en_fe : std_logic;         -- Falling edge of disp_en input
     signal r_logic_update : std_logic := '0'; -- Pulse
+
+    signal w_playShipDraw : std_logic;
+    signal w_playShipColor: integer range 0 to 4095;
 
 BEGIN
 
@@ -73,7 +90,9 @@ BEGIN
             pix_color_tmp := g_bg_color;
 
             -- Render each object
-
+            if (w_playShipDraw = '1') then
+                pix_color_tmp := w_playShipColor;
+            end if;
 
 
         -- Blanking time
@@ -107,7 +126,18 @@ BEGIN
 
 
     -- Game objects
+    U1: player_ship port map(
+        i_clock => pixel_clk,
+        i_update_pulse => r_logic_update,
 
+        accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y,
+
+        i_row => row,
+        i_column => column, 
+
+        o_color => w_playShipColor,
+        o_draw => w_playShipDraw
+    );
 
     
 
