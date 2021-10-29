@@ -65,8 +65,8 @@ begin
     begin
 
         -- is current pixel coordinate inside our box?
-        if (i_column >= r_xPos and i_column <= r_xPos+g_bb_width and
-            i_row >= r_yPos and i_row <= r_yPos+g_bb_height) then
+        if (i_column >= r_xPos and i_column <= r_xPos+g_bb_width and i_row >= r_yPos and i_row <= r_yPos+g_bb_height) and -- Inside Rectangle
+           (i_row > ((i_column - r_xPos) * g_bb_height / g_bb_width) + r_yPos) then                                       -- Below hypotenuse of triangle
             
             o_draw <= '1';
             o_color <= g_ship_color;
@@ -96,6 +96,8 @@ begin
                     r_yPos_new := r_yPos + r_ySpeed;
 
                     -- Check bounds and clip
+
+                    -- X bounds
                     if (r_xPos_new + g_bb_width > g_right_bound) then
                         r_xPos_new := g_right_bound - g_bb_width;
                     end if;
@@ -103,6 +105,7 @@ begin
                         r_xPos_new := g_left_bound;
                     end if;
 
+                    -- Y bounds
                     if (r_yPos_new + g_bb_height > g_lower_bound) then
                         r_yPos_new := g_lower_bound - g_bb_height;
                     end if;
