@@ -8,11 +8,12 @@ ENTITY image_gen IS
 
         -- RGB, 4 bits each
         g_bg_color : integer := 16#FFF#;
-        g_score_color : integer := 16#0F0#;
-        g_logo_color : integer := 16#00F#;
 
         g_screen_width : integer := 640;
-        g_screen_height : integer := 480
+        g_screen_height : integer := 480;
+
+        g_max_lives : integer := 5;
+        g_initial_lives : integer := 3
 
     );
     port(
@@ -54,6 +55,22 @@ ARCHITECTURE behavior OF image_gen IS
         );
     end component;
 
+    component hud is
+        port (
+            i_clock : in std_logic;
+            i_update_pulse : in std_logic;
+    
+            i_row : in integer;
+            i_column : in integer;
+    
+            -- Game status
+            i_num_lives : integer range 0 to 5;
+    
+            o_color : out integer range 0 to 4095;
+            o_draw : out std_logic
+        );
+    end component;
+
     -- Constants
 
     -- Signals
@@ -65,6 +82,11 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_playShipDraw : std_logic;
     signal w_playShipColor: integer range 0 to 4095;
 
+    signal w_hudDraw : std_logic;
+    signal w_hudColor: integer range 0 to 4095;
+
+    signal r_num_lives : integer range 0 to g_max_lives := g_initial_lives;
+
 BEGIN
 
     -- Concurrent assignments
@@ -73,6 +95,18 @@ BEGIN
     -- disp_en falling edge
     r_disp_en_d <= disp_en when rising_edge(pixel_clk); -- DFF
     r_disp_en_fe <= r_disp_en_d and not disp_en;   -- One-cycle strobe
+
+    -- Debug Logic
+    process(KEY)
+    begin
+        if (falling_edge(KEY(0))) then
+            if (r_num_lives = g_max_lives) then
+                r_num_lives <= 0;
+            else
+                r_num_lives <= r_num_lives+1;
+            end if;
+        end if;
+    end process;
 
     -- Combi-Logic, draw each pixel for current frame
     PROCESS(disp_en, row, column)
@@ -92,6 +126,9 @@ BEGIN
             -- Render each object
             if (w_playShipDraw = '1') then
                 pix_color_tmp := w_playShipColor;
+            end if;
+            if (w_hudDraw = '1') then
+                pix_color_tmp := w_hudColor;
             end if;
 
 
@@ -137,6 +174,16 @@ BEGIN
 
         o_color => w_playShipColor,
         o_draw => w_playShipDraw
+    );
+
+    U2: hud port map(
+        i_clock => pixel_clk,
+        i_update_pulse => r_logic_update,
+        i_row => row,
+        i_column => column,
+        i_num_lives => r_num_lives,
+        o_color => w_hudColor,
+        o_draw => w_hudDraw
     );
 
     
