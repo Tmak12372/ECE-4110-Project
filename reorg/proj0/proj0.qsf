@@ -425,6 +425,9 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[32]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[33]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[34]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[35]
+set_global_assignment -name VHDL_FILE triangle.vhd
+set_global_assignment -name VHDL_FILE single_port_ram.vhd
+set_global_assignment -name VHDL_FILE hud.vhd
 set_global_assignment -name VHDL_FILE binary_to_bcd_digit.vhd
 set_global_assignment -name VHDL_FILE binary_to_bcd.vhd
 set_global_assignment -name VHDL_FILE font.vhd
@@ -439,4 +442,5 @@ set_global_assignment -name VHDL_FILE proj0_top.vhd
 set_global_assignment -name VHDL_FILE image_gen.vhd
 set_global_assignment -name VHDL_FILE bin2seg7.vhd
 set_global_assignment -name VHDL_FILE accel_proc.vhd
+set_global_assignment -name VHDL_FILE alphabetical_font.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
