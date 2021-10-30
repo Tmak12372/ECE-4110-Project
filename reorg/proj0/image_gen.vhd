@@ -13,7 +13,9 @@ ENTITY image_gen IS
         g_screen_height : integer := 480;
 
         g_max_lives : integer := 5;
-        g_initial_lives : integer := 3
+        g_initial_lives : integer := 3;
+
+        g_max_score : integer := 999999
 
     );
     port(
@@ -65,6 +67,7 @@ ARCHITECTURE behavior OF image_gen IS
     
             -- Game status
             i_num_lives : integer range 0 to 5;
+            i_score : integer;
     
             o_color : out integer range 0 to 4095;
             o_draw : out std_logic
@@ -86,6 +89,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_hudColor: integer range 0 to 4095;
 
     signal r_num_lives : integer range 0 to g_max_lives := g_initial_lives;
+    signal r_score : integer range 0 to g_max_score := 0;
 
 BEGIN
 
@@ -97,7 +101,7 @@ BEGIN
     r_disp_en_fe <= r_disp_en_d and not disp_en;   -- One-cycle strobe
 
     -- Debug Logic
-    process(KEY)
+    process(KEY, SW)
     begin
         if (falling_edge(KEY(0))) then
             if (r_num_lives = g_max_lives) then
@@ -106,6 +110,8 @@ BEGIN
                 r_num_lives <= r_num_lives+1;
             end if;
         end if;
+
+        r_score <= to_integer(unsigned(SW));
     end process;
 
     -- Combi-Logic, draw each pixel for current frame
@@ -182,6 +188,7 @@ BEGIN
         i_row => row,
         i_column => column,
         i_num_lives => r_num_lives,
+        i_score => r_score,
         o_color => w_hudColor,
         o_draw => w_hudDraw
     );

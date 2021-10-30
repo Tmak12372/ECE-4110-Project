@@ -425,6 +425,9 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[32]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[33]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[34]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[35]
+set_global_assignment -name VHDL_FILE binary_to_bcd_digit.vhd
+set_global_assignment -name VHDL_FILE binary_to_bcd.vhd
+set_global_assignment -name VHDL_FILE font.vhd
 set_global_assignment -name VHDL_FILE player_ship.vhd
 set_global_assignment -name QIP_FILE ip/dual_boot/synthesis/dual_boot.qip
 set_global_assignment -name VHDL_FILE ip/vga_pll_25_175.vhd
