@@ -72,16 +72,16 @@ architecture rtl of hud is
 
     constant c_char_width   : integer := 8;
     constant c_char_height  : integer := 16;
-    constant c_score_right_offset : integer := 5;
+    constant c_score_right_offset : integer := 8;
     constant c_num_score_digits : integer := 6;
     constant c_score_pos_x : integer := g_screen_width - c_num_score_digits*(c_char_width) - c_score_right_offset;
-    constant c_score_pos_y  : integer := c_upper_bar_pos/2 - c_char_height/2;
+    constant c_score_pos_y  : integer := c_upper_bar_pos/2 - c_char_height/2 + 1;
 
     -- Logo
     constant c_logo_text : string := "TNTECH ECE";
     constant c_logo_length : integer := c_logo_text'LENGTH;
     constant c_logo_pos_x : integer := g_screen_width/2 - (c_logo_length*c_char_width/2);
-    constant c_logo_pos_y : integer := (c_lower_bar_pos+c_bar_height) + c_bar_offset/2 - c_char_height/2;
+    constant c_logo_pos_y : integer := (c_lower_bar_pos+c_bar_height) + c_bar_offset/2 - c_char_height/2 - 1;
     constant c_logo_color : integer := 16#00F#;
 	 
     -- Components

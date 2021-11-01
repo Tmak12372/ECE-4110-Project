@@ -433,6 +433,9 @@ set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
+set_global_assignment -name QIP_FILE sound_effects/effect_mem.qip
+set_global_assignment -name VHDL_FILE sound_effects/effect_gen.vhd
+set_global_assignment -name VHDL_FILE sound_effects/clock_div.vhd
 set_global_assignment -name VHDL_FILE overlays.vhd
 set_global_assignment -name VHDL_FILE defender_common.vhd
 set_global_assignment -name VHDL_FILE ip/single_port_ram.vhd

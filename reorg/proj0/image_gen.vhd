@@ -42,7 +42,10 @@ ENTITY image_gen IS
         -- HMI Inputs
         accel_scale_x, accel_scale_y : integer;
         KEY                          : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0)
+        SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+
+        -- HMI Outputs
+        o_buzzPin : out std_logic
     );
 END image_gen;
 
@@ -87,7 +90,10 @@ ARCHITECTURE behavior OF image_gen IS
     signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
     signal outArbiterPortArray: type_outArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_outArbiterPort);
     signal drawElementArray: type_drawElementArray(0 to c_num_text_elems-1) := (others => init_type_drawElement);
-    
+
+    -- Sound effects
+    signal r_effectSel : std_logic_vector(2 downto 0);
+    signal r_effectTrig : std_logic := '0';
 
 BEGIN
 
@@ -111,7 +117,6 @@ BEGIN
             if (r_key_fe(0) = '1' and r_game_active = '1') then
                 r_num_lives <= r_num_lives-1;
             end if;
-
             if (r_key_fe(1) = '1' and r_game_active = '1') then
                 r_score <= r_score+500;
             end if;
@@ -128,8 +133,11 @@ BEGIN
                     r_score <= 0;
                     r_num_lives <= g_initial_lives;
                     r_obj_reset <= '1';
+                    r_effectSel <= "000";
+                    r_effectTrig <= '1';
                     r_game_state <= ST_PLAY;
                 when ST_PLAY => 
+                    r_effectTrig <= '0';
                     r_obj_reset <= '0';
                     if r_key_fe(1) = '1' then
                         r_game_state <= ST_PAUSE;
@@ -307,5 +315,14 @@ BEGIN
 		inPortArray => inArbiterPortArray,
 		outPortArray => outArbiterPortArray
 	);
+
+    -- Sound effects
+    soundfx: entity work.effect_gen port map (
+        i_clock => pixel_clk,
+        i_reset_n => '1',
+        i_effectSel => r_effectSel,
+        i_effectTrig => r_effectTrig,
+        o_buzzPin => o_buzzPin
+    );
 
 END behavior;

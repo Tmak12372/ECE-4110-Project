@@ -54,29 +54,6 @@ architecture top_level of proj0_top is
             n_sync		:	OUT	STD_LOGIC   --sync-on-green output to DAC
         );
     end component;
-    
-    component image_gen is
-        port(
-
-            -- Control and pixel clock
-            pixel_clk:  IN  STD_LOGIC;
-
-            -- VGA controller inputs
-            disp_en  :  IN  STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
-            row      :  IN  INTEGER;    --row pixel coordinate
-            column   :  IN  INTEGER;    --column pixel coordinate
-
-            -- Color outputs to VGA
-            red      :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
-            green    :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --green magnitude output to DAC
-            blue     :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --blue magnitude output to DAC
-
-            -- HMI Inputs
-            accel_scale_x, accel_scale_y : integer;
-            KEY                          : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-            SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0)
-        );
-    end component;
 
     COMPONENT ADXL345_controller IS
         PORT( reset_n     : IN  STD_LOGIC;
@@ -166,7 +143,7 @@ begin
     U11 : accel_proc  PORT MAP ( data_x => data_x, data_y => data_y, data_valid => data_valid, accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y );
     
     -- Game Logic
-    U12	: image_gen port map (
+    U12	: entity work.image_gen port map (
         pixel_clk => clk_25_175_MHz,
         disp_en => disp_en,
         row => row,
@@ -178,7 +155,9 @@ begin
         accel_scale_x => accel_scale_x,
         accel_scale_y => accel_scale_y,
         KEY => KEY,
-        SW => SW
+        SW => SW,
+
+        o_buzzPin => ARDUINO_IO(12)
     );
 
 end top_level;
