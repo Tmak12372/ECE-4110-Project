@@ -83,20 +83,6 @@ architecture rtl of hud is
     constant c_logo_pos_x : integer := g_screen_width/2 - (c_logo_length*c_char_width/2);
     constant c_logo_pos_y : integer := (c_lower_bar_pos+c_bar_height) + c_bar_offset/2 - c_char_height/2;
     constant c_logo_color : integer := 16#00F#;
-
-    -- Paused
-    constant c_pause_text1 : string := "Game Paused";
-    constant c_pause_text2 : string := "Press Key 1 to Resume";
-    constant c_pause_length1 : integer := c_pause_text1'LENGTH;
-    constant c_pause_length2 : integer := c_pause_text2'LENGTH;
-    constant c_pause_text_color : integer := 16#00F#;
-
-    -- Start Screen
-    constant c_start_text1 : string := "Welcome to FPGA Defender";
-    constant c_start_text2 : string := "Press Key 0 to Start";
-    constant c_start_length1 : integer := c_start_text1'LENGTH;
-    constant c_start_length2 : integer := c_start_text2'LENGTH;
-    constant c_start_text_color : integer := 16#00F#;
 	 
     -- Components
     component triangle is

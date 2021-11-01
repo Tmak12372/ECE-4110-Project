@@ -35,6 +35,7 @@ entity player_ship is
     port (
         i_clock : in std_logic;
         i_update_pulse : in std_logic;
+        i_reset_pulse : in std_logic;
 
         -- HMI Inputs
         accel_scale_x, accel_scale_y : in integer;
@@ -52,6 +53,8 @@ end entity player_ship;
  
 architecture rtl of player_ship is
     -- Constants
+    constant c_init_pos_x : integer := (g_right_bound - g_left_bound)/2;
+    constant c_init_pos_y : integer := (g_lower_bound - g_upper_bound)/2;
     
     -- Types
 
@@ -59,8 +62,8 @@ architecture rtl of player_ship is
 
 
     -- coords of top left of object
-    signal r_xPos : integer range 0 to g_screen_width-1 := (g_right_bound - g_left_bound)/2;
-    signal r_yPos : integer range 0 to g_screen_height-1 := (g_lower_bound - g_upper_bound)/2;
+    signal r_xPos : integer range 0 to g_screen_width-1 := c_init_pos_x;
+    signal r_yPos : integer range 0 to g_screen_height-1 := c_init_pos_y;
 
     -- Pixels per update. Update in # of frames is set by g_frame_update_cnt
     signal r_xSpeed : integer := 0;
@@ -104,8 +107,12 @@ begin
     begin
         if (rising_edge(i_clock)) then
 
+            if (i_reset_pulse = '1') then
+                r_xPos <= c_init_pos_x;
+                r_yPos <= c_init_pos_y;
+            
             -- Time to update state
-            if (i_update_pulse = '1') then
+            elsif (i_update_pulse = '1') then
 
                 r_frame_cnt := r_frame_cnt + 1;
                 -- Limit position update rate

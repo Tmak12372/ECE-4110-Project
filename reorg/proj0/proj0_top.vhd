@@ -159,7 +159,7 @@ begin
 
     -- VGA
     U8	:	vga_pll_25_175 port map (inclk0 => MAX10_CLK1_50, c0 => clk_25_175_MHz);
-    U9	:	vga_controller port map (pixel_clk => clk_25_175_MHz, reset_n => KEY(1), h_sync => VGA_HS, v_sync => VGA_VS, disp_ena => disp_en, column => column, row => row, n_blank => open, n_sync => open);
+    U9	:	vga_controller port map (pixel_clk => clk_25_175_MHz, reset_n => '1', h_sync => VGA_HS, v_sync => VGA_VS, disp_ena => disp_en, column => column, row => row, n_blank => open, n_sync => open);
 
     -- Accel
     U10 : ADXL345_controller PORT MAP (reset_n => '1', clk => MAX10_CLK1_50, data_valid => data_valid, data_x => data_x,  data_y => data_y, data_z => open, SPI_SDI => GSENSOR_SDI, SPI_SDO => GSENSOR_SDO, SPI_CSN => GSENSOR_CS_N, SPI_CLK => GSENSOR_SCLK );

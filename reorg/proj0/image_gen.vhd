@@ -80,6 +80,9 @@ ARCHITECTURE behavior OF image_gen IS
     signal r_game_over : std_logic := '0';
     signal r_game_active : std_logic := '0';
 
+    signal r_obj_update : std_logic := '0';
+    signal r_obj_reset : std_logic := '0';
+    
     -- vgaText
     signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
     signal outArbiterPortArray: type_outArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_outArbiterPort);
@@ -96,27 +99,23 @@ BEGIN
     r_disp_en_fe <= r_disp_en_d and not disp_en;   -- One-cycle strobe
 
     -- KEY falling edge
-    r_key_d <= KEY when rising_edge(pixel_clk); -- DFF
+    r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF
     r_key_fe <= r_key_d and not KEY;   -- One-cycle strobe
-
-    -- Debug Logic
-    process(KEY, SW)
-    begin
-        if (falling_edge(KEY(0))) then
-            if (r_num_lives = g_max_lives) then
-                r_num_lives <= 0;
-            else
-                r_num_lives <= r_num_lives+1;
-            end if;
-        end if;
-
-        r_score <= to_integer(unsigned(SW));
-    end process;
 
     -- Main game FSM
     process(pixel_clk)
     begin
-        if rising_edge(pixel_clk) then
+        if rising_edge(pixel_clk) and r_logic_update = '1' then
+
+            -- Debug Logic
+            if (r_key_fe(0) = '1' and r_game_active = '1') then
+                r_num_lives <= r_num_lives-1;
+            end if;
+
+            if (r_key_fe(1) = '1' and r_game_active = '1') then
+                r_score <= r_score+500;
+            end if;
+
             case r_game_state is
                 when ST_START =>
                     if KEY_b(0) = '1' then
@@ -126,10 +125,16 @@ BEGIN
                     end if;
                 when ST_NEW_GAME => 
                     -- Prepare for new game
+                    r_score <= 0;
+                    r_num_lives <= g_initial_lives;
+                    r_obj_reset <= '1';
                     r_game_state <= ST_PLAY;
                 when ST_PLAY => 
+                    r_obj_reset <= '0';
                     if r_key_fe(1) = '1' then
                         r_game_state <= ST_PAUSE;
+                    elsif (r_num_lives = 0) then
+                        r_game_state <= ST_GAME_OVER;
                     else
                         r_game_state <= ST_PLAY;
                     end if;
@@ -140,7 +145,7 @@ BEGIN
                         r_game_state <= ST_PAUSE;
                     end if;
                 when ST_GAME_OVER => 
-                    if KEY_b(0) = '1' then
+                    if r_key_fe(0) = '1' then
                         r_game_state <= ST_NEW_GAME;
                     else
                         r_game_state <= ST_GAME_OVER;
@@ -202,8 +207,8 @@ BEGIN
             if (w_hudDraw = '1') then
                 pix_color_tmp := w_hudColor;
             end if;
-            if (r_game_paused = '1') then
-                pix_color_tmp := darken(pix_color_tmp);
+            if (r_game_paused = '1' or r_game_over = '1') then
+                pix_color_tmp := darken(pix_color_tmp, 5);
             end if;
             if (w_overlaysDraw = '1') then
                 pix_color_tmp := w_overlaysColor;
@@ -229,8 +234,8 @@ BEGIN
     begin
         if (rising_edge(pixel_clk)) then
 
-            -- Just finished drawing frame, command all game objects to update
-            if (r_disp_en_fe = '1' AND row >= g_screen_height-1 AND column >= g_screen_width-1 AND r_game_paused = '0') then
+            -- Just finished drawing frame, command a logical update
+            if (r_disp_en_fe = '1' AND row >= g_screen_height-1 AND column >= g_screen_width-1) then
                 r_logic_update <= '1';
             else
                 r_logic_update <= '0';
@@ -239,11 +244,14 @@ BEGIN
         end if;
     end process;
 
+    -- Object update signals
+    r_obj_update <= r_logic_update and not r_game_paused and not r_game_over;
 
     -- Game objects
     U1: entity work.player_ship port map(
         i_clock => pixel_clk,
-        i_update_pulse => r_logic_update,
+        i_update_pulse => r_obj_update,
+        i_reset_pulse => r_obj_reset,
 
         accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y,
 
@@ -257,7 +265,7 @@ BEGIN
 
     U2: entity work.hud port map(
         i_clock => pixel_clk,
-        i_update_pulse => r_logic_update,
+        i_update_pulse => r_obj_update,
         i_row => row,
         i_column => column,
         i_draw_en => r_game_active,
