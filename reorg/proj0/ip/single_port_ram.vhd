@@ -4,6 +4,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- vgaText
+library work;
+use work.commonPak.all;
+
 entity single_port_ram is
 
 	generic 

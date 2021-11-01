@@ -2,12 +2,17 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
 USE IEEE.NUMERIC_STD.ALL;
+library work;
+
+-- Common constants
+use work.defender_common.all;
 
 ENTITY image_gen IS
     generic (
 
         -- RGB, 4 bits each
         g_bg_color : integer := 16#FFF#;
+        g_text_color : integer := 16#000#;
 
         g_screen_width : integer := 640;
         g_screen_height : integer := 480;
@@ -75,6 +80,7 @@ ARCHITECTURE behavior OF image_gen IS
     end component;
 
     -- Constants
+    
 
     -- Signals
     SIGNAL KEY_b       : STD_LOGIC_VECTOR(1 DOWNTO 0);
@@ -192,7 +198,5 @@ BEGIN
         o_color => w_hudColor,
         o_draw => w_hudDraw
     );
-
-    
 
 END behavior;
