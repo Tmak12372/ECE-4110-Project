@@ -31,17 +31,24 @@ entity hud is
     );
     port (
         i_clock : in std_logic;
-        i_update_pulse : in std_logic;
 
+        -- Control signals
+        i_update_pulse : in std_logic;
         i_row : in integer;
         i_column : in integer;
+        i_draw_en : in std_logic;
 
         -- Game status
         i_num_lives : integer range 0 to 5;
         i_score : integer;
 
         o_color : out integer range 0 to 4095;
-        o_draw : out std_logic
+        o_draw : out std_logic;
+
+        -- vgaText
+        inArbiterPortArray : inout type_inArbiterPortArray(0 to c_num_text_elems-1);
+        outArbiterPortArray : inout type_outArbiterPortArray(0 to c_num_text_elems-1);
+        drawElementArray : inout type_drawElementArray(0 to c_num_text_elems-1)
 
     );
 end entity hud;
@@ -69,9 +76,6 @@ architecture rtl of hud is
     constant c_num_score_digits : integer := 6;
     constant c_score_pos_x : integer := g_screen_width - c_num_score_digits*(c_char_width) - c_score_right_offset;
     constant c_score_pos_y  : integer := c_upper_bar_pos/2 - c_char_height/2;
-
-
-    constant c_num_text_elems: integer := 2;
 
     -- Logo
     constant c_logo_text : string := "TNTECH ECE";
@@ -133,10 +137,6 @@ architecture rtl of hud is
     signal r_start_bcd_conv : std_logic := '0';
     signal w_bcd_conv_busy : std_logic;
 
-    -- vgaText
-    signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
-	signal outArbiterPortArray: type_outArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_outArbiterPort);
-	signal drawElementArray: type_drawElementArray(0 to c_num_text_elems-1) := (others => init_type_drawElement);
     signal r_fontDrawReset : std_logic := '0';
 
 	 
@@ -178,12 +178,18 @@ begin
         end if;
 
         -- Render vgaText
-        for i in drawElementArray'range loop
+        for i in 0 to 1 loop
             if drawElementArray(i).pixelOn then
                 r_draw_tmp := '1';
                 r_color_tmp := drawElementArray(i).rgb;
             end if;
         end loop;
+
+        -- Override all drawing
+        if (i_draw_en = '0') then
+            r_draw_tmp := '0';
+            r_color_tmp := 0;
+        end if;
 		  
         -- Assign outputs
         o_draw <= r_draw_tmp;
@@ -223,18 +229,7 @@ begin
         bcd => w_score_bcd -- result is latched here when done with conversion
     );
 
-    -- vgaText
-    fontLibraryArbiter: entity work.blockRamArbiter
-	generic map(
-		numPorts => c_num_text_elems
-	)
-	port map(
-		clk => i_clock,
-		reset => '0',
-		inPortArray => inArbiterPortArray,
-		outPortArray => outArbiterPortArray
-	);
-
+    -- vgaText, slots 0 and 1
     text0: entity work.text_line
 	generic map (
 		textPassageLength => c_logo_length

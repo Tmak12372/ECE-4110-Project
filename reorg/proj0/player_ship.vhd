@@ -2,6 +2,12 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+library work;
+
+-- For vgaText library
+use work.commonPak.all;
+-- Common constants
+use work.defender_common.all;
 
 entity player_ship is
     generic (
@@ -33,8 +39,10 @@ entity player_ship is
         -- HMI Inputs
         accel_scale_x, accel_scale_y : in integer;
 
+        -- Control Signals
         i_row : in integer;
         i_column : in integer;
+        i_draw_en : in std_logic;
 
         o_color : out integer range 0 to 4095;
         o_draw : out std_logic
@@ -62,18 +70,30 @@ begin
     
     -- Set draw output
     process(i_row, i_column, r_xPos, r_yPos)
+        variable r_draw_tmp : std_logic := '0';
+        variable r_color_tmp : integer range 0 to 4095 := 0;
     begin
+
+        r_draw_tmp := '0';
+        r_color_tmp := 0;
 
         -- is current pixel coordinate inside our box?
         if (i_column >= r_xPos and i_column <= r_xPos+g_bb_width and i_row >= r_yPos and i_row <= r_yPos+g_bb_height) and -- Inside Rectangle
            (i_row > ((i_column - r_xPos) * g_bb_height / g_bb_width) + r_yPos) then                                       -- Below hypotenuse of triangle
-            
-            o_draw <= '1';
-            o_color <= g_ship_color;
-        else
-            o_draw <= '0';
-            o_color <= 0;
+
+            r_draw_tmp := '1';
+            r_color_tmp := g_ship_color;
         end if;
+
+        -- Override all drawing
+        if (i_draw_en = '0') then
+            r_draw_tmp := '0';
+            r_color_tmp := 0;
+        end if;
+
+        -- Assign outputs
+        o_draw <= r_draw_tmp;
+        o_color <= r_color_tmp;
     end process;
 
     process(i_clock)

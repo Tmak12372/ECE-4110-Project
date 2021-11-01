@@ -4,6 +4,8 @@ USE ieee.std_logic_1164.all;
 USE IEEE.NUMERIC_STD.ALL;
 library work;
 
+-- For vgaText library
+use work.commonPak.all;
 -- Common constants
 use work.defender_common.all;
 
@@ -46,47 +48,19 @@ END image_gen;
 
 ARCHITECTURE behavior OF image_gen IS
     -- Components
-    component player_ship is
-        port (
-            i_clock : in std_logic;
-            i_update_pulse : in std_logic;
-    
-            -- HMI Inputs
-            accel_scale_x, accel_scale_y : in integer;
-    
-            i_row : in integer;
-            i_column : in integer;
-    
-            o_color : out integer range 0 to 4095;
-            o_draw : out std_logic
-        );
-    end component;
-
-    component hud is
-        port (
-            i_clock : in std_logic;
-            i_update_pulse : in std_logic;
-    
-            i_row : in integer;
-            i_column : in integer;
-    
-            -- Game status
-            i_num_lives : integer range 0 to 5;
-            i_score : integer;
-    
-            o_color : out integer range 0 to 4095;
-            o_draw : out std_logic
-        );
-    end component;
 
     -- Constants
     
+    -- Types
+    type t_state is (ST_START, ST_NEW_GAME, ST_PLAY, ST_PAUSE, ST_GAME_OVER);
 
     -- Signals
     SIGNAL KEY_b       : STD_LOGIC_VECTOR(1 DOWNTO 0);
     signal r_disp_en_d : std_logic := '0';   -- Registered disp_en input
     signal r_disp_en_fe : std_logic;         -- Falling edge of disp_en input
     signal r_logic_update : std_logic := '0'; -- Pulse
+    signal r_key_d : std_logic_vector(1 downto 0);
+    signal r_key_fe : std_logic_vector(1 downto 0); -- Pulse
 
     signal w_playShipDraw : std_logic;
     signal w_playShipColor: integer range 0 to 4095;
@@ -94,8 +68,23 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_hudDraw : std_logic;
     signal w_hudColor: integer range 0 to 4095;
 
+    signal w_overlaysDraw : std_logic;
+    signal w_overlaysColor: integer range 0 to 4095;
+
     signal r_num_lives : integer range 0 to g_max_lives := g_initial_lives;
     signal r_score : integer range 0 to g_max_score := 0;
+
+    signal r_game_state : t_state := ST_START;
+    signal r_game_paused : std_logic := '0';
+    signal r_game_wait_start : std_logic := '0';
+    signal r_game_over : std_logic := '0';
+    signal r_game_active : std_logic := '0';
+
+    -- vgaText
+    signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
+    signal outArbiterPortArray: type_outArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_outArbiterPort);
+    signal drawElementArray: type_drawElementArray(0 to c_num_text_elems-1) := (others => init_type_drawElement);
+    
 
 BEGIN
 
@@ -105,6 +94,10 @@ BEGIN
     -- disp_en falling edge
     r_disp_en_d <= disp_en when rising_edge(pixel_clk); -- DFF
     r_disp_en_fe <= r_disp_en_d and not disp_en;   -- One-cycle strobe
+
+    -- KEY falling edge
+    r_key_d <= KEY when rising_edge(pixel_clk); -- DFF
+    r_key_fe <= r_key_d and not KEY;   -- One-cycle strobe
 
     -- Debug Logic
     process(KEY, SW)
@@ -118,6 +111,73 @@ BEGIN
         end if;
 
         r_score <= to_integer(unsigned(SW));
+    end process;
+
+    -- Main game FSM
+    process(pixel_clk)
+    begin
+        if rising_edge(pixel_clk) then
+            case r_game_state is
+                when ST_START =>
+                    if KEY_b(0) = '1' then
+                        r_game_state <= ST_NEW_GAME;
+                    else
+                        r_game_state <= ST_START;
+                    end if;
+                when ST_NEW_GAME => 
+                    -- Prepare for new game
+                    r_game_state <= ST_PLAY;
+                when ST_PLAY => 
+                    if r_key_fe(1) = '1' then
+                        r_game_state <= ST_PAUSE;
+                    else
+                        r_game_state <= ST_PLAY;
+                    end if;
+                when ST_PAUSE => 
+                    if r_key_fe(1) = '1' then
+                        r_game_state <= ST_PLAY;
+                    else
+                        r_game_state <= ST_PAUSE;
+                    end if;
+                when ST_GAME_OVER => 
+                    if KEY_b(0) = '1' then
+                        r_game_state <= ST_NEW_GAME;
+                    else
+                        r_game_state <= ST_GAME_OVER;
+                    end if;
+                when others =>
+                    r_game_state <= ST_START;
+            
+            end case;
+        end if;
+    end process;
+
+    -- FSM outputs
+    process(r_game_state)
+    begin
+        if r_game_state = ST_PAUSE then
+            r_game_paused <= '1';
+        else
+            r_game_paused <= '0';
+        end if;
+
+        if r_game_state = ST_START then
+            r_game_wait_start <= '1';
+        else
+            r_game_wait_start <= '0';
+        end if;
+
+        if r_game_state = ST_GAME_OVER then
+            r_game_over <= '1';
+        else
+            r_game_over <= '0';
+        end if;
+
+        if (r_game_state /= ST_START) then
+            r_game_active <= '1';
+        else
+            r_game_active <= '0';
+        end if;
     end process;
 
     -- Combi-Logic, draw each pixel for current frame
@@ -142,6 +202,12 @@ BEGIN
             if (w_hudDraw = '1') then
                 pix_color_tmp := w_hudColor;
             end if;
+            if (r_game_paused = '1') then
+                pix_color_tmp := darken(pix_color_tmp);
+            end if;
+            if (w_overlaysDraw = '1') then
+                pix_color_tmp := w_overlaysColor;
+            end if;
 
 
         -- Blanking time
@@ -164,7 +230,7 @@ BEGIN
         if (rising_edge(pixel_clk)) then
 
             -- Just finished drawing frame, command all game objects to update
-            if (r_disp_en_fe = '1' AND row >= g_screen_height-1 AND column >= g_screen_width-1) then
+            if (r_disp_en_fe = '1' AND row >= g_screen_height-1 AND column >= g_screen_width-1 AND r_game_paused = '0') then
                 r_logic_update <= '1';
             else
                 r_logic_update <= '0';
@@ -175,7 +241,7 @@ BEGIN
 
 
     -- Game objects
-    U1: player_ship port map(
+    U1: entity work.player_ship port map(
         i_clock => pixel_clk,
         i_update_pulse => r_logic_update,
 
@@ -183,20 +249,55 @@ BEGIN
 
         i_row => row,
         i_column => column, 
+        i_draw_en => r_game_active,
 
         o_color => w_playShipColor,
         o_draw => w_playShipDraw
     );
 
-    U2: hud port map(
+    U2: entity work.hud port map(
         i_clock => pixel_clk,
         i_update_pulse => r_logic_update,
         i_row => row,
         i_column => column,
+        i_draw_en => r_game_active,
         i_num_lives => r_num_lives,
         i_score => r_score,
         o_color => w_hudColor,
-        o_draw => w_hudDraw
+        o_draw => w_hudDraw,
+        inArbiterPortArray => inArbiterPortArray,
+        outArbiterPortArray => outArbiterPortArray,
+        drawElementArray => drawElementArray
     );
+
+    U3: entity work.overlays port map(
+        i_clock => pixel_clk,
+        i_update_pulse => r_logic_update,
+        i_row => row,
+        i_column => column,
+        i_draw_en => '1',
+        i_score => r_score,
+        i_start_screen => r_game_wait_start,
+        i_pause_screen => r_game_paused,
+        i_game_over_screen => r_game_over,
+        o_color => w_overlaysColor,
+        o_draw => w_overlaysDraw,
+        inArbiterPortArray => inArbiterPortArray,
+        outArbiterPortArray => outArbiterPortArray,
+        drawElementArray => drawElementArray
+    
+    );
+
+    -- vgaText
+    fontLibraryArbiter: entity work.blockRamArbiter
+	generic map(
+		numPorts => c_num_text_elems
+	)
+	port map(
+		clk => pixel_clk,
+		reset => '0',
+		inPortArray => inArbiterPortArray,
+		outPortArray => outArbiterPortArray
+	);
 
 END behavior;
