@@ -12,7 +12,7 @@ package defender_common is
     constant c_bar_height : integer := 3;
     constant c_bar_offset : integer := 30;
     constant c_upper_bar_pos : integer := c_bar_offset - c_bar_height;
-    constant c_lower_bar_pos : integer := c_screen_height - c_bar_offset;
+    constant c_lower_bar_pos : integer := g_screen_height - c_bar_offset;
 
     -- Types
     type t_point_2d is

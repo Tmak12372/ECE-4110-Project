@@ -74,6 +74,9 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_overlaysDraw : std_logic;
     signal w_overlaysColor: integer range 0 to 4095;
 
+    signal w_enemiesDraw : std_logic;
+    signal w_enemiesColor: integer range 0 to 4095;
+
     signal r_num_lives : integer range 0 to g_max_lives := g_initial_lives;
     signal r_score : integer range 0 to g_max_score := 0;
 
@@ -209,6 +212,9 @@ BEGIN
             pix_color_tmp := g_bg_color;
 
             -- Render each object
+            if (w_enemiesDraw = '1') then
+                pix_color_tmp := w_enemiesColor;
+            end if;
             if (w_playShipDraw = '1') then
                 pix_color_tmp := w_playShipColor;
             end if;
@@ -256,7 +262,7 @@ BEGIN
     r_obj_update <= r_logic_update and not r_game_paused and not r_game_over;
 
     -- Game objects
-    U1: entity work.player_ship port map(
+    player: entity work.player_ship port map(
         i_clock => pixel_clk,
         i_update_pulse => r_obj_update,
         i_reset_pulse => r_obj_reset,
@@ -271,7 +277,19 @@ BEGIN
         o_draw => w_playShipDraw
     );
 
-    U2: entity work.hud port map(
+    enemies: entity work.enemies port map(
+        i_clock => pixel_clk,
+        i_update_pulse => r_obj_update,
+        i_reset_pulse => r_obj_reset,
+        i_row => row,
+        i_column => column,
+        i_draw_en => r_game_active,
+        i_score => r_score,
+        o_color => w_enemiesColor,
+        o_draw => w_enemiesDraw
+    );
+
+    hud: entity work.hud port map(
         i_clock => pixel_clk,
         i_update_pulse => r_obj_update,
         i_row => row,
@@ -286,7 +304,7 @@ BEGIN
         drawElementArray => drawElementArray
     );
 
-    U3: entity work.overlays port map(
+    overlays: entity work.overlays port map(
         i_clock => pixel_clk,
         i_update_pulse => r_logic_update,
         i_row => row,

@@ -99,6 +99,8 @@ begin
         o_color <= r_color_tmp;
     end process;
 
+
+    -- Update state
     process(i_clock)
         -- Vars
         variable r_xPos_new : integer;

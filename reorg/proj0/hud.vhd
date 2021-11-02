@@ -57,10 +57,7 @@ architecture rtl of hud is
     -- Constants
 
     -- Position and size of elements
-    constant c_bar_height : integer := 3;
-    constant c_bar_offset : integer := 30;
-    constant c_upper_bar_pos : integer := c_bar_offset - c_bar_height;
-    constant c_lower_bar_pos : integer := g_screen_height - c_bar_offset;
+    
 	 
     constant c_ship_spacing_x : integer := 10;
     constant c_ship_pos_y   : integer := c_upper_bar_pos/2 - g_ship_height/2;
