@@ -41,6 +41,11 @@ entity player_ship is
         i_column : in integer;
         i_draw_en : in std_logic;
 
+        -- Output State
+        o_pos_x : out integer;
+        o_pos_y : out integer;
+
+
         o_color : out integer range 0 to 4095;
         o_draw : out std_logic
     );
@@ -182,5 +187,9 @@ begin
         r_xSpeed <= r_xSpeed_new;
         r_ySpeed <= r_ySpeed_new;
     end process;
+
+    -- State Outputs
+    o_pos_x <= r_xPos;
+    o_pos_y <= r_yPos;
     
 end architecture rtl;

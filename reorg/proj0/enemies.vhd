@@ -41,7 +41,7 @@ architecture rtl of enemies is
     type t_colorArray is array(0 to 7) of integer;
 
     -- Constants
-    constant c_max_num_enemies : integer := 20;
+    constant c_max_num_enemies : integer := 6;
     constant c_spawn_frame_rate : integer := 30;
 
     constant c_enemy_size : t_sizeArray := (20, 40, 60);
@@ -99,13 +99,13 @@ begin
             when 1 =>
                 r_num_enemy_target <= 3;
             when 2 => 
-                r_num_enemy_target <= 6;
+                r_num_enemy_target <= 4;
             when 3 => 
-                r_num_enemy_target <= 8;
+                r_num_enemy_target <= 5;
             when 4 => 
-                r_num_enemy_target <= 12;
+                r_num_enemy_target <= 6;
             when 5 => 
-                r_num_enemy_target <= 16;
+                r_num_enemy_target <= 6;
             when others =>
                 r_num_enemy_target <= 0;
         end case;
@@ -168,10 +168,16 @@ begin
     process(i_clock)
         -- Vars
         variable localEnemyArray : t_enemyArray(0 to c_max_num_enemies-1) := (others => init_t_enemy);
+        -- Enemy
         variable x : integer := 0;
         variable y : integer := 0;
         variable w : integer := 0;
         variable h : integer := 0;
+        -- Player
+        variable p_x : integer := 0;
+        variable p_y : integer := 0;
+        variable p_w : integer := 0;
+        variable p_h : integer := 0;
         variable num_alive : integer := 0;
         variable rand_pos : t_point_2d := (0,0);
         variable rand_pos_y : integer := 0;
@@ -181,6 +187,7 @@ begin
         variable rand_color : integer := 0;
         variable spawn_frame_cnt : integer := 0;
         variable open_enemy_slot : integer := 0;
+        variable ship_collide : std_logic := '0';
 
     begin
         if (rising_edge(i_clock)) then
@@ -199,11 +206,27 @@ begin
             elsif (i_update_pulse = '1') then
 
                 -- Handle collision with ship
-                -- for i in 0 to c_max_num_enemies-1 loop
-                --     if (x+w-1 < 0) or (x > c_screen_width-1) or (y+h-1 < 0) or (y > c_screen_height-1) then
-                --         localEnemyArray(i).alive := false;
-                --     end if;
-                -- end loop;
+                ship_collide := '0';
+                for i in 0 to c_max_num_enemies-1 loop
+                    x := localEnemyArray(i).pos.x;
+                    y := localEnemyArray(i).pos.y;
+                    w := localEnemyArray(i).size.w;
+                    h := localEnemyArray(i).size.h;
+
+                    p_x := i_ship_pos_x;
+                    p_y := i_ship_pos_y;
+                    p_w := c_ship_width;
+                    p_h := c_ship_height;
+
+                    -- Has ship collided with this enemy?
+                    if (((p_x >= x and p_x <= x+w-1) or (p_x+p_w-1 >= x and p_x+p_w-1 <= x+w-1)) and
+                       ((p_y >= y and p_y <= y+h-1) or (p_y+p_h-1 >= y and p_y+p_h-1 <= y+h-1))) and
+                       (localEnemyArray(i).alive) then
+
+                        localEnemyArray(i).alive := false;
+                        ship_collide := '1';
+                    end if;
+                end loop;
 
                 -- Handle collision with cannon
                 
@@ -280,6 +303,7 @@ begin
 
             -- Update enemies
             enemyArray <= localEnemyArray;
+            o_ship_collide <= ship_collide;
         end if;
 
     end process;

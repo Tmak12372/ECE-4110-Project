@@ -88,6 +88,12 @@ ARCHITECTURE behavior OF image_gen IS
 
     signal r_obj_update : std_logic := '0';
     signal r_obj_reset : std_logic := '0';
+
+    signal w_ship_pos_x : integer;
+    signal w_ship_pos_y : integer;
+    signal w_ship_collide : std_logic;
+    signal w_cannon_collide : std_logic;
+    signal w_score_inc : integer;
     
     -- vgaText
     signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
@@ -111,15 +117,27 @@ BEGIN
     r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF
     r_key_fe <= r_key_d and not KEY;   -- One-cycle strobe
 
+    -- Handle lives
+    process(pixel_clk)
+    begin   
+        if rising_edge(pixel_clk) and r_logic_update = '1' then
+            if r_obj_reset = '1' then
+                r_num_lives <= g_initial_lives;
+            elsif w_ship_collide = '1' then
+                r_num_lives <= r_num_lives-1;
+            elsif r_key_fe(0) = '1' and r_num_lives < g_max_lives then
+                r_num_lives <= r_num_lives+1;
+            end if;
+            
+        end if;
+    end process;
+
     -- Main game FSM
     process(pixel_clk)
     begin
         if rising_edge(pixel_clk) and r_logic_update = '1' then
 
             -- Debug Logic
-            if (r_key_fe(0) = '1' and r_game_active = '1') then
-                r_num_lives <= r_num_lives-1;
-            end if;
             if (r_key_fe(1) = '1' and r_game_active = '1') then
                 r_score <= r_score+500;
             end if;
@@ -134,7 +152,6 @@ BEGIN
                 when ST_NEW_GAME => 
                     -- Prepare for new game
                     r_score <= 0;
-                    r_num_lives <= g_initial_lives;
                     r_obj_reset <= '1';
                     r_effectSel <= "000";
                     r_effectTrig <= '1';
@@ -273,6 +290,9 @@ BEGIN
         i_column => column, 
         i_draw_en => r_game_active,
 
+        o_pos_x => w_ship_pos_x,
+        o_pos_y => w_ship_pos_y,
+
         o_color => w_playShipColor,
         o_draw => w_playShipDraw
     );
@@ -285,6 +305,12 @@ BEGIN
         i_column => column,
         i_draw_en => r_game_active,
         i_score => r_score,
+        i_ship_pos_x => w_ship_pos_x,
+        i_ship_pos_y => w_ship_pos_y,
+
+        o_ship_collide => w_ship_collide,
+        o_cannon_collide => w_cannon_collide,
+        o_score_inc => w_score_inc,
         o_color => w_enemiesColor,
         o_draw => w_enemiesDraw
     );
