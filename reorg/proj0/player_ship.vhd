@@ -21,10 +21,6 @@ entity player_ship is
         g_upper_bound : integer := 30;
         g_lower_bound : integer := 480 - 30;
 
-        -- Bounding box
-        g_bb_width : integer := 30;
-        g_bb_height : integer := 20;
-
         -- Update position every 1 frames
         g_frame_update_cnt : integer := 1; -- Defines "smoothness" of animation
         g_speed_scale_x : integer := 10; -- Defines the speed range for the tilt, higher value = faster ship movement for same tilt
@@ -81,8 +77,8 @@ begin
         r_color_tmp := 0;
 
         -- is current pixel coordinate inside our box?
-        if (i_column >= r_xPos and i_column <= r_xPos+g_bb_width and i_row >= r_yPos and i_row <= r_yPos+g_bb_height) and -- Inside Rectangle
-           (i_row > ((i_column - r_xPos) * g_bb_height / g_bb_width) + r_yPos) then                                       -- Below hypotenuse of triangle
+        if (i_column >= r_xPos and i_column <= r_xPos+c_ship_width and i_row >= r_yPos and i_row <= r_yPos+c_ship_height) and -- Inside Rectangle
+           (i_row > ((i_column - r_xPos) * c_ship_height / c_ship_width) + r_yPos) then                                       -- Below hypotenuse of triangle
 
             r_draw_tmp := '1';
             r_color_tmp := g_ship_color;
@@ -127,16 +123,16 @@ begin
                     -- Check bounds and clip
 
                     -- X bounds
-                    if (r_xPos_new + g_bb_width > g_right_bound) then
-                        r_xPos_new := g_right_bound - g_bb_width;
+                    if (r_xPos_new + c_ship_width > g_right_bound) then
+                        r_xPos_new := g_right_bound - c_ship_width;
                     end if;
                     if (r_xPos_new < g_left_bound) then
                         r_xPos_new := g_left_bound;
                     end if;
 
                     -- Y bounds
-                    if (r_yPos_new + g_bb_height > g_lower_bound) then
-                        r_yPos_new := g_lower_bound - g_bb_height;
+                    if (r_yPos_new + c_ship_height > g_lower_bound) then
+                        r_yPos_new := g_lower_bound - c_ship_height;
                     end if;
                     if (r_yPos_new < g_upper_bound) then
                         r_yPos_new := g_upper_bound;

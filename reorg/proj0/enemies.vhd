@@ -22,6 +22,12 @@ entity enemies is
 
         -- Game state
         i_score : in integer;
+        i_ship_pos_x : in integer;
+        i_ship_pos_y : in integer;
+
+        o_ship_collide : out std_logic;
+        o_cannon_collide : out std_logic;
+        o_score_inc : out integer;
 
         o_color : out integer range 0 to 4095;
         o_draw : out std_logic
@@ -38,7 +44,7 @@ architecture rtl of enemies is
     constant c_max_num_enemies : integer := 20;
     constant c_spawn_frame_rate : integer := 30;
 
-    constant c_enemy_size : t_sizeArray := (5, 10, 20);
+    constant c_enemy_size : t_sizeArray := (20, 40, 60);
 
     constant c_enemy_color : t_colorArray := (16#F90#, 16#0F0#, 16#00F#, 16#FF0#, 16#F0F#, 16#0FF#, 16#880#, 16#808#);
 
@@ -192,6 +198,14 @@ begin
             -- Time to update state
             elsif (i_update_pulse = '1') then
 
+                -- Handle collision with ship
+                -- for i in 0 to c_max_num_enemies-1 loop
+                --     if (x+w-1 < 0) or (x > c_screen_width-1) or (y+h-1 < 0) or (y > c_screen_height-1) then
+                --         localEnemyArray(i).alive := false;
+                --     end if;
+                -- end loop;
+
+                -- Handle collision with cannon
                 
                 -- Update position
                 for i in 0 to c_max_num_enemies-1 loop
