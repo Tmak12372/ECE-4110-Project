@@ -62,7 +62,7 @@ end text_line;
 architecture Behavioral of text_line is
 
 	signal pixelBuffer : boolean;
-	signal RGBBuffer : integer := 0;
+	signal RGBBuffer : integer range 0 to c_max_color_vga := 0;
 
 	
 	

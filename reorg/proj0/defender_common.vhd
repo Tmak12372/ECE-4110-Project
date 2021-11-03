@@ -17,23 +17,34 @@ package defender_common is
     constant c_ship_width : integer := 30;
     constant c_ship_height : integer := 20;
 
+    -- Integer ranges
+    constant c_max_color : integer := 4095;
+    constant c_max_speed : integer := 20;
+    constant c_max_size  : integer := 100;
+    constant c_min_x : integer := -c_max_size;
+    constant c_max_x : integer := c_screen_width+c_max_size;
+    constant c_min_y : integer := -c_max_size;
+    constant c_max_y : integer := c_screen_height+c_max_size;
+    constant c_max_score : integer := 999999;
+    constant c_max_lives : integer := 5;
+
     -- Types
     type t_point_2d is
     record
-        x : integer;
-        y : integer;
+        x : integer range c_min_x to c_max_x;
+        y : integer range c_min_y to c_max_y;
     end record;
 
     type t_size_2d is
     record
-        w : integer;
-        h : integer;
+        w : integer range 0 to c_max_size;
+        h : integer range 0 to c_max_size;
     end record;
 
     type t_speed_2d is
     record
-        x : integer;
-        y : integer;
+        x : integer range 0 to c_max_speed;
+        y : integer range 0 to c_max_speed;
     end record;
     
     -- Functions

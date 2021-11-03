@@ -2,6 +2,12 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
+library work;
+
+-- For vgaText library
+use work.commonPak.all;
+-- Common constants
+use work.defender_common.all;
 
 entity triangle is
     generic (
@@ -9,8 +15,8 @@ entity triangle is
         g_height : integer := 20
     );
     port (
-        i_row : in integer;
-        i_column : in integer;
+        i_row : in integer range 0 to c_screen_height-1;
+        i_column : in integer range 0 to c_screen_width-1;
         i_xPos : in integer;
         i_yPos : in integer;
 

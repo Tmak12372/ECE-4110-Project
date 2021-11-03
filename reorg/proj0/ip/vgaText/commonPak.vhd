@@ -21,6 +21,8 @@ package commonPak is
 	
 	constant FONT_WIDTH : integer := 8;
 	constant FONT_HEIGHT : integer := 16;
+
+	constant c_max_color_vga : integer := 4095;
 	
 	
 ------------------------------------------
@@ -31,7 +33,7 @@ package commonPak is
 		y : integer;
 	end record;
 
-	type type_textColorMap is array(natural range <>) of integer; 
+	type type_textColorMap is array(natural range <>) of integer range 0 to c_max_color_vga; 
 	
 
 ------------------------------------------
@@ -40,7 +42,7 @@ package commonPak is
 	type type_drawElement is
 	record
 		pixelOn: boolean;
-		rgb: integer;
+		rgb: integer range 0 to c_max_color_vga;
 	end record;
 	constant init_type_drawElement: type_drawElement := (pixelOn => false, rgb => 0);
 	type type_drawElementArray is array(natural range <>) of type_drawElement; 

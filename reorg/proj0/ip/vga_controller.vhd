@@ -24,6 +24,7 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
+library work;
 
 ENTITY vga_controller IS
 	GENERIC(
@@ -43,8 +44,8 @@ ENTITY vga_controller IS
 		h_sync		:	OUT	STD_LOGIC;	--horiztonal sync pulse
 		v_sync		:	OUT	STD_LOGIC;	--vertical sync pulse
 		disp_ena	:	OUT	STD_LOGIC;	--display enable ('1' = display time, '0' = blanking time)
-		column		:	OUT	INTEGER;		--horizontal pixel coordinate
-		row			:	OUT	INTEGER;		--vertical pixel coordinate
+		column		:	OUT	INTEGER range 0 to h_pixels-1;		--horizontal pixel coordinate
+		row			:	OUT	INTEGER range 0 to v_pixels-1;		--vertical pixel coordinate
 		n_blank		:	OUT	STD_LOGIC;	--direct blacking output to DAC
 		n_sync		:	OUT	STD_LOGIC); --sync-on-green output to DAC
 END vga_controller;

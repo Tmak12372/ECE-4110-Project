@@ -11,21 +11,13 @@ use work.defender_common.all;
 
 entity hud is
     generic (
-        g_screen_width : integer := 640;
-        g_screen_height : integer := 480;
 
         -- Colors
         g_bar_color : integer := 16#000#;
         g_ship_color : integer := 16#F00#;
-        g_score_color : integer := 16#000#;
+        g_score_color : integer := 16#000#
         
 
-        
-
-        g_ship_width : integer := 30;
-        g_ship_height : integer := 20;
-
-        g_max_score : integer := 999999
         
 
     );
@@ -34,15 +26,15 @@ entity hud is
 
         -- Control signals
         i_update_pulse : in std_logic;
-        i_row : in integer;
-        i_column : in integer;
+        i_row : in integer range 0 to c_screen_height-1;
+        i_column : in integer range 0 to c_screen_width-1;
         i_draw_en : in std_logic;
 
         -- Game status
-        i_num_lives : integer range 0 to 5;
-        i_score : integer;
+        i_num_lives : integer range 0 to c_max_lives;
+        i_score : integer range 0 to c_max_score;
 
-        o_color : out integer range 0 to 4095;
+        o_color : out integer range 0 to c_max_color;
         o_draw : out std_logic;
 
         -- vgaText
@@ -60,38 +52,28 @@ architecture rtl of hud is
     
 	 
     constant c_ship_spacing_x : integer := 10;
-    constant c_ship_pos_y   : integer := c_upper_bar_pos/2 - g_ship_height/2;
+    constant c_ship_pos_y   : integer := c_upper_bar_pos/2 - c_ship_height/2;
     constant c_ship_pos_x1  : integer := 20;
-    constant c_ship_pos_x2  : integer := c_ship_pos_x1 + 1*(g_ship_width + c_ship_spacing_x);
-    constant c_ship_pos_x3  : integer := c_ship_pos_x1 + 2*(g_ship_width + c_ship_spacing_x);
-    constant c_ship_pos_x4  : integer := c_ship_pos_x1 + 3*(g_ship_width + c_ship_spacing_x);
-    constant c_ship_pos_x5  : integer := c_ship_pos_x1 + 4*(g_ship_width + c_ship_spacing_x);
+    constant c_ship_pos_x2  : integer := c_ship_pos_x1 + 1*(c_ship_width + c_ship_spacing_x);
+    constant c_ship_pos_x3  : integer := c_ship_pos_x1 + 2*(c_ship_width + c_ship_spacing_x);
+    constant c_ship_pos_x4  : integer := c_ship_pos_x1 + 3*(c_ship_width + c_ship_spacing_x);
+    constant c_ship_pos_x5  : integer := c_ship_pos_x1 + 4*(c_ship_width + c_ship_spacing_x);
 
     constant c_char_width   : integer := 8;
     constant c_char_height  : integer := 16;
     constant c_score_right_offset : integer := 8;
     constant c_num_score_digits : integer := 6;
-    constant c_score_pos_x : integer := g_screen_width - c_num_score_digits*(c_char_width) - c_score_right_offset;
+    constant c_score_pos_x : integer := c_screen_width - c_num_score_digits*(c_char_width) - c_score_right_offset;
     constant c_score_pos_y  : integer := c_upper_bar_pos/2 - c_char_height/2 + 1;
 
     -- Logo
     constant c_logo_text : string := "TNTECH ECE";
     constant c_logo_length : integer := c_logo_text'LENGTH;
-    constant c_logo_pos_x : integer := g_screen_width/2 - (c_logo_length*c_char_width/2);
+    constant c_logo_pos_x : integer := c_screen_width/2 - (c_logo_length*c_char_width/2);
     constant c_logo_pos_y : integer := (c_lower_bar_pos+c_bar_height) + c_bar_offset/2 - c_char_height/2 - 1;
     constant c_logo_color : integer := 16#00F#;
 	 
     -- Components
-    component triangle is
-        port (
-            i_row : in integer;
-            i_column : in integer;
-            i_xPos : in integer;
-            i_yPos : in integer;
-    
-            o_draw : out std_logic
-        );
-    end component;
     component binary_to_bcd IS
         GENERIC(
             bits   : INTEGER := 10;  --size of the binary input numbers in bits
@@ -196,11 +178,11 @@ begin
     end process;
 
     -- Instantiation
-    ship1 : triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x1, i_yPos => c_ship_pos_y, o_draw => w_ship1_draw);
-    ship2 : triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x2, i_yPos => c_ship_pos_y, o_draw => w_ship2_draw);
-    ship3 : triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x3, i_yPos => c_ship_pos_y, o_draw => w_ship3_draw);
-    ship4 : triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x4, i_yPos => c_ship_pos_y, o_draw => w_ship4_draw);
-    ship5 : triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x5, i_yPos => c_ship_pos_y, o_draw => w_ship5_draw);
+    ship1 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x1, i_yPos => c_ship_pos_y, o_draw => w_ship1_draw);
+    ship2 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x2, i_yPos => c_ship_pos_y, o_draw => w_ship2_draw);
+    ship3 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x3, i_yPos => c_ship_pos_y, o_draw => w_ship3_draw);
+    ship4 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x4, i_yPos => c_ship_pos_y, o_draw => w_ship4_draw);
+    ship5 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x5, i_yPos => c_ship_pos_y, o_draw => w_ship5_draw);
 	     
 	bcdconv : binary_to_bcd generic map( bits => 20, digits => 6 ) port map (
         clk  => i_clock,

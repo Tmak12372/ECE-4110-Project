@@ -37,8 +37,8 @@ entity player_ship is
         accel_scale_x, accel_scale_y : in integer;
 
         -- Control Signals
-        i_row : in integer;
-        i_column : in integer;
+        i_row : in integer range 0 to c_screen_height-1;
+        i_column : in integer range 0 to c_screen_width-1;
         i_draw_en : in std_logic;
 
         -- Output State

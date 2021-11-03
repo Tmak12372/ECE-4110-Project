@@ -23,8 +23,8 @@ entity overlays is
 
         -- Control signals
         i_update_pulse : in std_logic;
-        i_row : in integer;
-        i_column : in integer;
+        i_row : in integer range 0 to c_screen_height-1;
+        i_column : in integer range 0 to c_screen_width-1;
         i_draw_en : in std_logic;
 
         -- Game status

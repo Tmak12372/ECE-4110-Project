@@ -4,6 +4,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+library work;
+
+-- For vgaText library
+use work.commonPak.all;
+-- Common constants
+use work.defender_common.all;
 
 entity proj0_top is
     PORT( 
@@ -38,20 +44,6 @@ architecture top_level of proj0_top is
         port(
             inclk0		:	IN  STD_LOGIC := '0';  -- Input clock that gets divided (50 MHz for max10)
             c0			:	OUT STD_LOGIC          -- Output clock for vga timing (25.175 MHz)
-        );
-    end component;
-    
-    component vga_controller is 
-        port(
-            pixel_clk	:	IN	STD_LOGIC;	--pixel clock at frequency of VGA mode being used
-            reset_n		:	IN	STD_LOGIC;	--active low asycnchronous reset
-            h_sync		:	OUT	STD_LOGIC;	--horiztonal sync pulse
-            v_sync		:	OUT	STD_LOGIC;	--vertical sync pulse
-            disp_ena	:	OUT	STD_LOGIC;	--display enable ('1' = display time, '0' = blanking time)
-            column		:	OUT	INTEGER;	--horizontal pixel coordinate
-            row			:	OUT	INTEGER;	--vertical pixel coordinate
-            n_blank		:	OUT	STD_LOGIC;	--direct blacking output to DAC
-            n_sync		:	OUT	STD_LOGIC   --sync-on-green output to DAC
         );
     end component;
 
@@ -103,7 +95,8 @@ architecture top_level of proj0_top is
     -- Signal declarations
     SIGNAL KEY_b         : STD_LOGIC_VECTOR(1 DOWNTO 0);
     signal clk_25_175_MHz, disp_en : STD_LOGIC;
-    signal row, column : INTEGER;
+    signal row : integer range 0 to c_screen_height-1;
+    signal column : INTEGER range 0 to c_screen_width-1;
 
     -- Accelerometer
     signal data_x, data_y                   : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -136,7 +129,7 @@ begin
 
     -- VGA
     U8	:	vga_pll_25_175 port map (inclk0 => MAX10_CLK1_50, c0 => clk_25_175_MHz);
-    U9	:	vga_controller port map (pixel_clk => clk_25_175_MHz, reset_n => '1', h_sync => VGA_HS, v_sync => VGA_VS, disp_ena => disp_en, column => column, row => row, n_blank => open, n_sync => open);
+    U9	:	entity work.vga_controller port map (pixel_clk => clk_25_175_MHz, reset_n => '1', h_sync => VGA_HS, v_sync => VGA_VS, disp_ena => disp_en, column => column, row => row, n_blank => open, n_sync => open);
 
     -- Accel
     U10 : ADXL345_controller PORT MAP (reset_n => '1', clk => MAX10_CLK1_50, data_valid => data_valid, data_x => data_x,  data_y => data_y, data_z => open, SPI_SDI => GSENSOR_SDI, SPI_SDO => GSENSOR_SDO, SPI_CSN => GSENSOR_CS_N, SPI_CLK => GSENSOR_SCLK );

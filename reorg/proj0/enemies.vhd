@@ -16,20 +16,20 @@ entity enemies is
         i_reset_pulse : in std_logic;
 
         -- Control Signals
-        i_row : in integer;
-        i_column : in integer;
+        i_row : in integer range 0 to c_screen_height-1;
+        i_column : in integer range 0 to c_screen_width-1;
         i_draw_en : in std_logic;
 
         -- Game state
-        i_score : in integer;
-        i_ship_pos_x : in integer;
-        i_ship_pos_y : in integer;
+        i_score : in integer range 0 to c_max_score;
+        i_ship_pos_x : in integer range c_min_x to c_max_x;
+        i_ship_pos_y : in integer range c_min_y to c_max_y;
 
         o_ship_collide : out std_logic;
         o_cannon_collide : out std_logic;
-        o_score_inc : out integer;
+        o_score_inc : out integer range 0 to c_max_score;
 
-        o_color : out integer range 0 to 4095;
+        o_color : out integer range 0 to c_max_color;
         o_draw : out std_logic
     );
 end entity enemies;
@@ -37,8 +37,8 @@ end entity enemies;
 architecture rtl of enemies is
 
     -- Types
-    type t_sizeArray is array(0 to 2) of integer;
-    type t_colorArray is array(0 to 7) of integer;
+    type t_sizeArray is array(0 to 2) of integer range 0 to c_max_size;
+    type t_colorArray is array(0 to 7) of integer range 0 to c_max_color;
 
     -- Constants
     constant c_max_num_enemies : integer := 6;
@@ -52,6 +52,8 @@ architecture rtl of enemies is
     constant c_spawn_ylim_lower : integer := c_lower_bar_pos;
     constant c_spawn_range : integer := c_spawn_ylim_lower - c_spawn_ylim_upper;
 
+    constant c_num_stages : integer := 5;
+
     -- Types
     type t_enemy is
     record
@@ -59,18 +61,18 @@ architecture rtl of enemies is
         pos: t_point_2d;
         speed: t_speed_2d;
         size: t_size_2d;
-        color: integer;
+        color: integer range 0 to c_max_color;
     end record;
     constant init_t_enemy: t_enemy := (alive => false, pos => (0,0), speed => (0,0), size => (0,0), color => 0);
     type t_enemyArray is array(natural range <>) of t_enemy;
 
     -- Signals
     signal enemyArray : t_enemyArray(0 to c_max_num_enemies-1) := (others => init_t_enemy);
-    signal r_stage : integer := 0; -- Which stage (difficulty level) are we on?
-    signal r_num_enemy_target : integer := 0; -- How many enemies should we have on screen?
-    signal r_new_enemy_speed : integer := 0; -- How fast should new enemies go?
+    signal r_stage : integer range 0 to c_num_stages := 0; -- Which stage (difficulty level) are we on?
+    signal r_num_enemy_target : integer range 0 to c_max_num_enemies := 0; -- How many enemies should we have on screen?
+    signal r_new_enemy_speed : integer range 0 to c_max_speed := 0; -- How fast should new enemies go?
     signal w_lfsr_out_slv : std_logic_vector(7 downto 0);
-    signal w_lfsr_out_int : integer;
+    signal w_lfsr_out_int : integer range 0 to 2**8-1;
 
 begin
 
@@ -133,7 +135,7 @@ begin
     -- Set draw output
     process(i_row, i_column)
         variable r_draw_tmp : std_logic := '0';
-        variable r_color_tmp : integer range 0 to 4095 := 0;
+        variable r_color_tmp : integer range 0 to c_max_color := 0;
 
     begin
 
@@ -168,25 +170,21 @@ begin
     process(i_clock)
         -- Vars
         variable localEnemyArray : t_enemyArray(0 to c_max_num_enemies-1) := (others => init_t_enemy);
-        -- Enemy
-        variable x : integer := 0;
-        variable y : integer := 0;
-        variable w : integer := 0;
-        variable h : integer := 0;
-        -- Player
-        variable p_x : integer := 0;
-        variable p_y : integer := 0;
-        variable p_w : integer := 0;
-        variable p_h : integer := 0;
-        variable num_alive : integer := 0;
+        -- Enemy and Player
+        variable x, p_x : integer range c_min_x to c_max_x := 0;
+        variable y, p_y : integer range c_min_y to c_max_y := 0;
+        variable w, p_w : integer range 0 to c_max_size := 0;
+        variable h, p_h : integer range 0 to c_max_size := 0;
+
+        variable num_alive : integer range 0 to c_max_num_enemies := 0;
         variable rand_pos : t_point_2d := (0,0);
-        variable rand_pos_y : integer := 0;
+        variable rand_pos_y : integer range c_min_y to c_max_y := 0;
         variable rand_speed : t_speed_2d := (0,0);
         variable rand_size : t_size_2d := (0,0);
-        variable rand_size_int : integer := 0;
-        variable rand_color : integer := 0;
-        variable spawn_frame_cnt : integer := 0;
-        variable open_enemy_slot : integer := 0;
+        variable rand_size_int : integer range 0 to c_max_size := 0;
+        variable rand_color : integer range 0 to c_max_color := 0;
+        variable spawn_frame_cnt : integer range 0 to c_spawn_frame_rate := 0;
+        variable open_enemy_slot : integer range 0 to c_max_num_enemies-1 := 0;
         variable ship_collide : std_logic := '0';
 
     begin

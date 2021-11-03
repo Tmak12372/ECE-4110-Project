@@ -16,13 +16,10 @@ ENTITY image_gen IS
         g_bg_color : integer := 16#FFF#;
         g_text_color : integer := 16#000#;
 
-        g_screen_width : integer := 640;
-        g_screen_height : integer := 480;
+        
+        g_initial_lives : integer := 3
 
-        g_max_lives : integer := 5;
-        g_initial_lives : integer := 3;
-
-        g_max_score : integer := 999999
+        
 
     );
     port(
@@ -31,8 +28,8 @@ ENTITY image_gen IS
 
         -- VGA controller inputs
         disp_en  :  IN  STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
-        row      :  IN  INTEGER;    --row pixel coordinate
-        column   :  IN  INTEGER;    --column pixel coordinate
+        row : in integer range 0 to c_screen_height-1;
+        column : in integer range 0 to c_screen_width-1;
 
         -- Color outputs to VGA
         red      :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
@@ -77,8 +74,8 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_enemiesDraw : std_logic;
     signal w_enemiesColor: integer range 0 to 4095;
 
-    signal r_num_lives : integer range 0 to g_max_lives := g_initial_lives;
-    signal r_score : integer range 0 to g_max_score := 0;
+    signal r_num_lives : integer range 0 to c_max_lives := g_initial_lives;
+    signal r_score : integer range 0 to c_max_score := 0;
 
     signal r_game_state : t_state := ST_START;
     signal r_game_paused : std_logic := '0';
@@ -125,7 +122,7 @@ BEGIN
                 r_num_lives <= g_initial_lives;
             elsif w_ship_collide = '1' then
                 r_num_lives <= r_num_lives-1;
-            elsif r_key_fe(0) = '1' and r_num_lives < g_max_lives then
+            elsif r_key_fe(0) = '1' and r_num_lives < c_max_lives then
                 r_num_lives <= r_num_lives+1;
             end if;
             
@@ -266,7 +263,7 @@ BEGIN
         if (rising_edge(pixel_clk)) then
 
             -- Just finished drawing frame, command a logical update
-            if (r_disp_en_fe = '1' AND row >= g_screen_height-1 AND column >= g_screen_width-1) then
+            if (r_disp_en_fe = '1' AND row >= c_screen_height-1 AND column >= c_screen_width-1) then
                 r_logic_update <= '1';
             else
                 r_logic_update <= '0';
