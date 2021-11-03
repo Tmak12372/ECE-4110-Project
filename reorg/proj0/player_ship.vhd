@@ -11,8 +11,6 @@ use work.defender_common.all;
 
 entity player_ship is
     generic (
-        g_screen_width : integer := 640;
-        g_screen_height : integer := 480;
         g_ship_color : integer := 16#F00#;
 
         -- Play area limits
@@ -35,6 +33,7 @@ entity player_ship is
 
         -- HMI Inputs
         accel_scale_x, accel_scale_y : in integer;
+        i_key_press : in std_logic_vector(1 downto 0); -- Pulse, keypress event, read on logical update
 
         -- Control Signals
         i_row : in integer range 0 to c_screen_height-1;
@@ -58,19 +57,29 @@ architecture rtl of player_ship is
     constant c_init_pos_y : integer := (g_lower_bound - g_upper_bound)/2;
     
     -- Types
-
+    
     -- Signals
 
-
     -- coords of top left of object
-    signal r_xPos : integer range 0 to g_screen_width-1 := c_init_pos_x;
-    signal r_yPos : integer range 0 to g_screen_height-1 := c_init_pos_y;
+    signal r_xPos : integer range 0 to c_screen_width-1 := c_init_pos_x;
+    signal r_yPos : integer range 0 to c_screen_height-1 := c_init_pos_y;
 
     -- Pixels per update. Update in # of frames is set by g_frame_update_cnt
     signal r_xSpeed : integer := 0;
     signal r_ySpeed : integer := 0;
     
 begin
+
+    -- Cannon fire key event
+    process(i_clock)
+        -- Vars
+        
+    begin
+        if (rising_edge(i_clock) and i_update_pulse = '1' and i_key_press(0) = '1') then
+
+            
+        end if;
+    end process;
     
     -- Set draw output
     process(i_row, i_column, r_xPos, r_yPos)

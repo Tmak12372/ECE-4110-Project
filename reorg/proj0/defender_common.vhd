@@ -49,6 +49,8 @@ package defender_common is
     
     -- Functions
     function darken(color : integer; shift_val : integer) return integer;
+    function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean;
+    function collide_rect(obj1_pos : t_point_2d; obj1_size : t_size_2d; obj2_pos : t_point_2d; obj2_size : t_size_2d) return boolean;
 
 end defender_common;
 
@@ -85,5 +87,20 @@ package body defender_common is
 
         return color_out;
 	end function;
+
+    function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean is
+
+    begin
+        if (scan_pos.x >= obj_pos.x and scan_pos.x < obj_pos.x + obj_size.w) and  -- Inside X
+           (scan_pos.y >= obj_pos.y and scan_pos.y < obj_pos.y + obj_size.h) then -- Inside Y
+
+            return true;
+        else
+            return false;
+        end if;
+    end function;
+
+
+    
 
 end defender_common;

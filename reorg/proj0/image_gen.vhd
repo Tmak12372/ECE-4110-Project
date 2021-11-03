@@ -60,7 +60,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal r_disp_en_fe : std_logic;         -- Falling edge of disp_en input
     signal r_logic_update : std_logic := '0'; -- Pulse
     signal r_key_d : std_logic_vector(1 downto 0);
-    signal r_key_fe : std_logic_vector(1 downto 0); -- Pulse
+    signal r_key_press : std_logic_vector(1 downto 0); -- Pulse, keypress event
 
     signal w_playShipDraw : std_logic;
     signal w_playShipColor: integer range 0 to 4095;
@@ -111,8 +111,8 @@ BEGIN
     r_disp_en_fe <= r_disp_en_d and not disp_en;   -- One-cycle strobe
 
     -- KEY falling edge
-    r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF
-    r_key_fe <= r_key_d and not KEY;   -- One-cycle strobe
+    r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF, value of keys at last logical update
+    r_key_press <= r_key_d and not KEY;   -- One-cycle strobe, for next logical update
 
     -- Handle lives
     process(pixel_clk)
@@ -122,7 +122,7 @@ BEGIN
                 r_num_lives <= g_initial_lives;
             elsif w_ship_collide = '1' then
                 r_num_lives <= r_num_lives-1;
-            elsif r_key_fe(0) = '1' and r_num_lives < c_max_lives then
+            elsif r_key_press(0) = '1' and r_num_lives < c_max_lives then
                 r_num_lives <= r_num_lives+1;
             end if;
             
@@ -135,7 +135,7 @@ BEGIN
         if rising_edge(pixel_clk) and r_logic_update = '1' then
 
             -- Debug Logic
-            if (r_key_fe(1) = '1' and r_game_active = '1') then
+            if (r_key_press(1) = '1' and r_game_active = '1') then
                 r_score <= r_score+500;
             end if;
 
@@ -156,7 +156,7 @@ BEGIN
                 when ST_PLAY => 
                     r_effectTrig <= '0';
                     r_obj_reset <= '0';
-                    if r_key_fe(1) = '1' then
+                    if r_key_press(1) = '1' then
                         r_game_state <= ST_PAUSE;
                     elsif (r_num_lives = 0) then
                         r_game_state <= ST_GAME_OVER;
@@ -164,13 +164,13 @@ BEGIN
                         r_game_state <= ST_PLAY;
                     end if;
                 when ST_PAUSE => 
-                    if r_key_fe(1) = '1' then
+                    if r_key_press(1) = '1' then
                         r_game_state <= ST_PLAY;
                     else
                         r_game_state <= ST_PAUSE;
                     end if;
                 when ST_GAME_OVER => 
-                    if r_key_fe(0) = '1' then
+                    if r_key_press(0) = '1' then
                         r_game_state <= ST_NEW_GAME;
                     else
                         r_game_state <= ST_GAME_OVER;
@@ -282,6 +282,7 @@ BEGIN
         i_reset_pulse => r_obj_reset,
 
         accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y,
+        i_key_press => r_key_press,
 
         i_row => row,
         i_column => column, 
@@ -301,6 +302,7 @@ BEGIN
         i_row => row,
         i_column => column,
         i_draw_en => r_game_active,
+        i_key_press => r_key_press,
         i_score => r_score,
         i_ship_pos_x => w_ship_pos_x,
         i_ship_pos_y => w_ship_pos_y,

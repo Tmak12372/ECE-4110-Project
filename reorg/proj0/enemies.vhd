@@ -20,6 +20,9 @@ entity enemies is
         i_column : in integer range 0 to c_screen_width-1;
         i_draw_en : in std_logic;
 
+        -- HMI Inputs
+        i_key_press : in std_logic_vector(1 downto 0); -- Pulse, keypress event, read on logical update
+
         -- Game state
         i_score : in integer range 0 to c_max_score;
         i_ship_pos_x : in integer range c_min_x to c_max_x;
@@ -40,8 +43,31 @@ architecture rtl of enemies is
     type t_sizeArray is array(0 to 2) of integer range 0 to c_max_size;
     type t_colorArray is array(0 to 7) of integer range 0 to c_max_color;
 
+    type t_enemy is
+    record
+        alive: boolean;
+        pos: t_point_2d;
+        speed: t_speed_2d;
+        size: t_size_2d;
+        color: integer range 0 to c_max_color;
+    end record;
+    constant init_t_enemy: t_enemy := (alive => false, pos => (0,0), speed => (0,0), size => (0,0), color => 0);
+    type t_enemyArray is array(natural range <>) of t_enemy;
+
+    type t_fire is
+        record
+            alive: boolean;
+            pos: t_point_2d;
+            speed: t_speed_2d;
+            size: t_size_2d;
+            color: integer range 0 to c_max_color;
+        end record;
+    constant init_t_fire: t_fire := (false, (0,0), (0,0), (0,0), 0);
+    type t_fireArray is array(natural range <>) of t_fire;
+
     -- Constants
     constant c_max_num_enemies : integer := 6;
+    constant c_max_num_fire : integer := 10;
     constant c_spawn_frame_rate : integer := 30;
 
     constant c_enemy_size : t_sizeArray := (20, 40, 60);
@@ -54,19 +80,8 @@ architecture rtl of enemies is
 
     constant c_num_stages : integer := 5;
 
-    -- Types
-    type t_enemy is
-    record
-        alive: boolean;
-        pos: t_point_2d;
-        speed: t_speed_2d;
-        size: t_size_2d;
-        color: integer range 0 to c_max_color;
-    end record;
-    constant init_t_enemy: t_enemy := (alive => false, pos => (0,0), speed => (0,0), size => (0,0), color => 0);
-    type t_enemyArray is array(natural range <>) of t_enemy;
-
     -- Signals
+    signal fireArray : t_fireArray(0 to c_max_num_fire-1) := (others => init_t_fire);
     signal enemyArray : t_enemyArray(0 to c_max_num_enemies-1) := (others => init_t_enemy);
     signal r_stage : integer range 0 to c_num_stages := 0; -- Which stage (difficulty level) are we on?
     signal r_num_enemy_target : integer range 0 to c_max_num_enemies := 0; -- How many enemies should we have on screen?
@@ -144,12 +159,20 @@ begin
 
         -- Scan each enemy and render (using rectangle shape)
         for i in 0 to c_max_num_enemies-1 loop
-            if (i_column >= enemyArray(i).pos.x and i_column < enemyArray(i).pos.x + enemyArray(i).size.w) and -- Inside X
-               (i_row >= enemyArray(i).pos.y and i_row < enemyArray(i).pos.y + enemyArray(i).size.h) and       -- Inside Y
-               (enemyArray(i).alive) then
+            if in_range_rect((i_column, i_row), enemyArray(i).pos, enemyArray(i).size) and enemyArray(i).alive then
 
                 r_draw_tmp := '1';
                 r_color_tmp := enemyArray(i).color;
+
+            end if;
+        end loop;
+
+        -- Render cannon fire
+        for i in 0 to c_max_num_fire-1 loop
+            if in_range_rect((i_column, i_row), fireArray(i).pos, fireArray(i).size) and fireArray(i).alive then
+
+                r_draw_tmp := '1';
+                r_color_tmp := fireArray(i).color;
 
             end if;
         end loop;
@@ -170,6 +193,7 @@ begin
     process(i_clock)
         -- Vars
         variable localEnemyArray : t_enemyArray(0 to c_max_num_enemies-1) := (others => init_t_enemy);
+        variable localFireArray : t_fireArray(0 to c_max_num_fire-1) := (others => init_t_fire);
         -- Enemy and Player
         variable x, p_x : integer range c_min_x to c_max_x := 0;
         variable y, p_y : integer range c_min_y to c_max_y := 0;
@@ -186,18 +210,26 @@ begin
         variable spawn_frame_cnt : integer range 0 to c_spawn_frame_rate := 0;
         variable open_enemy_slot : integer range 0 to c_max_num_enemies-1 := 0;
         variable ship_collide : std_logic := '0';
+        variable cannon_collide : std_logic := '0';
+        variable score_inc : integer range 0 to c_max_score := 0;
 
     begin
         if (rising_edge(i_clock)) then
 
-            -- Capture current enemy state
+            -- Capture current state of objects
             localEnemyArray := enemyArray;
+            localFireArray := fireArray;
 
             if (i_reset_pulse = '1') then
 
                 -- Clear enemy data
                 for i in 0 to c_max_num_enemies-1 loop
                     localEnemyArray(i).alive := false;
+                end loop;
+
+                -- Clear cannon fire data
+                for i in 0 to c_max_num_fire-1 loop
+                    localFireArray(i).alive := false;
                 end loop;
             
             -- Time to update state
@@ -259,7 +291,7 @@ begin
                     end if;
                 end loop;
 
-                -- Spawn
+                -- Spawn enemies
                 spawn_frame_cnt := spawn_frame_cnt+1;
                 if spawn_frame_cnt = c_spawn_frame_rate then
                     spawn_frame_cnt := 0;
@@ -297,10 +329,19 @@ begin
                 
                 
 
+                -- Spawn Cannon Fire
+                if i_key_press(0) = '1' then
+                    
+                end if;
+
+
             end if;
 
-            -- Update enemies
+            -- Update objects
             enemyArray <= localEnemyArray;
+            fireArray <= localFireArray;
+
+            -- Update outputs
             o_ship_collide <= ship_collide;
         end if;
 
