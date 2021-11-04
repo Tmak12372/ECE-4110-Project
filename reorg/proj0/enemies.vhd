@@ -40,18 +40,23 @@ end entity enemies;
 architecture rtl of enemies is
 
     -- Types
-    type t_sizeArray is array(0 to 2) of integer range 0 to c_max_size;
-    type t_colorArray is array(0 to 7) of integer range 0 to c_max_color;
+    constant c_num_enemy_sizes : integer := 3;
+    constant c_num_enemy_colors : integer := 8;
+
+    type t_sizeArray is array(0 to c_num_enemy_sizes-1) of integer range 0 to c_max_size;
+    type t_colorArray is array(0 to c_num_enemy_colors-1) of integer range 0 to c_max_color;
+    type t_pointsArray is array(0 to c_num_enemy_sizes-1) of integer range 0 to c_max_score;
 
     type t_enemy is
     record
         alive: boolean;
         pos: t_point_2d;
         speed: t_speed_2d;
+        size_idx: integer range 0 to c_num_enemy_sizes-1;
         size: t_size_2d;
         color: integer range 0 to c_max_color;
     end record;
-    constant init_t_enemy: t_enemy := (alive => false, pos => (0,0), speed => (0,0), size => (0,0), color => 0);
+    constant init_t_enemy: t_enemy := (false, (0,0), (0,0), 0, (0,0), 0);
     type t_enemyArray is array(natural range <>) of t_enemy;
 
     type t_fire is
@@ -71,8 +76,12 @@ architecture rtl of enemies is
     constant c_max_spawn_frame_rate : integer := 120;
 
     constant c_enemy_size : t_sizeArray := (20, 40, 60);
-
+    constant c_enemy_points : t_pointsArray := (21, 14, 7); -- Number of points awarded for each enemy size
     constant c_enemy_color : t_colorArray := (16#F90#, 16#0F0#, 16#00F#, 16#FF0#, 16#F0F#, 16#0FF#, 16#880#, 16#808#);
+    
+    constant c_fire_color : integer := 16#F0F#;
+    constant c_fire_size : integer := 2;
+    constant c_fire_speed : integer := 3;
 
     constant c_spawn_ylim_upper : integer := c_upper_bar_pos + c_bar_height;
     constant c_spawn_ylim_lower : integer := c_lower_bar_pos;
@@ -228,9 +237,11 @@ begin
         variable rand_pos_y : integer range c_min_y to c_max_y := 0;
         variable rand_speed : t_speed_2d := (0,0);
         variable rand_size : t_size_2d := (0,0);
+        variable rand_size_idx : integer range 0 to c_num_enemy_sizes-1;
         variable rand_size_int : integer range 0 to c_max_size := 0;
         variable rand_color : integer range 0 to c_max_color := 0;
         variable open_enemy_slot : integer range 0 to c_max_num_enemies-1 := 0;
+        variable open_fire_slot : integer range -1 to c_max_num_fire-1 := 0;
         variable ship_collide : std_logic := '0';
         variable cannon_collide : std_logic := '0';
         variable score_inc : integer range 0 to c_max_score := 0;
@@ -257,7 +268,7 @@ begin
             -- Time to update state
             else
 
-                -- Handle collision with ship
+                -- Handle enemy collision with ship
                 ship_collide := '0';
                 for i in 0 to c_max_num_enemies-1 loop
 
@@ -270,9 +281,29 @@ begin
                     end if;
                 end loop;
 
-                -- Handle collision with cannon
+                -- Handle enemy collision with cannon
+                cannon_collide := '0';
+                for e_i in 0 to c_max_num_enemies-1 loop
+
+                    -- Check each enemy and fire pair for collision
+                    for f_i in 0 to c_max_num_fire-1 loop
+                        if collide_rect( localEnemyArray(e_i).pos, localEnemyArray(e_i).size, localFireArray(f_i).pos, localFireArray(f_i).size ) and
+                           localEnemyArray(e_i).alive and localFireArray(f_i).alive then
+
+                            -- Kill both enemy and fire
+                            localEnemyArray(e_i).alive := false;
+                            localFireArray(f_i).alive := false;
+
+                            -- One cycle pulse caught by external logic
+                            cannon_collide := '1';
+                            -- Lookup number of points to award
+                            score_inc := c_enemy_points(localEnemyArray(e_i).size_idx);
+                        end if;
+                    end loop;
+                        
+                end loop;
                 
-                -- Update position
+                -- Update enemy positions
                 for i in 0 to c_max_num_enemies-1 loop
                     if localEnemyArray(i).alive then
                         localEnemyArray(i).pos.x := localEnemyArray(i).pos.x + localEnemyArray(i).speed.x;
@@ -280,15 +311,11 @@ begin
                     end if;
                 end loop;
 
-                -- Update alive status
+                -- Update enemy alive status
                 for i in 0 to c_max_num_enemies-1 loop
-                    x := localEnemyArray(i).pos.x;
-                    y := localEnemyArray(i).pos.y;
-                    w := localEnemyArray(i).size.w;
-                    h := localEnemyArray(i).size.h;
 
                     -- Is the enemy off screen?
-                    if (x+w-1 < 0) or (x > c_screen_width-1) or (y+h-1 < 0) or (y > c_screen_height-1) then
+                    if off_screen_rect( localEnemyArray(i).pos, localEnemyArray(i).size ) then
                         localEnemyArray(i).alive := false;
                     end if;
                 end loop;
@@ -310,7 +337,8 @@ begin
                     if num_alive < r_num_enemy_target then
                         
                         -- 2 bits to pick size
-                        rand_size_int := c_enemy_size(to_integer(unsigned(w_lfsr_out_slv(7 downto 6))));
+                        rand_size_idx := to_integer(unsigned(w_lfsr_out_slv(7 downto 6))) mod c_num_enemy_sizes;
+                        rand_size_int := c_enemy_size(rand_size_idx);
                         rand_size := (rand_size_int, rand_size_int);
                         -- 3 bits to pick color
                         rand_color := c_enemy_color(to_integer(unsigned(w_lfsr_out_slv(5 downto 3))));
@@ -330,18 +358,51 @@ begin
 
                         localEnemyArray(open_enemy_slot).alive := true;
                         localEnemyArray(open_enemy_slot).size := rand_size;
+                        localEnemyArray(open_enemy_slot).size_idx := rand_size_idx;
                         localEnemyArray(open_enemy_slot).color := rand_color;
                         localEnemyArray(open_enemy_slot).pos := rand_pos;
                         localEnemyArray(open_enemy_slot).speed := rand_speed;
 
                     end if;
                 end if;
+
+                -- Update fire positions
+                for i in 0 to c_max_num_fire-1 loop
+                    if localFireArray(i).alive then
+                        localFireArray(i).pos.x := localFireArray(i).pos.x + localFireArray(i).speed.x;
+                        localFireArray(i).pos.y := localFireArray(i).pos.y + localFireArray(i).speed.y;
+                    end if;
+                end loop;
+
+                -- Update fire alive status
+                for i in 0 to c_max_num_fire-1 loop
+
+                    -- Is the fire off screen?
+                    if off_screen_rect( localFireArray(i).pos, localFireArray(i).size ) then
+                        localFireArray(i).alive := false;
+                    end if;
+                end loop;
                 
-                
+                -- Find open fire slot
+                open_fire_slot := -1;
+                for i in 0 to c_max_num_fire-1 loop
+                    if not localFireArray(i).alive then
+                        open_fire_slot := i;
+                    end if;
+                end loop;
 
                 -- Spawn Cannon Fire
-                if i_key_press(0) = '1' then
+                if i_key_press(0) = '1' and open_fire_slot /= -1 then
                     
+
+                    localFireArray(open_fire_slot).alive := true;
+                    -- Square
+                    localFireArray(open_fire_slot).size := (c_fire_size,c_fire_size);
+                    localFireArray(open_fire_slot).color := c_fire_color;
+                    -- Just at the front of ship
+                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height/2);
+                    -- Moving right
+                    localFireArray(open_fire_slot).speed := (c_fire_speed, 0);
                 end if;
 
 

@@ -49,8 +49,13 @@ package defender_common is
     
     -- Functions
     function darken(color : integer; shift_val : integer) return integer;
+
+    -- Is the current scan position in range of the rectangle?
     function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean;
+    -- Are the two rectangles intersecting?
     function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean;
+    -- Is the rectangle off screen?
+    function off_screen_rect(o1_pos : t_point_2d; o1_size : t_size_2d) return boolean;
 
 end defender_common;
 
@@ -110,5 +115,17 @@ package body defender_common is
             return false;
         end if;
     end function;
+
+    function off_screen_rect(o1_pos : t_point_2d; o1_size : t_size_2d) return boolean is
+    begin
+        if (o1_pos.x + o1_size.w - 1 < 0) or (o1_pos.x > c_screen_width - 1) or (o1_pos.y + o1_size.h - 1 < 0) or (o1_pos.y > c_screen_height - 1) then
+            return true;
+        else
+            return false;
+    end if;
+    end function;
+
+
+    
 
 end defender_common;
