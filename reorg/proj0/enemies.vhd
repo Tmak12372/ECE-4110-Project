@@ -30,6 +30,7 @@ entity enemies is
 
         o_ship_collide : out std_logic;
         o_cannon_collide : out std_logic;
+        o_cannon_fire : out std_logic;
         o_score_inc : out integer range 0 to c_max_score;
 
         o_color : out integer range 0 to c_max_color;
@@ -80,8 +81,8 @@ architecture rtl of enemies is
     constant c_enemy_color : t_colorArray := (16#F90#, 16#0F0#, 16#00F#, 16#FF0#, 16#F0F#, 16#0FF#, 16#880#, 16#808#);
     
     constant c_fire_color : integer := 16#F0F#;
-    constant c_fire_size : integer := 2;
-    constant c_fire_speed : integer := 3;
+    constant c_fire_size : integer := 4;
+    constant c_fire_speed : integer := 4;
 
     constant c_spawn_ylim_upper : integer := c_upper_bar_pos + c_bar_height;
     constant c_spawn_ylim_lower : integer := c_lower_bar_pos;
@@ -105,15 +106,15 @@ begin
     -- Set stage from score
     process(i_score)
     begin
-        if i_score >= 0 and i_score < 500 then
+        if i_score >= 0 and i_score < 100 then
             r_stage <= 1;
-        elsif i_score >= 500 and i_score < 1000 then
+        elsif i_score >= 100 and i_score < 300 then
             r_stage <= 2;
-        elsif i_score >= 1000 and i_score < 1500 then
+        elsif i_score >= 300 and i_score < 500 then
             r_stage <= 3;
-        elsif i_score >= 1500 and i_score < 2000 then
+        elsif i_score >= 500 and i_score < 700 then
             r_stage <= 4;
-        elsif i_score >= 2000 then
+        elsif i_score >= 700 then
             r_stage <= 5;
         else
             r_stage <= 0;
@@ -244,6 +245,7 @@ begin
         variable open_fire_slot : integer range -1 to c_max_num_fire-1 := 0;
         variable ship_collide : std_logic := '0';
         variable cannon_collide : std_logic := '0';
+        variable cannon_fire : std_logic := '0';
         variable score_inc : integer range 0 to c_max_score := 0;
 
     begin
@@ -287,7 +289,7 @@ begin
 
                     -- Check each enemy and fire pair for collision
                     for f_i in 0 to c_max_num_fire-1 loop
-                        if collide_rect( localEnemyArray(e_i).pos, localEnemyArray(e_i).size, localFireArray(f_i).pos, localFireArray(f_i).size ) and
+                        if collide_rect( localFireArray(f_i).pos, localFireArray(f_i).size, localEnemyArray(e_i).pos, localEnemyArray(e_i).size ) and
                            localEnemyArray(e_i).alive and localFireArray(f_i).alive then
 
                             -- Kill both enemy and fire
@@ -392,17 +394,19 @@ begin
                 end loop;
 
                 -- Spawn Cannon Fire
+                cannon_fire := '0';
                 if i_key_press(0) = '1' and open_fire_slot /= -1 then
                     
-
                     localFireArray(open_fire_slot).alive := true;
                     -- Square
                     localFireArray(open_fire_slot).size := (c_fire_size,c_fire_size);
                     localFireArray(open_fire_slot).color := c_fire_color;
                     -- Just at the front of ship
-                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height/2);
+                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height);
                     -- Moving right
                     localFireArray(open_fire_slot).speed := (c_fire_speed, 0);
+
+                    cannon_fire := '1';
                 end if;
 
 
@@ -415,6 +419,8 @@ begin
             -- Update outputs
             o_ship_collide <= ship_collide;
             o_cannon_collide <= cannon_collide;
+            o_cannon_fire <= cannon_fire;
+            o_score_inc <= score_inc;
         end if;
 
     end process;

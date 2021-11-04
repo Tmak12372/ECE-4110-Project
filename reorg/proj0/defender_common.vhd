@@ -52,7 +52,7 @@ package defender_common is
 
     -- Is the current scan position in range of the rectangle?
     function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean;
-    -- Are the two rectangles intersecting?
+    -- Are the two rectangles intersecting? o1 should be smaller than o2
     function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean;
     -- Is the rectangle off screen?
     function off_screen_rect(o1_pos : t_point_2d; o1_size : t_size_2d) return boolean;

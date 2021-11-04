@@ -81,6 +81,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal r_game_paused : std_logic := '0';
     signal r_game_wait_start : std_logic := '0';
     signal r_game_over : std_logic := '0';
+    signal r_game_over_pulse : std_logic := '0';
     signal r_game_active : std_logic := '0';
 
     signal r_obj_update : std_logic := '0';
@@ -90,6 +91,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_ship_pos_y : integer;
     signal w_ship_collide : std_logic;
     signal w_cannon_collide : std_logic;
+    signal w_cannon_fire : std_logic;
     signal w_score_inc : integer;
     
     -- vgaText
@@ -116,6 +118,7 @@ BEGIN
 
     -- Handle lives
     process(pixel_clk)
+        variable last_score : integer range 0 to c_max_score := 0;
     begin   
         if rising_edge(pixel_clk) and r_logic_update = '1' then
             if r_obj_reset = '1' then
@@ -128,6 +131,54 @@ BEGIN
                 r_num_lives <= r_num_lives+1;
             end if;
             
+            last_score := r_score;
+        end if;
+    end process;
+
+    -- Handle score
+    process(pixel_clk)
+    begin   
+        if rising_edge(pixel_clk) and r_logic_update = '1' then
+            if r_obj_reset = '1' then
+                r_score <= 0;
+            elsif w_cannon_collide = '1' then
+                r_score <= r_score+w_score_inc;
+
+            -- Debug
+            elsif SW(9) = '1' and r_key_press(1) = '1' and r_score < c_max_score then
+                r_score <= r_score+100;
+            end if;
+            
+        end if;
+    end process;
+
+    -- Drive sound block
+    process(pixel_clk)
+    begin   
+        if rising_edge(pixel_clk) and r_logic_update = '1' then
+            if r_obj_reset = '1' then
+                -- Play start sound
+                r_effectSel <= "000";
+                r_effectTrig <= '1';
+            elsif w_cannon_fire = '1' then
+                -- Play player fire sound
+                r_effectSel <= "001";
+                r_effectTrig <= '1';
+            elsif w_cannon_collide = '1' then
+                -- Play enemy destroy sound
+                r_effectSel <= "011";
+                r_effectTrig <= '1';
+            elsif w_ship_collide = '1' and r_num_lives > 1 then
+                -- Play "life lost" sound
+                r_effectSel <= "011";
+                r_effectTrig <= '1';
+            elsif r_game_over_pulse = '1' then
+                -- Play game over sound
+                r_effectSel <= "100";
+                r_effectTrig <= '1';
+            else
+                r_effectTrig <= '0';
+			   end if;
         end if;
     end process;
 
@@ -136,11 +187,6 @@ BEGIN
     begin
         if rising_edge(pixel_clk) and r_logic_update = '1' then
 
-            -- Debug Logic
-            if (r_key_press(1) = '1' and r_game_active = '1') then
-                r_score <= r_score+500;
-            end if;
-
             case r_game_state is
                 when ST_START =>
                     if KEY_b(0) = '1' then
@@ -148,18 +194,16 @@ BEGIN
                     else
                         r_game_state <= ST_START;
                     end if;
+
+                -- Prepare for new game
                 when ST_NEW_GAME => 
-                    -- Prepare for new game
-                    r_score <= 0;
-                    r_effectSel <= "000";
-                    r_effectTrig <= '1';
                     r_game_state <= ST_PLAY;
                 when ST_PLAY => 
-                    r_effectTrig <= '0';
                     if r_key_press(1) = '1' then
                         r_game_state <= ST_PAUSE;
                     elsif (r_num_lives = 0) then
                         r_game_state <= ST_GAME_OVER;
+                        r_game_over_pulse <= '1';
                     else
                         r_game_state <= ST_PLAY;
                     end if;
@@ -170,6 +214,7 @@ BEGIN
                         r_game_state <= ST_PAUSE;
                     end if;
                 when ST_GAME_OVER => 
+                    r_game_over_pulse <= '0';
                     if r_key_press(0) = '1' then
                         r_game_state <= ST_NEW_GAME;
                     else
@@ -315,6 +360,7 @@ BEGIN
 
         o_ship_collide => w_ship_collide,
         o_cannon_collide => w_cannon_collide,
+        o_cannon_fire => w_cannon_fire,
         o_score_inc => w_score_inc,
         o_color => w_enemiesColor,
         o_draw => w_enemiesDraw
