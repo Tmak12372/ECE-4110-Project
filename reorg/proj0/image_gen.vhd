@@ -122,7 +122,9 @@ BEGIN
                 r_num_lives <= g_initial_lives;
             elsif w_ship_collide = '1' then
                 r_num_lives <= r_num_lives-1;
-            elsif r_key_press(0) = '1' and r_num_lives < c_max_lives then
+
+            -- Debug
+            elsif SW(9) = '1' and r_key_press(0) = '1' and r_num_lives < c_max_lives then
                 r_num_lives <= r_num_lives+1;
             end if;
             
@@ -149,13 +151,11 @@ BEGIN
                 when ST_NEW_GAME => 
                     -- Prepare for new game
                     r_score <= 0;
-                    r_obj_reset <= '1';
                     r_effectSel <= "000";
                     r_effectTrig <= '1';
                     r_game_state <= ST_PLAY;
                 when ST_PLAY => 
                     r_effectTrig <= '0';
-                    r_obj_reset <= '0';
                     if r_key_press(1) = '1' then
                         r_game_state <= ST_PAUSE;
                     elsif (r_num_lives = 0) then
@@ -185,6 +185,12 @@ BEGIN
     -- FSM outputs
     process(r_game_state)
     begin
+        if r_game_state = ST_NEW_GAME then
+            r_obj_reset <= '1'; -- Prepare all objects to reset upon transition to ST_PLAY
+        else
+            r_obj_reset <= '0';
+        end if;
+
         if r_game_state = ST_PAUSE then
             r_game_paused <= '1';
         else

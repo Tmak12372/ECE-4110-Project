@@ -68,7 +68,7 @@ architecture rtl of enemies is
     -- Constants
     constant c_max_num_enemies : integer := 6;
     constant c_max_num_fire : integer := 10;
-    constant c_spawn_frame_rate : integer := 30;
+    constant c_max_spawn_frame_rate : integer := 120;
 
     constant c_enemy_size : t_sizeArray := (20, 40, 60);
 
@@ -85,7 +85,9 @@ architecture rtl of enemies is
     signal enemyArray : t_enemyArray(0 to c_max_num_enemies-1) := (others => init_t_enemy);
     signal r_stage : integer range 0 to c_num_stages := 0; -- Which stage (difficulty level) are we on?
     signal r_num_enemy_target : integer range 0 to c_max_num_enemies := 0; -- How many enemies should we have on screen?
-    signal r_new_enemy_speed : integer range 0 to c_max_speed := 0; -- How fast should new enemies go?
+    signal r_new_enemy_speed : integer range -c_max_speed to c_max_speed := 0; -- How fast should new enemies go?
+    signal r_spawn_frame_rate : integer range 0 to c_max_spawn_frame_rate := 0; -- How often should we spawn enemies (in # of frames)
+    signal r_spawn_update : std_logic := '0'; -- Time to update spawn? (Possibly spawn a new enemy)
     signal w_lfsr_out_slv : std_logic_vector(7 downto 0);
     signal w_lfsr_out_int : integer range 0 to 2**8-1;
 
@@ -128,24 +130,31 @@ begin
         end case;
     end process;
 
-    -- Set enemy speed from stage
+    -- Set enemy speed and spawn rate from stage
     process(r_stage)
     begin
         case r_stage is
             when 1 =>
                 r_new_enemy_speed <= 1;
+                r_spawn_frame_rate <= 80;
             when 2 => 
                 r_new_enemy_speed <= 2;
+                r_spawn_frame_rate <= 30;
             when 3 => 
                 r_new_enemy_speed <= 3;
+                r_spawn_frame_rate <= 30;
             when 4 => 
                 r_new_enemy_speed <= 4;
+                r_spawn_frame_rate <= 30;
             when 5 => 
                 r_new_enemy_speed <= 5;
+                r_spawn_frame_rate <= 20;
             when others =>
                 r_new_enemy_speed <= 0;
+                r_spawn_frame_rate <= 0;
         end case;
     end process;
+    
     
     -- Set draw output
     process(i_row, i_column)
@@ -188,6 +197,20 @@ begin
         o_color <= r_color_tmp;
     end process;
 
+    -- Spawn update clock
+    process(i_clock)
+        variable spawn_frame_cnt : integer range 0 to c_max_spawn_frame_rate := 0;
+    begin
+        if rising_edge(i_clock) and i_update_pulse = '1' then
+            r_spawn_update <= '0';
+
+            spawn_frame_cnt := spawn_frame_cnt+1;
+            if spawn_frame_cnt >= r_spawn_frame_rate then
+                spawn_frame_cnt := 0;
+                r_spawn_update <= '1'; -- One cycle pulse
+            end if;
+        end if;
+    end process;
 
     -- Update state
     process(i_clock)
@@ -207,14 +230,13 @@ begin
         variable rand_size : t_size_2d := (0,0);
         variable rand_size_int : integer range 0 to c_max_size := 0;
         variable rand_color : integer range 0 to c_max_color := 0;
-        variable spawn_frame_cnt : integer range 0 to c_spawn_frame_rate := 0;
         variable open_enemy_slot : integer range 0 to c_max_num_enemies-1 := 0;
         variable ship_collide : std_logic := '0';
         variable cannon_collide : std_logic := '0';
         variable score_inc : integer range 0 to c_max_score := 0;
 
     begin
-        if (rising_edge(i_clock)) then
+        if (rising_edge(i_clock) and i_update_pulse = '1') then
 
             -- Capture current state of objects
             localEnemyArray := enemyArray;
@@ -233,25 +255,15 @@ begin
                 end loop;
             
             -- Time to update state
-            elsif (i_update_pulse = '1') then
+            else
 
                 -- Handle collision with ship
                 ship_collide := '0';
                 for i in 0 to c_max_num_enemies-1 loop
-                    x := localEnemyArray(i).pos.x;
-                    y := localEnemyArray(i).pos.y;
-                    w := localEnemyArray(i).size.w;
-                    h := localEnemyArray(i).size.h;
-
-                    p_x := i_ship_pos_x;
-                    p_y := i_ship_pos_y;
-                    p_w := c_ship_width;
-                    p_h := c_ship_height;
 
                     -- Has ship collided with this enemy?
-                    if (((p_x >= x and p_x <= x+w-1) or (p_x+p_w-1 >= x and p_x+p_w-1 <= x+w-1)) and
-                       ((p_y >= y and p_y <= y+h-1) or (p_y+p_h-1 >= y and p_y+p_h-1 <= y+h-1))) and
-                       (localEnemyArray(i).alive) then
+                    if collide_rect( (i_ship_pos_x, i_ship_pos_y), (c_ship_width, c_ship_height), localEnemyArray(i).pos, localEnemyArray(i).size ) and
+                       localEnemyArray(i).alive then
 
                         localEnemyArray(i).alive := false;
                         ship_collide := '1';
@@ -292,9 +304,7 @@ begin
                 end loop;
 
                 -- Spawn enemies
-                spawn_frame_cnt := spawn_frame_cnt+1;
-                if spawn_frame_cnt = c_spawn_frame_rate then
-                    spawn_frame_cnt := 0;
+                if r_spawn_update = '1' then
 
                     -- Should we spawn a new enemy?
                     if num_alive < r_num_enemy_target then
@@ -343,6 +353,7 @@ begin
 
             -- Update outputs
             o_ship_collide <= ship_collide;
+            o_cannon_collide <= cannon_collide;
         end if;
 
     end process;

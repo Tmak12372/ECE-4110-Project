@@ -43,14 +43,14 @@ package defender_common is
 
     type t_speed_2d is
     record
-        x : integer range 0 to c_max_speed;
-        y : integer range 0 to c_max_speed;
+        x : integer range -c_max_speed to c_max_speed;
+        y : integer range -c_max_speed to c_max_speed;
     end record;
     
     -- Functions
     function darken(color : integer; shift_val : integer) return integer;
     function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean;
-    function collide_rect(obj1_pos : t_point_2d; obj1_size : t_size_2d; obj2_pos : t_point_2d; obj2_size : t_size_2d) return boolean;
+    function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean;
 
 end defender_common;
 
@@ -89,7 +89,6 @@ package body defender_common is
 	end function;
 
     function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean is
-
     begin
         if (scan_pos.x >= obj_pos.x and scan_pos.x < obj_pos.x + obj_size.w) and  -- Inside X
            (scan_pos.y >= obj_pos.y and scan_pos.y < obj_pos.y + obj_size.h) then -- Inside Y
@@ -101,6 +100,15 @@ package body defender_common is
     end function;
 
 
-    
+    function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean is
+    begin
+        if ( ((o1_pos.x >= o2_pos.x and o1_pos.x <= o2_pos.x + o2_size.w - 1) or (o1_pos.x + o1_size.w - 1 >= o2_pos.x and o1_pos.x + o1_size.w - 1 <= o2_pos.x + o2_size.w - 1)) and
+             ((o1_pos.y >= o2_pos.y and o1_pos.y <= o2_pos.y + o2_size.h - 1) or (o1_pos.y + o1_size.h - 1 >= o2_pos.y and o1_pos.y + o1_size.h - 1 <= o2_pos.y + o2_size.h - 1)) ) then
+
+            return true;
+        else
+            return false;
+        end if;
+    end function;
 
 end defender_common;
