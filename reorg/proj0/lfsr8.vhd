@@ -1,11 +1,15 @@
 -- 8-Bit Linear Feedback Shift Register (lfsr8)
 library IEEE;
-use IEEE.std_logic_1164.all;
-use IEEE.numeric_std.all;
+USE IEEE.std_logic_1164.all;
 library work;
 
+-- For vgaText library
+use work.commonPak.all;
+-- Common constants
+use work.defender_common.all;
+
 ENTITY lfsr8 IS
-    PORT ( clock, reset, load : IN  STD_LOGIC;
+    PORT ( clock, reset, load, cnt_en : IN  STD_LOGIC;
            par_in             : IN  STD_LOGIC_VECTOR(7 DOWNTO 0); -- Parallel load
            value_out          : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) );
 END lfsr8;
@@ -21,18 +25,17 @@ ARCHITECTURE behavior OF lfsr8 IS
 
 BEGIN
 
-    PROCESS (clock, reset) BEGIN
-
-        -- Asynch reset
-        IF (reset = '1') THEN
-            value <= (OTHERS => '1'); -- All 1's is the start state, all 0's is the lockup state
+    PROCESS (clock) BEGIN
 
         -- Clocked behavior
-        ELSIF (clock'event AND clock = '1') THEN
+        IF (rising_edge(clock)) THEN
 
-            IF (load = '1') THEN
+            -- Synch reset
+            if (reset = '1') THEN
+                value <= (OTHERS => '1'); -- All 1's is the start state, all 0's is the lockup state
+            elsif (load = '1') THEN
                 value <= par_in;
-            ELSE
+            elsif (cnt_en = '1') then
                 value <= (msb_in & value(7 DOWNTO 1)); -- Shift msb_in from the left
             END IF;
 

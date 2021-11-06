@@ -80,17 +80,6 @@ architecture top_level of proj0_top is
 			reset_reset_n : in std_logic := 'X'  -- reset_n
 		);
 	end component;
-
-    component bin2seg7 IS
-        PORT ( inData        : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
-            blanking      : IN  STD_LOGIC;
-            dispHex       : IN  STD_LOGIC;
-            dispPoint     : IN  STD_LOGIC;
-            dispDash      : IN  STD_LOGIC;
-
-            -- DP, G, F, E, D, C, B, A
-            outSegs       : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) );
-    END component;
     
     -- Signal declarations
     SIGNAL KEY_b         : STD_LOGIC_VECTOR(1 DOWNTO 0);
@@ -109,20 +98,6 @@ begin
     KEY_b <= NOT KEY;
 
     -- Instantiation and port mapping
-
-    -- 7Seg Displays
-    U1 : bin2seg7  PORT MAP ( inData => data_x(15 downto 12), blanking => '0', dispHex => '1', 
-            dispPoint => '0', dispDash => '0', outSegs => HEX5 );
-    U2 : bin2seg7  PORT MAP ( inData => data_x(11 downto 8), blanking => '0', dispHex => '1', 
-            dispPoint => '0', dispDash => '0', outSegs => HEX4 );
-    U3 : bin2seg7  PORT MAP ( inData => data_x(7 downto 4), blanking => '0', dispHex => '1', 
-            dispPoint => '0', dispDash => '0', outSegs => HEX3 );
-    U4 : bin2seg7  PORT MAP ( inData => data_x(3 downto 0), blanking => '0', dispHex => '1', 
-            dispPoint => '0', dispDash => '0', outSegs => HEX2 );
-    U5 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
-            dispPoint => '0', dispDash => '0', outSegs => HEX1 );
-    U6 : bin2seg7  PORT MAP ( inData => "0000", blanking => '1', dispHex => '1', 
-            dispPoint => '0', dispDash => '0', outSegs => HEX0 );
 
     -- Dual boot
     U7 : dual_boot port map ( clk_clk => MAX10_CLK1_50, reset_reset_n => '1' );
@@ -150,7 +125,9 @@ begin
         KEY => KEY,
         SW => SW,
 
-        o_buzzPin => ARDUINO_IO(12)
+        o_buzzPin => ARDUINO_IO(12),
+        HEX5 => HEX5, HEX4 => HEX4, HEX3 => HEX3, HEX2 => HEX2, HEX1 => HEX1, HEX0 => HEX0,
+        LEDR => LEDR
     );
 
 end top_level;

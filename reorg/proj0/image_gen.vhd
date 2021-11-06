@@ -14,12 +14,7 @@ ENTITY image_gen IS
 
         -- RGB, 4 bits each
         g_bg_color : integer := 16#FFF#;
-        g_text_color : integer := 16#000#;
-
-        
-        g_initial_lives : integer := 3
-
-        
+        g_text_color : integer := 16#000#
 
     );
     port(
@@ -42,7 +37,10 @@ ENTITY image_gen IS
         SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
 
         -- HMI Outputs
-        o_buzzPin : out std_logic
+        o_buzzPin : out std_logic;
+        HEX5, HEX4, HEX3, HEX2, HEX1, HEX0 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+        LEDR                               : OUT STD_LOGIC_VECTOR(9 DOWNTO 0)
+
     );
 END image_gen;
 
@@ -74,8 +72,9 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_enemiesDraw : std_logic;
     signal w_enemiesColor: integer range 0 to 4095;
 
-    signal r_num_lives : integer range 0 to c_max_lives := g_initial_lives;
+    signal r_num_lives : integer range 0 to c_max_lives := c_initial_lives;
     signal r_score : integer range 0 to c_max_score := 0;
+    signal w_score_bcd : std_logic_vector(23 downto 0);
 
     signal r_game_state : t_state := ST_START;
     signal r_game_paused : std_logic := '0';
@@ -83,6 +82,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal r_game_over : std_logic := '0';
     signal r_game_over_pulse : std_logic := '0';
     signal r_game_active : std_logic := '0';
+    signal r_extra_life_award : std_logic := '0';
 
     signal r_obj_update : std_logic := '0';
     signal r_obj_reset : std_logic := '0';
@@ -116,15 +116,47 @@ BEGIN
     r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF, value of keys at last logical update
     r_key_press <= r_key_d and not KEY;   -- One-cycle strobe, for next logical update
 
+    -- Drive LEDs
+    process(r_num_lives)
+    begin
+        LEDR <= (others => '0');
+        if r_num_lives >= 1 then
+            LEDR(9) <= '1';
+        end if;
+        if r_num_lives >= 2 then
+            LEDR(8) <= '1';
+        end if;
+        if r_num_lives >= 3 then
+            LEDR(7) <= '1';
+        end if;
+        if r_num_lives >= 4 then
+            LEDR(6) <= '1';
+        end if;
+        if r_num_lives >= 5 then
+            LEDR(5) <= '1';
+        end if;
+    end process;
+
     -- Handle lives
     process(pixel_clk)
         variable last_score : integer range 0 to c_max_score := 0;
+        variable last_score_mult : integer range 0 to c_max_score/c_extra_life_score_mult := 0;
+        variable curr_score_mult : integer range 0 to c_max_score/c_extra_life_score_mult := 0;
     begin   
         if rising_edge(pixel_clk) and r_logic_update = '1' then
+            last_score_mult := last_score / c_extra_life_score_mult;
+            curr_score_mult := r_score / c_extra_life_score_mult;
+            r_extra_life_award <= '0';
+
             if r_obj_reset = '1' then
-                r_num_lives <= g_initial_lives;
+                r_num_lives <= c_initial_lives;
             elsif w_ship_collide = '1' then
                 r_num_lives <= r_num_lives-1;
+
+            -- Award extra lives at certain score multiples. Did we just pass a multiple?
+            elsif (curr_score_mult = last_score_mult+1 and r_num_lives < c_max_lives) then
+                r_num_lives <= r_num_lives+1;
+                r_extra_life_award <= '1';
 
             -- Debug
             elsif SW(9) = '1' and r_key_press(0) = '1' and r_num_lives < c_max_lives then
@@ -167,6 +199,10 @@ BEGIN
             elsif w_cannon_collide = '1' then
                 -- Play enemy destroy sound
                 r_effectSel <= "011";
+                r_effectTrig <= '1';
+            elsif r_extra_life_award = '1' then
+                -- Play extra life sound
+                r_effectSel <= "000";
                 r_effectTrig <= '1';
             elsif w_ship_collide = '1' and r_num_lives > 1 then
                 -- Play "life lost" sound
@@ -374,6 +410,7 @@ BEGIN
         i_draw_en => r_game_active,
         i_num_lives => r_num_lives,
         i_score => r_score,
+        o_score_bcd => w_score_bcd,
         o_color => w_hudColor,
         o_draw => w_hudDraw,
         inArbiterPortArray => inArbiterPortArray,
@@ -419,5 +456,13 @@ BEGIN
         i_effectTrig => r_effectTrig,
         o_buzzPin => o_buzzPin
     );
+
+    -- 7Seg Decoders
+    hex5_dec : entity work.bin2seg7  PORT MAP ( inData => w_score_bcd(23 downto 20), blanking => '0', dispHex => '1', dispPoint => '0', dispDash => '0', outSegs => HEX5 );
+    hex4_dec : entity work.bin2seg7  PORT MAP ( inData => w_score_bcd(19 downto 16), blanking => '0', dispHex => '1', dispPoint => '0', dispDash => '0', outSegs => HEX4 );
+    hex3_dec : entity work.bin2seg7  PORT MAP ( inData => w_score_bcd(15 downto 12), blanking => '0', dispHex => '1', dispPoint => '0', dispDash => '0', outSegs => HEX3 );
+    hex2_dec : entity work.bin2seg7  PORT MAP ( inData => w_score_bcd(11 downto 8 ), blanking => '0', dispHex => '1', dispPoint => '0', dispDash => '0', outSegs => HEX2 );
+    hex1_dec : entity work.bin2seg7  PORT MAP ( inData => w_score_bcd(7  downto 4 ), blanking => '0', dispHex => '1', dispPoint => '0', dispDash => '0', outSegs => HEX1 );
+    hex0_dec : entity work.bin2seg7  PORT MAP ( inData => w_score_bcd(3  downto 0 ), blanking => '0', dispHex => '1', dispPoint => '0', dispDash => '0', outSegs => HEX0 );
 
 END behavior;

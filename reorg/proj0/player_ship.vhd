@@ -22,8 +22,10 @@ entity player_ship is
         -- Update position every 1 frames
         g_frame_update_cnt : integer := 1; -- Defines "smoothness" of animation
         g_speed_scale_x : integer := 10; -- Defines the speed range for the tilt, higher value = faster ship movement for same tilt
-        g_speed_scale_y : integer := 25;
-        g_hystr_div : integer := 7; -- Defines the amount of hysteresis on x and y tilts, higher value = less hysteresis
+        g_speed_scale_y : integer := 17;
+        -- Hysteresis params
+        g_min_speed_x : integer := 1;
+        g_min_speed_y : integer := 1;
         g_accel_in_max : integer := 2**8 -- Max input value from accelerometer (absolute value)
     );
     port (
@@ -173,10 +175,10 @@ begin
         r_ySpeed_new := abs(accel_scale_y) * g_speed_scale_y / g_accel_in_max;
 
         -- Hysteresis, require a tilt of a certain steepness before any movement occurs
-        if (r_xSpeed_new < g_speed_scale_x / g_hystr_div) then
+        if (r_xSpeed_new < g_min_speed_x) then
             r_xSpeed_new := 0;
         end if;
-        if (r_ySpeed_new < g_speed_scale_y / g_hystr_div) then
+        if (r_ySpeed_new < g_min_speed_y) then
             r_ySpeed_new := 0;
         end if;
 

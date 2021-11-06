@@ -17,6 +17,12 @@ package defender_common is
     constant c_ship_width : integer := 30;
     constant c_ship_height : integer := 20;
 
+    -- Initial conditions
+    constant c_initial_lives : integer := 3;
+
+    -- Game parameters
+    constant c_extra_life_score_mult : integer := 500; -- After how many points should we award an extra life?
+
     -- Integer ranges
     constant c_max_color : integer := 4095;
     constant c_max_speed : integer := 20;
@@ -50,8 +56,10 @@ package defender_common is
     -- Functions
     function darken(color : integer; shift_val : integer) return integer;
 
-    -- Is the current scan position in range of the rectangle?
+    -- Is the current scan position in range of the rectangle? Provide one point and a size
     function in_range_rect(scan_pos : t_point_2d; obj_pos : t_point_2d; obj_size : t_size_2d) return boolean;
+    -- Provide two points
+    function in_range_rect_2pt(scan_pos : t_point_2d; top_left : t_point_2d; bott_right : t_point_2d) return boolean;
     -- Are the two rectangles intersecting? o1 should be smaller than o2
     function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean;
     -- Is the rectangle off screen?
@@ -97,6 +105,17 @@ package body defender_common is
     begin
         if (scan_pos.x >= obj_pos.x and scan_pos.x < obj_pos.x + obj_size.w) and  -- Inside X
            (scan_pos.y >= obj_pos.y and scan_pos.y < obj_pos.y + obj_size.h) then -- Inside Y
+
+            return true;
+        else
+            return false;
+        end if;
+    end function;
+
+    function in_range_rect_2pt(scan_pos : t_point_2d; top_left : t_point_2d; bott_right : t_point_2d) return boolean is
+    begin
+        if (scan_pos.x >= top_left.x and scan_pos.x < bott_right.x) and  -- Inside X
+           (scan_pos.y >= top_left.y and scan_pos.y < bott_right.y) then -- Inside Y
 
             return true;
         else

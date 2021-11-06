@@ -61,14 +61,16 @@ architecture rtl of enemies is
     type t_enemyArray is array(natural range <>) of t_enemy;
 
     type t_fire is
-        record
-            alive: boolean;
-            pos: t_point_2d;
-            speed: t_speed_2d;
-            size: t_size_2d;
-            color: integer range 0 to c_max_color;
-        end record;
-    constant init_t_fire: t_fire := (false, (0,0), (0,0), (0,0), 0);
+    record
+        alive: boolean;
+        pos: t_point_2d;
+        spawn_pos: t_point_2d;
+        speed: t_speed_2d;
+        size: t_size_2d;
+        color: integer range 0 to c_max_color;
+        rand_slv: std_logic_vector(7 downto 0);
+    end record;
+    constant init_t_fire: t_fire := (false, (0,0), (0,0), (0,0), (0,0), 0, (others => '0'));
     type t_fireArray is array(natural range <>) of t_fire;
 
     -- Constants
@@ -80,9 +82,12 @@ architecture rtl of enemies is
     constant c_enemy_points : t_pointsArray := (21, 14, 7); -- Number of points awarded for each enemy size
     constant c_enemy_color : t_colorArray := (16#F90#, 16#0F0#, 16#00F#, 16#FF0#, 16#F0F#, 16#0FF#, 16#880#, 16#808#);
     
-    constant c_fire_color : integer := 16#F0F#;
+    constant c_fire_tracer_color : integer := 16#808#;
+    constant c_fire_bullet_color : integer := 16#F0F#;
     constant c_fire_size : integer := 4;
-    constant c_fire_speed : integer := 4;
+    constant c_fire_bullet_tail_width : integer := 38; -- Fixed width of the tail on the bullet, at end of tracer
+    constant c_fire_speed : integer := 5;
+    constant c_fire_trace_div : integer := 64; -- Number of divisions of max path length of a bullet. Defines the minimum dash size in the tracer pattern. Higher values result in smaller dashes.
 
     constant c_spawn_ylim_upper : integer := c_upper_bar_pos + c_bar_height;
     constant c_spawn_ylim_lower : integer := c_lower_bar_pos;
@@ -170,6 +175,8 @@ begin
     process(i_row, i_column)
         variable r_draw_tmp : std_logic := '0';
         variable r_color_tmp : integer range 0 to c_max_color := 0;
+        variable r_trace_dist : integer range 0 to 31;
+        variable r_trace_idx : integer range 0 to 15;
 
     begin
 
@@ -186,12 +193,32 @@ begin
             end if;
         end loop;
 
-        -- Render cannon fire
+        -- Render cannon tracers: Draw a random "dashed" line from spawn x to current x, with a thickness defined by the height of the fire
         for i in 0 to c_max_num_fire-1 loop
+
+            if in_range_rect_2pt((i_column, i_row), fireArray(i).spawn_pos, (fireArray(i).pos.x, fireArray(i).pos.y+fireArray(i).size.h)) and fireArray(i).alive then
+
+                r_trace_dist := (i_column - fireArray(i).spawn_pos.x) * c_fire_trace_div / (c_screen_width-c_ship_width); -- Scale distance to range 0 to c_fire_trace_div. Slice the total max distance into c_fire_trace_div pieces.
+                
+                -- Get a bit index 0-7 from the distance
+                r_trace_idx := r_trace_dist mod 8;
+
+                -- Pick out a bit from the random value for this cannon fire. Create the dashed tracer pattern. After half the distance, the tracer should be solid.
+                if (fireArray(i).rand_slv(r_trace_idx) = '1' or fireArray(i).pos.x - i_column < c_fire_bullet_tail_width) then
+                    r_draw_tmp := '1';
+                    r_color_tmp := c_fire_tracer_color;
+                end if;
+
+            end if;
+        end loop;
+
+        -- Render bullets: Draw a square at the front of the fire tracer
+        for i in 0 to c_max_num_fire-1 loop
+            
             if in_range_rect((i_column, i_row), fireArray(i).pos, fireArray(i).size) and fireArray(i).alive then
 
                 r_draw_tmp := '1';
-                r_color_tmp := fireArray(i).color;
+                r_color_tmp := c_fire_bullet_color;
 
             end if;
         end loop;
@@ -400,11 +427,13 @@ begin
                     localFireArray(open_fire_slot).alive := true;
                     -- Square
                     localFireArray(open_fire_slot).size := (c_fire_size,c_fire_size);
-                    localFireArray(open_fire_slot).color := c_fire_color;
+                    localFireArray(open_fire_slot).color := c_fire_tracer_color;
                     -- Just at the front of ship
-                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height);
+                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height - c_fire_size + 1);
+                    localFireArray(open_fire_slot).spawn_pos := localFireArray(open_fire_slot).pos;
                     -- Moving right
                     localFireArray(open_fire_slot).speed := (c_fire_speed, 0);
+                    localFireArray(open_fire_slot).rand_slv := w_lfsr_out_slv;
 
                     cannon_fire := '1';
                 end if;
@@ -433,6 +462,7 @@ begin
         clock => i_clock,
         reset => '0',
         load => '0',
+        cnt_en => '1',
         par_in => (others => '0'),
         value_out => w_lfsr_out_slv
     );

@@ -1,6 +1,7 @@
 -- bin2seg7: Binary to 7-segment decoder, active low outputs for DE10-Lite
 library IEEE;
 use IEEE.std_logic_1164.all;
+library work;
 
 -- Your block has a four bit input inData(3 downto 0), 
 -- a blanking bit input (no segments illuminated, or blank, WHEN blanking is high), 

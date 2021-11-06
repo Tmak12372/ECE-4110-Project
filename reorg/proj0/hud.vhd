@@ -31,8 +31,9 @@ entity hud is
         i_draw_en : in std_logic;
 
         -- Game status
-        i_num_lives : integer range 0 to c_max_lives;
-        i_score : integer range 0 to c_max_score;
+        i_num_lives : in integer range 0 to c_max_lives;
+        i_score : in integer range 0 to c_max_score;
+        o_score_bcd : out std_logic_vector(23 downto 0);
 
         o_color : out integer range 0 to c_max_color;
         o_draw : out std_logic;
@@ -74,20 +75,6 @@ architecture rtl of hud is
     constant c_logo_color : integer := 16#00F#;
 	 
     -- Components
-    component binary_to_bcd IS
-        GENERIC(
-            bits   : INTEGER := 10;  --size of the binary input numbers in bits
-            digits : INTEGER := 3   --number of BCD digits to convert to
-        );  
-        PORT(
-            clk     : IN    STD_LOGIC;                             --system clock
-            reset_n : IN    STD_LOGIC;                             --active low asynchronus reset
-            ena     : IN    STD_LOGIC;                             --latches in new binary number and starts conversion
-            binary  : IN    STD_LOGIC_VECTOR(bits-1 DOWNTO 0);     --binary number to convert
-            busy    : OUT  STD_LOGIC;                              --indicates conversion in progress
-            bcd     : OUT  STD_LOGIC_VECTOR(digits*4-1 DOWNTO 0)   --resulting BCD number
-        );
-    END component;
 	
     -- Signals
     signal w_ship1_draw : std_logic;
@@ -109,6 +96,7 @@ begin
     -- Concurrent assignments
     r_score_slv <= std_logic_vector(to_unsigned(i_score, r_score_slv'length));
     r_fontDrawReset <= w_bcd_conv_busy; -- Bring font draw out of reset when bcd finishes conversion
+    o_score_bcd <= w_score_bcd;
 
     -- Score bcd to string
     process(w_score_bcd)
@@ -184,7 +172,7 @@ begin
     ship4 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x4, i_yPos => c_ship_pos_y, o_draw => w_ship4_draw);
     ship5 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x5, i_yPos => c_ship_pos_y, o_draw => w_ship5_draw);
 	     
-	bcdconv : binary_to_bcd generic map( bits => 20, digits => 6 ) port map (
+	bcdconv : entity work.binary_to_bcd generic map( bits => 20, digits => 6 ) port map (
         clk  => i_clock,
         reset_n => '1',
         ena  => r_start_bcd_conv,
