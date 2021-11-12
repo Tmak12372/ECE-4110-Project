@@ -53,7 +53,7 @@ architecture rtl of overlays is
 
     -- Start Screen
     constant c_start_text1 : string := "Welcome to FPGA Defender";
-    constant c_start_text2 : string := "Press Key 0 to Start";
+    constant c_start_text2 : string := "Press Key 1 to Start";
     constant c_start_length1 : integer := c_start_text1'LENGTH;
     constant c_start_length2 : integer := c_start_text2'LENGTH;
     constant c_start_pos_x1 : integer := c_screen_width/2 - (c_start_length1*c_char_width)/2;
@@ -75,7 +75,7 @@ architecture rtl of overlays is
 
     -- Game Over Screen
     constant c_over_text1 : string := "Game Over!";
-    constant c_over_text2 : string := "Press Key 0 to Play Again";
+    constant c_over_text2 : string := "Press Key 1 to Play Again";
     constant c_over_length1 : integer := c_over_text1'LENGTH;
     constant c_over_length2 : integer := c_over_text2'LENGTH;
     constant c_over_pos_x1 : integer := c_screen_width/2 - (c_over_length1*c_char_width)/2;
@@ -83,7 +83,7 @@ architecture rtl of overlays is
     constant c_over_pos_y1 : integer := c_screen_height/2 - (c_char_height);
     constant c_over_pos_y2 : integer := c_screen_height/2;
     constant c_over_text_color : integer := 16#00F#;
-	 
+	
     -- Components
     
     -- Signals

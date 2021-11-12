@@ -103,6 +103,9 @@ ARCHITECTURE behavior OF image_gen IS
     signal r_effectSel : std_logic_vector(2 downto 0);
     signal r_effectTrig : std_logic := '0';
 
+    signal w_effectPlaying : std_logic;
+    signal w_currEffect : std_logic_vector(2 downto 0);
+
 BEGIN
 
     -- Concurrent assignments
@@ -186,35 +189,53 @@ BEGIN
 
     -- Drive sound block
     process(pixel_clk)
+        variable effectSel : std_logic_vector(2 downto 0);
+        variable effectTrig : std_logic := '0';
     begin   
         if rising_edge(pixel_clk) and r_logic_update = '1' then
             if r_obj_reset = '1' then
                 -- Play start sound
-                r_effectSel <= "000";
-                r_effectTrig <= '1';
-            elsif w_cannon_fire = '1' then
+                effectSel := c_sound_game_start;
+                effectTrig := '1';
+            elsif (w_cannon_fire = '1') then
                 -- Play player fire sound
-                r_effectSel <= "001";
-                r_effectTrig <= '1';
+                effectSel := c_sound_player_fire;
+                effectTrig := '1';
             elsif w_cannon_collide = '1' then
                 -- Play enemy destroy sound
-                r_effectSel <= "011";
-                r_effectTrig <= '1';
+                effectSel := c_sound_enemy_destroy;
+                effectTrig := '1';
             elsif r_extra_life_award = '1' then
                 -- Play extra life sound
-                r_effectSel <= "000";
-                r_effectTrig <= '1';
+                effectSel := c_sound_game_start;
+                effectTrig := '1';
             elsif w_ship_collide = '1' and r_num_lives > 1 then
                 -- Play "life lost" sound
-                r_effectSel <= "011";
-                r_effectTrig <= '1';
+                effectSel := c_sound_player_hit;
+                effectTrig := '1';
             elsif r_game_over_pulse = '1' then
                 -- Play game over sound
-                r_effectSel <= "100";
-                r_effectTrig <= '1';
+                effectSel := c_sound_game_over;
+                effectTrig := '1';
             else
-                r_effectTrig <= '0';
-			   end if;
+                effectTrig := '0';
+			end if;
+
+            -- Override
+            -- Cannon fire sound will not override "special" sounds
+            if (effectSel = c_sound_player_fire and w_effectPlaying = '1' and w_currEffect /= c_sound_player_fire) then
+                effectTrig := '0';
+            end if;
+
+            -- Do not interrupt "game start" sound
+            if (w_effectPlaying = '1' and w_currEffect = c_sound_game_start) then
+                effectTrig := '0';
+            end if;
+
+
+            -- Variables to signals
+            r_effectSel <= effectSel;
+            r_effectTrig <= effectTrig;
         end if;
     end process;
 
@@ -225,7 +246,7 @@ BEGIN
 
             case r_game_state is
                 when ST_START =>
-                    if KEY_b(0) = '1' then
+                    if r_key_press(1) = '1' then
                         r_game_state <= ST_NEW_GAME;
                     else
                         r_game_state <= ST_START;
@@ -251,7 +272,7 @@ BEGIN
                     end if;
                 when ST_GAME_OVER => 
                     r_game_over_pulse <= '0';
-                    if r_key_press(0) = '1' then
+                    if r_key_press(1) = '1' then
                         r_game_state <= ST_NEW_GAME;
                     else
                         r_game_state <= ST_GAME_OVER;
@@ -360,7 +381,7 @@ BEGIN
     end process;
 
     -- Object update signals
-    r_obj_update <= r_logic_update and not r_game_paused and not r_game_over;
+    r_obj_update <= r_logic_update and not r_game_paused and not r_game_over and not r_game_wait_start;
 
     -- Game objects
     player: entity work.player_ship port map(
@@ -404,7 +425,7 @@ BEGIN
 
     hud: entity work.hud port map(
         i_clock => pixel_clk,
-        i_update_pulse => r_obj_update,
+        i_update_pulse => r_logic_update,
         i_row => row,
         i_column => column,
         i_draw_en => r_game_active,
@@ -454,7 +475,9 @@ BEGIN
         i_reset_n => '1',
         i_effectSel => r_effectSel,
         i_effectTrig => r_effectTrig,
-        o_buzzPin => o_buzzPin
+        o_buzzPin => o_buzzPin,
+        o_playing => w_effectPlaying,
+        o_currEffect => w_currEffect
     );
 
     -- 7Seg Decoders

@@ -75,7 +75,7 @@ architecture rtl of enemies is
 
     -- Constants
     constant c_max_num_enemies : integer := 6;
-    constant c_max_num_fire : integer := 10;
+    constant c_max_num_fire : integer := 5;
     constant c_max_spawn_frame_rate : integer := 120;
 
     constant c_enemy_size : t_sizeArray := (20, 40, 60);
@@ -86,14 +86,14 @@ architecture rtl of enemies is
     constant c_fire_bullet_color : integer := 16#F0F#;
     constant c_fire_size : integer := 4;
     constant c_fire_bullet_tail_width : integer := 38; -- Fixed width of the tail on the bullet, at end of tracer
-    constant c_fire_speed : integer := 5;
+    constant c_fire_speed : integer := 6;
     constant c_fire_trace_div : integer := 64; -- Number of divisions of max path length of a bullet. Defines the minimum dash size in the tracer pattern. Higher values result in smaller dashes.
 
     constant c_spawn_ylim_upper : integer := c_upper_bar_pos + c_bar_height;
     constant c_spawn_ylim_lower : integer := c_lower_bar_pos;
     constant c_spawn_range : integer := c_spawn_ylim_lower - c_spawn_ylim_upper;
 
-    constant c_num_stages : integer := 5;
+    constant c_num_stages : integer := 6;
 
     -- Signals
     signal fireArray : t_fireArray(0 to c_max_num_fire-1) := (others => init_t_fire);
@@ -119,8 +119,10 @@ begin
             r_stage <= 3;
         elsif i_score >= 500 and i_score < 700 then
             r_stage <= 4;
-        elsif i_score >= 700 then
+        elsif i_score >= 700 and i_score < 900 then
             r_stage <= 5;
+        elsif i_score >= 900 then
+            r_stage <= 6;
         else
             r_stage <= 0;
         end if;
@@ -139,6 +141,8 @@ begin
             when 4 => 
                 r_num_enemy_target <= 6;
             when 5 => 
+                r_num_enemy_target <= 6;
+            when 6 => 
                 r_num_enemy_target <= 6;
             when others =>
                 r_num_enemy_target <= 0;
@@ -163,6 +167,9 @@ begin
                 r_spawn_frame_rate <= 30;
             when 5 => 
                 r_new_enemy_speed <= 5;
+                r_spawn_frame_rate <= 20;
+            when 6 => 
+                r_new_enemy_speed <= 6;
                 r_spawn_frame_rate <= 20;
             when others =>
                 r_new_enemy_speed <= 0;

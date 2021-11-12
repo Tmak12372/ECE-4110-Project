@@ -28,7 +28,9 @@ entity effect_gen is
         i_effectTrig : in std_logic;
 
         -- Square wave (50% DC) output for buzzer
-        o_buzzPin : out std_logic
+        o_buzzPin : out std_logic;
+        o_playing : out std_logic;
+        o_currEffect : out std_logic_vector(2 downto 0)
     );
 end entity effect_gen;
 
@@ -66,6 +68,7 @@ architecture rtl of effect_gen is
     signal r_buzzDisable : std_logic;
     signal r_effectTrig_d : std_logic := '0';   -- Registered trigger input
     signal r_effectTrig_re : std_logic;         -- Rising edge of trigger input
+    signal r_currEffect : std_logic_vector(2 downto 0);
 
     signal w_romData : std_logic_vector(word_size-1 downto 0);
     
@@ -119,6 +122,7 @@ begin
                         when others =>
                             v_romAddr := 0*effect_size;
                     end case;
+                    r_currEffect <= i_effectSel;
 
                     r_state <= S_LOAD_N_PRE;
 
@@ -196,6 +200,10 @@ begin
         r_romAddr <= STD_LOGIC_VECTOR(TO_UNSIGNED(v_romAddr, r_romAddr'LENGTH));
 
     end process;
+
+    -- Outputs
+    o_currEffect <= r_currEffect;
+    o_playing <= '1' when (r_state /= S_IDLE) else '0';
 
     -- Instantiation and port mapping
     U1 : effect_mem port map (

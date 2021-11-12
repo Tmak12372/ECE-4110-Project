@@ -1,0 +1,60 @@
+Quartus Prime Archive log --	C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0_tmp_archive.qarlog
+
+Archive:	C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0_tmp_archive.qar
+Date:		Thu Nov 11 18:30:10 2021
+Quartus Prime		20.1.1 Build 720 11/11/2020 SJ Lite Edition
+
+	=========== Files Selected: ===========
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/accel_proc.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/bin2seg7.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/defender_common.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/enemies.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/hud.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/image_gen.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/ADXL345_controller.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/binary_to_bcd.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/binary_to_bcd_digit.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot.sopcinfo
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/dual_boot.cmp
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/dual_boot.debuginfo
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/dual_boot.qip
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/dual_boot.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/submodules/altera_dual_boot.v
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/submodules/altera_reset_controller.sdc
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/submodules/altera_reset_controller.v
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/submodules/altera_reset_synchronizer.v
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/submodules/rtl/alt_dual_boot.v
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/dual_boot/synthesis/submodules/rtl/alt_dual_boot_avmm.v
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/gsensor.sv
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/single_port_ram.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/spi.sv
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vgaText/BlockRamArbiter.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vgaText/basicBlockRAM.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vgaText/commonPak.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vgaText/fontROM.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vgaText/text_line.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vga_controller.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/ip/vga_pll_25_175.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/lfsr8.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/overlays.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/player_ship.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0.qpf
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0.qsf
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0_assignment_defaults.qdf
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0_top.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/sound_effects/clock_div.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/sound_effects/effect_gen.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/sound_effects/effect_mem.cmp
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/sound_effects/effect_mem.qip
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/sound_effects/effect_mem.vhd
+C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/triangle.vhd
+	======= Total: 43 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.
+
+
+******* Archived project restoration attempt on Thu Nov 11 18:30:12 2021
+Source archive file:	C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/base/proj0/proj0_tmp_archive.qar
+Archive was extracted into	C:/Users/w3ary/Documents/GitHub/ECE-4110-Project/bonuses/proj1/
+		 - successfully.

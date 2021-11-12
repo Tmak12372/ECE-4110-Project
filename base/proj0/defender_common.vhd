@@ -34,6 +34,14 @@ package defender_common is
     constant c_max_score : integer := 999999;
     constant c_max_lives : integer := 5;
 
+    -- Sounds
+    constant c_sound_game_start : std_logic_vector(2 downto 0) := "000";
+    constant c_sound_player_fire : std_logic_vector(2 downto 0) := "001";
+    constant c_sound_enemy_fire : std_logic_vector(2 downto 0) := "010";
+    constant c_sound_enemy_destroy : std_logic_vector(2 downto 0) := "011";
+    constant c_sound_player_hit : std_logic_vector(2 downto 0) := "011";
+    constant c_sound_game_over : std_logic_vector(2 downto 0) := "100";
+
     -- Types
     type t_point_2d is
     record
