@@ -13,9 +13,9 @@ entity hud is
     generic (
 
         -- Colors
-        g_bar_color : integer := 16#000#;
+        g_bar_color : integer := 16#FFF#;
         g_ship_color : integer := 16#F00#;
-        g_score_color : integer := 16#000#
+        g_score_color : integer := 16#FFF#
         
 
         
@@ -73,6 +73,7 @@ architecture rtl of hud is
     constant c_logo_pos_x : integer := c_screen_width/2 - (c_logo_length*c_char_width/2);
     constant c_logo_pos_y : integer := (c_lower_bar_pos+c_bar_height) + c_bar_offset/2 - c_char_height/2 - 1;
     constant c_logo_color : integer := 16#00F#;
+    constant c_logo_draw_en : boolean := false;
 	 
     -- Components
 	
@@ -118,7 +119,7 @@ begin
 
         -- Bars
         if (i_row > c_upper_bar_pos and i_row < c_upper_bar_pos + c_bar_height) or
-           (i_row > c_lower_bar_pos and i_row < c_lower_bar_pos + c_bar_height) then
+           (i_row > c_lower_bar_pos and i_row < c_lower_bar_pos + c_bar_height and c_lower_bar_draw_en) then
 
             r_draw_tmp := '1';
             r_color_tmp := g_bar_color;
@@ -131,12 +132,19 @@ begin
         end if;
 
         -- Render vgaText
-        for i in 0 to 1 loop
-            if drawElementArray(i).pixelOn then
-                r_draw_tmp := '1';
-                r_color_tmp := drawElementArray(i).rgb;
-            end if;
-        end loop;
+
+        -- Logo
+        if drawElementArray(0).pixelOn and c_logo_draw_en then
+            r_draw_tmp := '1';
+            r_color_tmp := drawElementArray(0).rgb;
+        end if;
+
+        -- Score
+        if drawElementArray(1).pixelOn then
+            r_draw_tmp := '1';
+            r_color_tmp := drawElementArray(1).rgb;
+        end if;
+
 
         -- Override all drawing
         if (i_draw_en = '0') then

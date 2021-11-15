@@ -33,7 +33,7 @@ architecture rtl of single_port_ram is
 	subtype word_t is std_logic_vector((DATA_WIDTH-1) downto 0);
 	type memory_t is array(2**ADDR_WIDTH-1 downto 0) of word_t;
 
-	-- Declare the RAM signal.	
+	-- Declare the RAM signal.
 	signal ram : memory_t;
 
 	-- Register to hold the address 

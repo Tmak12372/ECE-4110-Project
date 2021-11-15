@@ -83,7 +83,7 @@ architecture rtl of enemies is
     constant c_enemy_color : t_colorArray := (16#F90#, 16#0F0#, 16#00F#, 16#FF0#, 16#F0F#, 16#0FF#, 16#880#, 16#808#);
     
     constant c_fire_tracer_color : integer := 16#808#;
-    constant c_fire_bullet_color : integer := 16#F0F#;
+    constant c_fire_bullet_color : integer := 16#FFF#;
     constant c_fire_size : integer := 4;
     constant c_fire_bullet_tail_width : integer := 38; -- Fixed width of the tail on the bullet, at end of tracer
     constant c_fire_speed : integer := 6;

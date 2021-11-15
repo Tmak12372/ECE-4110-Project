@@ -112,7 +112,11 @@ ARCHITECTURE behavior OF image_gen IS
     signal spr_arb_port_out_array: t_arb_port_out_array(0 to c_spr_arb_slots-1) := (others => init_t_arb_port_out);
     signal spr_draw_array: t_spr_draw_elem_array(0 to c_spr_arb_slots-1) := (others => init_t_spr_draw_elem);
 
-    signal r_spr_sel : integer range 0 to c_spr_data_slots-1 := 0;
+    -- CLUT
+    signal r_clut_in_int : integer range 0 to c_palette_size-1;
+    signal r_clut_in_slv : std_logic_vector(c_spr_data_bits_per_pix-1 downto 0);
+    signal r_clut_out_slv : std_logic_vector(c_vga_color_bits-1 downto 0);
+    signal r_clut_out_int : range 0 to c_max_color;
 
     -- Sound effects
     signal r_effectSel : std_logic_vector(2 downto 0);
@@ -135,24 +139,6 @@ BEGIN
     r_key_press <= r_key_d and not KEY;   -- One-cycle strobe, for next logical update
 
     r_scan_pos <= (column, row); -- Current scan position (x,y)
-
-    -- Debug sprites
-    process(pixel_clk)
-    begin   
-        if rising_edge(pixel_clk) and r_logic_update = '1' then
-
-            -- Debug
-            if SW(9) = '1' and r_key_press(0) = '1' then
-                if r_spr_sel < c_spr_data_slots_used-1 then
-                    r_spr_sel <= r_spr_sel+1;
-                else
-                    r_spr_sel <= 0;
-                end if;
-
-            end if;
-            
-        end if;
-    end process;
 
     -- Drive LEDs
     process(r_num_lives)
@@ -353,7 +339,21 @@ BEGIN
         end if;
     end process;
 
-    
+    -- Set CLUT input
+    process(spr_draw_array)
+        variable clut_in : integer range 0 to c_palette_size-1 := 0;
+    begin
+        -- Take the highest indexed sprite requesting a draw
+        for i in 0 to c_spr_arb_slots loop
+            if spr_draw_array(i).draw then
+                clut_in := spr_draw_array(i).color_pal;
+            end if;
+        end loop;
+
+        r_clut_in_int <= clut_in;
+    end process;
+    r_clut_in_slv <= std_logic_vector(to_unsigned(r_clut_in_int, r_clut_in_slv'length));
+    r_clut_out_int <= to_integer(unsigned(r_clut_out_slv));
 
     -- Combi-Logic, draw each pixel for current frame
     PROCESS(disp_en, row, column)
@@ -383,12 +383,6 @@ BEGIN
             if (w_playShipDraw = '1') then
                 pix_color_tmp := w_playShipColor;
             end if;
-            -- Draw sprites
-            for i in 0 to c_spr_arb_slots-1 loop
-                if spr_draw_array(i).draw then
-                    pix_color_tmp := spr_draw_array(i).color;
-                end if;
-            end loop;
             if (r_game_paused = '1' or r_game_over = '1') then
                 pix_color_tmp := darken(pix_color_tmp, 5);
             end if;
@@ -396,7 +390,12 @@ BEGIN
                 pix_color_tmp := w_overlaysColor;
             end if;
 
-            
+
+            for i in spr_draw_array loop
+                if spr_draw_array(i).draw then
+                    pix_color_tmp := r_clut_out_int;
+                end if;
+            end loop;
 
 
         -- Blanking time
@@ -546,9 +545,9 @@ BEGIN
         i_pos => (50,50),
         i_scan_pos => r_scan_pos,
         i_draw_en => '1',
-        i_spr_idx => r_spr_sel,
-        i_width => c_spr_sizes(r_spr_sel).w,
-        i_height => c_spr_sizes(r_spr_sel).h,
+        i_spr_idx => 0,
+        i_width => c_spr_sizes(0).w,
+        i_height => c_spr_sizes(0).h,
         i_scale_x => 5,
         i_scale_y => 5,
         o_draw_elem => spr_draw_array(0),
@@ -586,6 +585,16 @@ BEGIN
         o_draw_elem => spr_draw_array(2),
         o_arb_port => spr_arb_port_in_array(2), -- Out from here, in to arbiter
         i_arb_port => spr_arb_port_out_array(2)
+    );
+
+    clut: entity work.async_rom_init generic map(
+        numElements => c_palette_size,
+        dataWidth => 12,
+        initFile => "../res/palette.mif"
+    )
+    port map(
+        addrA => r_clut_in_slv,
+        dataOutA => r_clut_out
     );
 
     -- Sound effects
