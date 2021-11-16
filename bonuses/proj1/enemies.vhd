@@ -435,8 +435,8 @@ begin
                     -- Square
                     localFireArray(open_fire_slot).size := (c_fire_size,c_fire_size);
                     localFireArray(open_fire_slot).color := c_fire_tracer_color;
-                    -- Just at the front of ship
-                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height - c_fire_size + 1);
+                    -- At the front of ship, at same height as the cannon on the sprite
+                    localFireArray(open_fire_slot).pos := (i_ship_pos_x + c_ship_width, i_ship_pos_y + c_ship_height - c_ship_cannon_offset);
                     localFireArray(open_fire_slot).spawn_pos := localFireArray(open_fire_slot).pos;
                     -- Moving right
                     localFireArray(open_fire_slot).speed := (c_fire_speed, 0);

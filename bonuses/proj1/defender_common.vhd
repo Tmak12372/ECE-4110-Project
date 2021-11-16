@@ -17,11 +17,12 @@ package defender_common is
     constant c_bar_offset : integer := 30;
     constant c_upper_bar_pos : integer := c_bar_offset - c_bar_height;
     constant c_lower_bar_pos : integer := c_screen_height - c_bar_offset;
-    constant c_lower_bar_draw_en : boolean := false;
     constant c_vga_color_bits : integer := 12;
 
-    constant c_ship_width : integer := 30;
-    constant c_ship_height : integer := 20;
+    -- Draw enables
+    constant c_lower_bar_draw_en : boolean := true;
+    constant c_logo_draw_en : boolean := true;
+    
 
     -- Sprite data
     constant c_spr_data_slots : integer := 32;       -- Max slots available
@@ -42,8 +43,8 @@ package defender_common is
     constant c_transp_color : integer := 16#515#;
     constant c_transp_color_pal : integer := 16#1#;
     
-    constant c_spr_arb_slots : integer := 20; -- Number of sprite ROM arbitration slots
-    
+    constant c_spr_num_elems : integer := 6; -- Number of sprite elements in use
+
     type t_spr_size is
     record
         w : integer range 0 to c_spr_data_width_pix;
@@ -52,6 +53,10 @@ package defender_common is
     type t_spr_size_array is array(0 to c_spr_data_slots_used-1) of t_spr_size;
 
     constant c_spr_sizes : t_spr_size_array := ((15,6), (10,4), (9,8), (9,8), (11,4), (8,8)); -- (w, h) of all sprites in memory
+    constant c_ship_scale : integer := 4;
+    constant c_ship_width : integer := c_spr_sizes(0).w * c_ship_scale;
+    constant c_ship_height : integer := c_spr_sizes(0).h * c_ship_scale;
+    constant c_ship_cannon_offset : integer := 2*c_ship_scale; -- Cannon is two pixels from the bottom of the ship
 
     -- Initial conditions
     constant c_initial_lives : integer := 3;

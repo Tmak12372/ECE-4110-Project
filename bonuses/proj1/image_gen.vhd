@@ -108,9 +108,9 @@ ARCHITECTURE behavior OF image_gen IS
     signal drawElementArray: type_drawElementArray(0 to c_num_text_elems-1) := (others => init_type_drawElement);
 
     -- Sprite ROM arb and draw arrays
-    signal spr_arb_port_in_array: t_arb_port_in_array(0 to c_spr_arb_slots-1) := (others => init_t_arb_port_in);
-    signal spr_arb_port_out_array: t_arb_port_out_array(0 to c_spr_arb_slots-1) := (others => init_t_arb_port_out);
-    signal spr_draw_array: t_spr_draw_elem_array(0 to c_spr_arb_slots-1) := (others => init_t_spr_draw_elem);
+    signal spr_port_in_array: t_arb_port_in_array(0 to c_spr_num_elems-1) := (others => init_t_arb_port_in);    -- In to arbiter, out from sprites
+    signal spr_port_out_array: t_arb_port_out_array(0 to c_spr_num_elems-1) := (others => init_t_arb_port_out); -- Out from arbiter, in to sprites
+    signal spr_draw_array: t_spr_draw_elem_array(0 to c_spr_num_elems-1) := (others => init_t_spr_draw_elem);   -- Draw outputs from sprites
 
     signal r_spr_sel : integer range 0 to c_spr_data_slots-1 := 0;
 
@@ -383,12 +383,6 @@ BEGIN
             if (w_playShipDraw = '1') then
                 pix_color_tmp := w_playShipColor;
             end if;
-            -- Draw sprites
-            for i in 0 to c_spr_arb_slots-1 loop
-                if spr_draw_array(i).draw then
-                    pix_color_tmp := spr_draw_array(i).color;
-                end if;
-            end loop;
             if (r_game_paused = '1' or r_game_over = '1') then
                 pix_color_tmp := darken(pix_color_tmp, 5);
             end if;
@@ -397,8 +391,6 @@ BEGIN
             end if;
 
             
-
-
         -- Blanking time
         ELSE                           
             pix_color_tmp := 0;
@@ -436,19 +428,18 @@ BEGIN
         i_clock => pixel_clk,
         i_update_pulse => r_obj_update,
         i_reset_pulse => r_obj_reset,
-
         accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y,
         i_key_press => r_key_press,
-
         i_row => row,
         i_column => column, 
         i_draw_en => r_game_active,
-
         o_pos_x => w_ship_pos_x,
         o_pos_y => w_ship_pos_y,
-
         o_color => w_playShipColor,
-        o_draw => w_playShipDraw
+        o_draw => w_playShipDraw,
+        spr_port_in_array => spr_port_in_array,
+        spr_port_out_array => spr_port_out_array,
+        spr_draw_array => spr_draw_array
     );
 
     enemies: entity work.enemies port map(
@@ -484,7 +475,10 @@ BEGIN
         o_draw => w_hudDraw,
         inArbiterPortArray => inArbiterPortArray,
         outArbiterPortArray => outArbiterPortArray,
-        drawElementArray => drawElementArray
+        drawElementArray => drawElementArray,
+        spr_port_in_array => spr_port_in_array,
+        spr_port_out_array => spr_port_out_array,
+        spr_draw_array => spr_draw_array
     );
 
     -- Terrain
@@ -531,62 +525,14 @@ BEGIN
     -- Sprites
     spr_rom_arb: entity work.spr_rom_arb
 	generic map(
-		numPorts => c_spr_arb_slots
+		numPorts => c_spr_num_elems
 	)
 	port map(
 		clk => pixel_clk,
 		reset => '0',
-		inPortArray => spr_arb_port_in_array,
-		outPortArray => spr_arb_port_out_array
+		inPortArray => spr_port_in_array,
+		outPortArray => spr_port_out_array
 	);
-
-    spr0: entity work.sprite_draw port map(
-        i_clock => pixel_clk,
-        i_reset => '0',
-        i_pos => (50,50),
-        i_scan_pos => r_scan_pos,
-        i_draw_en => '1',
-        i_spr_idx => r_spr_sel,
-        i_width => c_spr_sizes(r_spr_sel).w,
-        i_height => c_spr_sizes(r_spr_sel).h,
-        i_scale_x => 5,
-        i_scale_y => 5,
-        o_draw_elem => spr_draw_array(0),
-        o_arb_port => spr_arb_port_in_array(0), -- Out from here, in to arbiter
-        i_arb_port => spr_arb_port_out_array(0)
-    );
-
-    spr1: entity work.sprite_draw port map(
-        i_clock => pixel_clk,
-        i_reset => '0',
-        i_pos => (100,100),
-        i_scan_pos => r_scan_pos,
-        i_draw_en => '1',
-        i_spr_idx => 1,
-        i_width => c_spr_sizes(1).w,
-        i_height => c_spr_sizes(1).h,
-        i_scale_x => 5,
-        i_scale_y => 5,
-        o_draw_elem => spr_draw_array(1),
-        o_arb_port => spr_arb_port_in_array(1), -- Out from here, in to arbiter
-        i_arb_port => spr_arb_port_out_array(1)
-    );
-
-    spr2: entity work.sprite_draw port map(
-        i_clock => pixel_clk,
-        i_reset => '0',
-        i_pos => (100,200),
-        i_scan_pos => r_scan_pos,
-        i_draw_en => '1',
-        i_spr_idx => 2,
-        i_width => c_spr_sizes(2).w,
-        i_height => c_spr_sizes(2).h,
-        i_scale_x => 5,
-        i_scale_y => 5,
-        o_draw_elem => spr_draw_array(2),
-        o_arb_port => spr_arb_port_in_array(2), -- Out from here, in to arbiter
-        i_arb_port => spr_arb_port_out_array(2)
-    );
 
     -- Sound effects
     soundfx: entity work.effect_gen port map (

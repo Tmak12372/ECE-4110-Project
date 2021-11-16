@@ -47,8 +47,13 @@ entity player_ship is
         o_pos_y : out integer;
 
 
-        o_color : out integer range 0 to 4095;
-        o_draw : out std_logic
+        o_color : out integer range 0 to c_max_color;
+        o_draw : out std_logic;
+
+        -- Sprites
+        spr_port_in_array : inout t_arb_port_in_array(0 to c_spr_num_elems-1);
+        spr_port_out_array : inout t_arb_port_out_array(0 to c_spr_num_elems-1);
+        spr_draw_array : inout t_spr_draw_elem_array(0 to c_spr_num_elems-1)
     );
 end entity player_ship;
 
@@ -85,30 +90,30 @@ begin
     
     -- Set draw output
     process(i_row, i_column, r_xPos, r_yPos)
-        variable r_draw_tmp : std_logic := '0';
-        variable r_color_tmp : integer range 0 to 4095 := 0;
+        variable draw_tmp : std_logic := '0';
+        variable color_tmp : integer range 0 to c_max_color := 0;
     begin
 
-        r_draw_tmp := '0';
-        r_color_tmp := 0;
+        draw_tmp := '0';
+        color_tmp := 0;
 
-        -- is current pixel coordinate inside our box?
-        if (i_column >= r_xPos and i_column <= r_xPos+c_ship_width and i_row >= r_yPos and i_row <= r_yPos+c_ship_height) and -- Inside Rectangle
-           (i_row > ((i_column - r_xPos) * c_ship_height / c_ship_width) + r_yPos) then                                       -- Below hypotenuse of triangle
-
-            r_draw_tmp := '1';
-            r_color_tmp := g_ship_color;
-        end if;
+        -- Draw sprites
+        for i in 0 to 0 loop
+            if spr_draw_array(i).draw then
+                draw_tmp := '1';
+                color_tmp := spr_draw_array(i).color;
+            end if;
+        end loop;
 
         -- Override all drawing
         if (i_draw_en = '0') then
-            r_draw_tmp := '0';
-            r_color_tmp := 0;
+            draw_tmp := '0';
+            color_tmp := 0;
         end if;
 
         -- Assign outputs
-        o_draw <= r_draw_tmp;
-        o_color <= r_color_tmp;
+        o_draw <= draw_tmp;
+        o_color <= color_tmp;
     end process;
 
 
@@ -202,5 +207,25 @@ begin
     -- State Outputs
     o_pos_x <= r_xPos;
     o_pos_y <= r_yPos;
+
+    -- Instantiation
+
+    -- Sprite slot 0
+    -- Index 0: full size ship
+    spr0: entity work.sprite_draw port map(
+        i_clock => i_clock,
+        i_reset => '0',
+        i_pos => (r_xPos,r_yPos),
+        i_scan_pos => (i_column,i_row),
+        i_draw_en => '1',
+        i_spr_idx => 0,
+        i_width => c_spr_sizes(0).w,
+        i_height => c_spr_sizes(0).h,
+        i_scale_x => c_ship_scale,
+        i_scale_y => c_ship_scale,
+        o_draw_elem => spr_draw_array(0),
+        o_arb_port => spr_port_in_array(0), -- Out from here, in to arbiter
+        i_arb_port => spr_port_out_array(0)
+    );
     
 end architecture rtl;

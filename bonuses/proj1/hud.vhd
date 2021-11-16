@@ -41,7 +41,12 @@ entity hud is
         -- vgaText
         inArbiterPortArray : inout type_inArbiterPortArray(0 to c_num_text_elems-1);
         outArbiterPortArray : inout type_outArbiterPortArray(0 to c_num_text_elems-1);
-        drawElementArray : inout type_drawElementArray(0 to c_num_text_elems-1)
+        drawElementArray : inout type_drawElementArray(0 to c_num_text_elems-1);
+
+        -- Sprites
+        spr_port_in_array : inout t_arb_port_in_array(0 to c_spr_num_elems-1);
+        spr_port_out_array : inout t_arb_port_out_array(0 to c_spr_num_elems-1);
+        spr_draw_array : inout t_spr_draw_elem_array(0 to c_spr_num_elems-1)
 
     );
 end entity hud;
@@ -51,14 +56,18 @@ architecture rtl of hud is
 
     -- Position and size of elements
     
-	 
-    constant c_ship_spacing_x : integer := 10;
-    constant c_ship_pos_y   : integer := c_upper_bar_pos/2 - c_ship_height/2;
-    constant c_ship_pos_x1  : integer := 20;
-    constant c_ship_pos_x2  : integer := c_ship_pos_x1 + 1*(c_ship_width + c_ship_spacing_x);
-    constant c_ship_pos_x3  : integer := c_ship_pos_x1 + 2*(c_ship_width + c_ship_spacing_x);
-    constant c_ship_pos_x4  : integer := c_ship_pos_x1 + 3*(c_ship_width + c_ship_spacing_x);
-    constant c_ship_pos_x5  : integer := c_ship_pos_x1 + 4*(c_ship_width + c_ship_spacing_x);
+	-- Using smaller ship sprite (idx 1) to draw lives display
+    constant c_hud_ship_spacing_x : integer := 10;
+    constant c_hud_ship_scale : integer := 3;
+    constant c_hud_ship_width : integer := c_hud_ship_scale*c_spr_sizes(1).w;
+    constant c_hud_ship_height : integer := c_hud_ship_scale*c_spr_sizes(1).h;
+
+    constant c_hud_ship_pos_y   : integer := c_upper_bar_pos/2 - c_hud_ship_height/2;
+    constant c_hud_ship_pos_x1  : integer := 20;
+    constant c_hud_ship_pos_x2  : integer := c_hud_ship_pos_x1 + 1*(c_hud_ship_width + c_hud_ship_spacing_x);
+    constant c_hud_ship_pos_x3  : integer := c_hud_ship_pos_x1 + 2*(c_hud_ship_width + c_hud_ship_spacing_x);
+    constant c_hud_ship_pos_x4  : integer := c_hud_ship_pos_x1 + 3*(c_hud_ship_width + c_hud_ship_spacing_x);
+    constant c_hud_ship_pos_x5  : integer := c_hud_ship_pos_x1 + 4*(c_hud_ship_width + c_hud_ship_spacing_x);
 
     constant c_char_width   : integer := 8;
     constant c_char_height  : integer := 16;
@@ -73,16 +82,11 @@ architecture rtl of hud is
     constant c_logo_pos_x : integer := c_screen_width/2 - (c_logo_length*c_char_width/2);
     constant c_logo_pos_y : integer := (c_lower_bar_pos+c_bar_height) + c_bar_offset/2 - c_char_height/2 - 1;
     constant c_logo_color : integer := 16#00F#;
-    constant c_logo_draw_en : boolean := false;
 	 
     -- Components
 	
     -- Signals
-    signal w_ship1_draw : std_logic;
-    signal w_ship2_draw : std_logic;
-    signal w_ship3_draw : std_logic;
-    signal w_ship4_draw : std_logic;
-    signal w_ship5_draw : std_logic;
+    signal r_lives_draw_en : std_logic_vector(1 to 5);
 
     signal r_score_slv : std_logic_vector(19 downto 0) := (others => '0');
     signal w_score_bcd : std_logic_vector(23 downto 0);
@@ -106,55 +110,82 @@ begin
             r_score_str((5-i)+1) <= character'val(to_integer(unsigned(w_score_bcd((i+1)*4 - 1 downto i*4))) + 16#30#); -- Pick out 4 bits of BCD, add 0x30 to get to ASCII values for digits, then store in the string
         end loop;
     end process;
+
+    -- Lives draw enable
+    process(i_num_lives)
+        variable lives_draw_en : std_logic_vector(1 to 5);
+    begin
+        lives_draw_en := (others => '0');
+
+        if (i_num_lives >= 1) then
+            lives_draw_en(1) := '1';
+        end if;
+        if (i_num_lives >= 2) then
+            lives_draw_en(2) := '1';
+        end if;
+        if (i_num_lives >= 3) then
+            lives_draw_en(3) := '1';
+        end if;
+        if (i_num_lives >= 4) then
+            lives_draw_en(4) := '1';
+        end if;
+        if (i_num_lives >= 5) then
+            lives_draw_en(5) := '1';
+        end if;
+
+        r_lives_draw_en <= lives_draw_en;
+    end process;
 	 
 	 
     -- Set draw output
     process(i_row, i_column)
-        variable r_draw_tmp : std_logic := '0';
-        variable r_color_tmp : integer range 0 to 4095 := 0;
+        variable draw_tmp : std_logic := '0';
+        variable color_tmp : integer range 0 to 4095 := 0;
     begin
 
-        r_draw_tmp := '0';
-        r_color_tmp := 0;
+        draw_tmp := '0';
+        color_tmp := 0;
 
         -- Bars
         if (i_row > c_upper_bar_pos and i_row < c_upper_bar_pos + c_bar_height) or
            (i_row > c_lower_bar_pos and i_row < c_lower_bar_pos + c_bar_height and c_lower_bar_draw_en) then
 
-            r_draw_tmp := '1';
-            r_color_tmp := g_bar_color;
+            draw_tmp := '1';
+            color_tmp := g_bar_color;
         end if;
 
-        -- Lives
-        if (i_num_lives >= 1 and w_ship1_draw='1') or (i_num_lives >= 2 and w_ship2_draw='1') or (i_num_lives >= 3 and w_ship3_draw='1') or (i_num_lives >= 4 and w_ship4_draw='1') or (i_num_lives >= 5 and w_ship5_draw='1') then
-            r_draw_tmp := '1';
-            r_color_tmp := g_ship_color;
-        end if;
+        -- Sprites
+        for i in 1 to 5 loop
+            if spr_draw_array(i).draw then
+                draw_tmp := '1';
+                color_tmp := spr_draw_array(i).color;
+            end if;
+        end loop;
 
         -- Render vgaText
 
         -- Logo
         if drawElementArray(0).pixelOn and c_logo_draw_en then
-            r_draw_tmp := '1';
-            r_color_tmp := drawElementArray(0).rgb;
+            draw_tmp := '1';
+            color_tmp := drawElementArray(0).rgb;
         end if;
 
         -- Score
         if drawElementArray(1).pixelOn then
-            r_draw_tmp := '1';
-            r_color_tmp := drawElementArray(1).rgb;
+            draw_tmp := '1';
+            color_tmp := drawElementArray(1).rgb;
         end if;
 
 
         -- Override all drawing
         if (i_draw_en = '0') then
-            r_draw_tmp := '0';
-            r_color_tmp := 0;
+            draw_tmp := '0';
+            color_tmp := 0;
         end if;
 		  
         -- Assign outputs
-        o_draw <= r_draw_tmp;
-        o_color <= r_color_tmp;
+        o_draw <= draw_tmp;
+        o_color <= color_tmp;
     end process;
 
     -- Update for next frame
@@ -174,11 +205,84 @@ begin
     end process;
 
     -- Instantiation
-    ship1 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x1, i_yPos => c_ship_pos_y, o_draw => w_ship1_draw);
-    ship2 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x2, i_yPos => c_ship_pos_y, o_draw => w_ship2_draw);
-    ship3 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x3, i_yPos => c_ship_pos_y, o_draw => w_ship3_draw);
-    ship4 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x4, i_yPos => c_ship_pos_y, o_draw => w_ship4_draw);
-    ship5 : entity work.triangle port map (i_row => i_row, i_column => i_column, i_xPos => c_ship_pos_x5, i_yPos => c_ship_pos_y, o_draw => w_ship5_draw);
+
+    -- Sprite slots 1-5
+    -- Index 1: small ship
+    ship1: entity work.sprite_draw port map(
+        i_clock => i_clock,
+        i_reset => '0',
+        i_pos => (c_hud_ship_pos_x1, c_hud_ship_pos_y),
+        i_scan_pos => (i_column, i_row),
+        i_draw_en => r_lives_draw_en(1),
+        i_spr_idx => 1,
+        i_width => c_spr_sizes(1).w,
+        i_height => c_spr_sizes(1).h,
+        i_scale_x => c_hud_ship_scale,
+        i_scale_y => c_hud_ship_scale,
+        o_draw_elem => spr_draw_array(1),
+        o_arb_port => spr_port_in_array(1), -- Out from here, in to arbiter
+        i_arb_port => spr_port_out_array(1)
+    );
+    ship2: entity work.sprite_draw port map(
+        i_clock => i_clock,
+        i_reset => '0',
+        i_pos => (c_hud_ship_pos_x2, c_hud_ship_pos_y),
+        i_scan_pos => (i_column, i_row),
+        i_draw_en => r_lives_draw_en(2),
+        i_spr_idx => 1,
+        i_width => c_spr_sizes(1).w,
+        i_height => c_spr_sizes(1).h,
+        i_scale_x => c_hud_ship_scale,
+        i_scale_y => c_hud_ship_scale,
+        o_draw_elem => spr_draw_array(2),
+        o_arb_port => spr_port_in_array(2), -- Out from here, in to arbiter
+        i_arb_port => spr_port_out_array(2)
+    );
+    ship3: entity work.sprite_draw port map(
+        i_clock => i_clock,
+        i_reset => '0',
+        i_pos => (c_hud_ship_pos_x3, c_hud_ship_pos_y),
+        i_scan_pos => (i_column, i_row),
+        i_draw_en => r_lives_draw_en(3),
+        i_spr_idx => 1,
+        i_width => c_spr_sizes(1).w,
+        i_height => c_spr_sizes(1).h,
+        i_scale_x => c_hud_ship_scale,
+        i_scale_y => c_hud_ship_scale,
+        o_draw_elem => spr_draw_array(3),
+        o_arb_port => spr_port_in_array(3), -- Out from here, in to arbiter
+        i_arb_port => spr_port_out_array(3)
+    );
+    ship4: entity work.sprite_draw port map(
+        i_clock => i_clock,
+        i_reset => '0',
+        i_pos => (c_hud_ship_pos_x4, c_hud_ship_pos_y),
+        i_scan_pos => (i_column, i_row),
+        i_draw_en => r_lives_draw_en(4),
+        i_spr_idx => 1,
+        i_width => c_spr_sizes(1).w,
+        i_height => c_spr_sizes(1).h,
+        i_scale_x => c_hud_ship_scale,
+        i_scale_y => c_hud_ship_scale,
+        o_draw_elem => spr_draw_array(4),
+        o_arb_port => spr_port_in_array(4), -- Out from here, in to arbiter
+        i_arb_port => spr_port_out_array(4)
+    );
+    ship5: entity work.sprite_draw port map(
+        i_clock => i_clock,
+        i_reset => '0',
+        i_pos => (c_hud_ship_pos_x5, c_hud_ship_pos_y),
+        i_scan_pos => (i_column, i_row),
+        i_draw_en => r_lives_draw_en(5),
+        i_spr_idx => 1,
+        i_width => c_spr_sizes(1).w,
+        i_height => c_spr_sizes(1).h,
+        i_scale_x => c_hud_ship_scale,
+        i_scale_y => c_hud_ship_scale,
+        o_draw_elem => spr_draw_array(5),
+        o_arb_port => spr_port_in_array(5), -- Out from here, in to arbiter
+        i_arb_port => spr_port_out_array(5)
+    );
 	     
 	bcdconv : entity work.binary_to_bcd generic map( bits => 20, digits => 6 ) port map (
         clk  => i_clock,
