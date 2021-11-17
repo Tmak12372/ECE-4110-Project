@@ -16,7 +16,7 @@ entity terrain is
         i_reset_pulse : in std_logic;
 
         -- Control Signals
-        i_scan_pos : in t_point_2d_onscreen;
+        i_scan_pos : in t_point_2d;
         i_draw_en : in std_logic;
 
         o_color : out integer range 0 to c_max_color;

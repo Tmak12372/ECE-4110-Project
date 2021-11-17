@@ -16,8 +16,7 @@ entity enemies is
         i_reset_pulse : in std_logic;
 
         -- Control Signals
-        i_row : in integer range 0 to c_screen_height-1;
-        i_column : in integer range 0 to c_screen_width-1;
+        i_scan_pos : in t_point_2d;
         i_draw_en : in std_logic;
 
         -- HMI Inputs
@@ -41,8 +40,12 @@ end entity enemies;
 architecture rtl of enemies is
 
     -- Types
-    constant c_num_enemy_sizes : integer := 3;
-    constant c_num_enemy_colors : integer := 8;
+
+    -- A variant consists of:
+    -- sprite index
+    -- scale
+    -- sprite index and scale gives size
+    constant c_num_enemy_variants : integer := 8;
 
     type t_sizeArray is array(0 to c_num_enemy_sizes-1) of integer range 0 to c_max_size;
     type t_colorArray is array(0 to c_num_enemy_colors-1) of integer range 0 to c_max_color;
@@ -50,19 +53,17 @@ architecture rtl of enemies is
 
     type t_enemy is
     record
-        alive: boolean;
+        alive: std_logic;
         pos: t_point_2d;
         speed: t_speed_2d;
-        size_idx: integer range 0 to c_num_enemy_sizes-1;
-        size: t_size_2d;
-        color: integer range 0 to c_max_color;
+        var_idx: integer range 0 to c_num_enemy_variants;
     end record;
-    constant init_t_enemy: t_enemy := (false, (0,0), (0,0), 0, (0,0), 0);
+    constant init_t_enemy: t_enemy := (false, (0,0), (0,0), 0);
     type t_enemyArray is array(natural range <>) of t_enemy;
 
     type t_fire is
     record
-        alive: boolean;
+        alive: std_logic;
         pos: t_point_2d;
         spawn_pos: t_point_2d;
         speed: t_speed_2d;
@@ -74,14 +75,29 @@ architecture rtl of enemies is
     type t_fireArray is array(natural range <>) of t_fire;
 
     -- Constants
-    constant c_max_num_enemies : integer := 6;
-    constant c_max_num_fire : integer := 5;
+    constant c_max_num_enemies : integer := 6; -- Max number of enemies on screen at one time
+    constant c_max_num_fire : integer := 5; -- Max number of bullets on screen at once
     constant c_max_spawn_frame_rate : integer := 120;
 
-    constant c_enemy_size : t_sizeArray := (20, 40, 60);
-    constant c_enemy_points : t_pointsArray := (21, 14, 7); -- Number of points awarded for each enemy size
-    constant c_enemy_color : t_colorArray := (16#F90#, 16#0F0#, 16#00F#, 16#FF0#, 16#F0F#, 16#0FF#, 16#880#, 16#808#);
+    -- Enemy variants
+    constant c_enem_var_spr_idx : t_sizeArray := (2, 3, 3, 4, 4, 5, 6, 6); -- Which sprite to use for each variant
+    constant c_enem_var_scale : t_sizeArray :=   (3, 3, 4, 3, 4, 3, 3, 4); -- Which X and Y scale to use for each variant
+    constant c_enem_var_points : t_pointsArray := (21, 14, 7, 7, 21, 14, 7, 7); -- Number of points awarded for each enemy variant
     
+    type int_array_t is array(natural range <>) of integer;
+
+    function init_array(size : integer) return int_array_t is
+    begin
+        variable rv : int_array_t(0 to size-1);
+        for i in rv'range loop
+            rv(i) := i;
+            c_spr_sizes(c_enem_var_spr_idx(i)).w * c_enem_var_scale(i);
+        end loop;
+        return rv;
+    end function;
+
+    constant c_enem_var_size : int_array_t(0 to 255) := init_array(256);
+
     constant c_fire_tracer_color : integer := 16#808#;
     constant c_fire_bullet_color : integer := 16#FFF#;
     constant c_fire_size : integer := 4;
@@ -179,7 +195,7 @@ begin
     
     
     -- Set draw output
-    process(i_row, i_column)
+    process(i_scan_pos)
         variable r_draw_tmp : std_logic := '0';
         variable r_color_tmp : integer range 0 to c_max_color := 0;
         variable r_trace_dist : integer range 0 to 31;
@@ -192,7 +208,7 @@ begin
 
         -- Scan each enemy and render (using rectangle shape)
         for i in 0 to c_max_num_enemies-1 loop
-            if in_range_rect((i_column, i_row), enemyArray(i).pos, enemyArray(i).size) and enemyArray(i).alive then
+            if in_range_rect(i_scan_pos, enemyArray(i).pos, enemyArray(i).size) and enemyArray(i).alive = '1' then
 
                 r_draw_tmp := '1';
                 r_color_tmp := enemyArray(i).color;
@@ -203,15 +219,15 @@ begin
         -- Render cannon tracers: Draw a random "dashed" line from spawn x to current x, with a thickness defined by the height of the fire
         for i in 0 to c_max_num_fire-1 loop
 
-            if in_range_rect_2pt((i_column, i_row), fireArray(i).spawn_pos, (fireArray(i).pos.x, fireArray(i).pos.y+fireArray(i).size.h)) and fireArray(i).alive then
+            if in_range_rect_2pt(i_scan_pos, fireArray(i).spawn_pos, (fireArray(i).pos.x, fireArray(i).pos.y+fireArray(i).size.h)) and fireArray(i).alive then
 
-                r_trace_dist := (i_column - fireArray(i).spawn_pos.x) * c_fire_trace_div / (c_screen_width-c_ship_width); -- Scale distance to range 0 to c_fire_trace_div. Slice the total max distance into c_fire_trace_div pieces.
+                r_trace_dist := (i_scan_pos.x - fireArray(i).spawn_pos.x) * c_fire_trace_div / (c_screen_width-c_ship_width); -- Scale distance to range 0 to c_fire_trace_div. Slice the total max distance into c_fire_trace_div pieces.
                 
                 -- Get a bit index 0-7 from the distance
                 r_trace_idx := r_trace_dist mod 8;
 
                 -- Pick out a bit from the random value for this cannon fire. Create the dashed tracer pattern. After half the distance, the tracer should be solid.
-                if (fireArray(i).rand_slv(r_trace_idx) = '1' or fireArray(i).pos.x - i_column < c_fire_bullet_tail_width) then
+                if (fireArray(i).rand_slv(r_trace_idx) = '1' or fireArray(i).pos.x - i_scan_pos.x < c_fire_bullet_tail_width) then
                     r_draw_tmp := '1';
                     r_color_tmp := c_fire_tracer_color;
                 end if;
@@ -222,7 +238,7 @@ begin
         -- Render bullets: Draw a square at the front of the fire tracer
         for i in 0 to c_max_num_fire-1 loop
             
-            if in_range_rect((i_column, i_row), fireArray(i).pos, fireArray(i).size) and fireArray(i).alive then
+            if in_range_rect(i_scan_pos, fireArray(i).pos, fireArray(i).size) and fireArray(i).alive = '1' then
 
                 r_draw_tmp := '1';
                 r_color_tmp := c_fire_bullet_color;
@@ -293,12 +309,12 @@ begin
 
                 -- Clear enemy data
                 for i in 0 to c_max_num_enemies-1 loop
-                    localEnemyArray(i).alive := false;
+                    localEnemyArray(i).alive := '0';
                 end loop;
 
                 -- Clear cannon fire data
                 for i in 0 to c_max_num_fire-1 loop
-                    localFireArray(i).alive := false;
+                    localFireArray(i).alive := '0';
                 end loop;
             
             -- Time to update state
@@ -310,9 +326,9 @@ begin
 
                     -- Has ship collided with this enemy?
                     if collide_rect( (i_ship_pos_x, i_ship_pos_y), (c_ship_width, c_ship_height), localEnemyArray(i).pos, localEnemyArray(i).size ) and
-                       localEnemyArray(i).alive then
+                       localEnemyArray(i).alive = '1' then
 
-                        localEnemyArray(i).alive := false;
+                        localEnemyArray(i).alive := '0';
                         ship_collide := '1';
                     end if;
                 end loop;
@@ -324,11 +340,11 @@ begin
                     -- Check each enemy and fire pair for collision
                     for f_i in 0 to c_max_num_fire-1 loop
                         if collide_rect( localFireArray(f_i).pos, localFireArray(f_i).size, localEnemyArray(e_i).pos, localEnemyArray(e_i).size ) and
-                           localEnemyArray(e_i).alive and localFireArray(f_i).alive then
+                           localEnemyArray(e_i).alive = '1' and localFireArray(f_i).alive = '1' then
 
                             -- Kill both enemy and fire
-                            localEnemyArray(e_i).alive := false;
-                            localFireArray(f_i).alive := false;
+                            localEnemyArray(e_i).alive := '0';
+                            localFireArray(f_i).alive := '0';
 
                             -- One cycle pulse caught by external logic
                             cannon_collide := '1';
@@ -341,7 +357,7 @@ begin
                 
                 -- Update enemy positions
                 for i in 0 to c_max_num_enemies-1 loop
-                    if localEnemyArray(i).alive then
+                    if localEnemyArray(i).alive = '1' then
                         localEnemyArray(i).pos.x := localEnemyArray(i).pos.x + localEnemyArray(i).speed.x;
                         localEnemyArray(i).pos.y := localEnemyArray(i).pos.y + localEnemyArray(i).speed.y;
                     end if;
@@ -352,14 +368,14 @@ begin
 
                     -- Is the enemy off screen?
                     if off_screen_rect( localEnemyArray(i).pos, localEnemyArray(i).size ) then
-                        localEnemyArray(i).alive := false;
+                        localEnemyArray(i).alive := '0';
                     end if;
                 end loop;
 
                 -- Count alive enemies
                 num_alive := 0;
                 for i in 0 to c_max_num_enemies-1 loop
-                    if localEnemyArray(i).alive then
+                    if localEnemyArray(i).alive = '1' then
                         num_alive := num_alive+1;
                     else
                         open_enemy_slot := i;
@@ -392,7 +408,7 @@ begin
                         rand_speed := (-r_new_enemy_speed, 0); -- Moving left
 
 
-                        localEnemyArray(open_enemy_slot).alive := true;
+                        localEnemyArray(open_enemy_slot).alive := '1';
                         localEnemyArray(open_enemy_slot).size := rand_size;
                         localEnemyArray(open_enemy_slot).size_idx := rand_size_idx;
                         localEnemyArray(open_enemy_slot).color := rand_color;
@@ -404,7 +420,7 @@ begin
 
                 -- Update fire positions
                 for i in 0 to c_max_num_fire-1 loop
-                    if localFireArray(i).alive then
+                    if localFireArray(i).alive = '1' then
                         localFireArray(i).pos.x := localFireArray(i).pos.x + localFireArray(i).speed.x;
                         localFireArray(i).pos.y := localFireArray(i).pos.y + localFireArray(i).speed.y;
                     end if;
@@ -415,14 +431,14 @@ begin
 
                     -- Is the fire off screen?
                     if off_screen_rect( localFireArray(i).pos, localFireArray(i).size ) then
-                        localFireArray(i).alive := false;
+                        localFireArray(i).alive := '0';
                     end if;
                 end loop;
                 
                 -- Find open fire slot
                 open_fire_slot := -1;
                 for i in 0 to c_max_num_fire-1 loop
-                    if not localFireArray(i).alive then
+                    if localFireArray(i).alive = '0' then
                         open_fire_slot := i;
                     end if;
                 end loop;
@@ -431,7 +447,7 @@ begin
                 cannon_fire := '0';
                 if i_key_press(0) = '1' and open_fire_slot /= -1 then
                     
-                    localFireArray(open_fire_slot).alive := true;
+                    localFireArray(open_fire_slot).alive := '1';
                     -- Square
                     localFireArray(open_fire_slot).size := (c_fire_size,c_fire_size);
                     localFireArray(open_fire_slot).color := c_fire_tracer_color;
@@ -465,6 +481,36 @@ begin
     w_lfsr_out_int <= to_integer(unsigned(w_lfsr_out_slv));
     
     -- Instantiation
+
+    type t_enemy is
+        record
+            alive: boolean;
+            pos: t_point_2d;
+            speed: t_speed_2d;
+            var_idx: integer range 0 to c_num_enemy_variants;
+        end record;
+    
+    -- Sprite slots 6-11
+    -- One sprite for each enemy slot
+    -- Each enemy slot is a position in the enemyArray
+    gen_spr: for i in 0 to c_max_num_enemies-1 generate
+        sprX: entity work.sprite_draw port map(
+            i_clock => i_clock,
+            i_reset => '0',
+            i_pos => enemyArray(i).pos,
+            i_scan_pos => i_scan_pos,
+            i_draw_en => enemyArray(i).alive,
+            i_spr_idx => c_enem_var_spr_idx(enemyArray(i).var_idx),
+            i_width => c_spr_sizes(c_enem_var_spr_idx(enemyArray(i).var_idx)).w,
+            i_height => c_spr_sizes(c_enem_var_spr_idx(enemyArray(i).var_idx)).h,
+            i_scale_x => c_enem_var_scale(enemyArray(i).var_idx),
+            i_scale_y => c_enem_var_scale(enemyArray(i).var_idx),
+            o_draw_elem => spr_draw_array(6+i),
+            o_arb_port => spr_port_in_array(6+i), -- Out from here, in to arbiter
+            i_arb_port => spr_port_out_array(6+i)
+        );
+    end generate gen_spr;
+    
     prng: entity work.lfsr8 port map (
         clock => i_clock,
         reset => '0',

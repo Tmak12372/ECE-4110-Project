@@ -38,8 +38,7 @@ entity player_ship is
         i_key_press : in std_logic_vector(1 downto 0); -- Pulse, keypress event, read on logical update
 
         -- Control Signals
-        i_row : in integer range 0 to c_screen_height-1;
-        i_column : in integer range 0 to c_screen_width-1;
+        i_scan_pos : in t_point_2d;
         i_draw_en : in std_logic;
 
         -- Output State
@@ -89,7 +88,7 @@ begin
     end process;
     
     -- Set draw output
-    process(i_row, i_column, r_xPos, r_yPos)
+    process(i_scan_pos, r_xPos, r_yPos)
         variable draw_tmp : std_logic := '0';
         variable color_tmp : integer range 0 to c_max_color := 0;
     begin
@@ -216,7 +215,7 @@ begin
         i_clock => i_clock,
         i_reset => '0',
         i_pos => (r_xPos,r_yPos),
-        i_scan_pos => (i_column,i_row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => '1',
         i_spr_idx => 0,
         i_width => c_spr_sizes(0).w,

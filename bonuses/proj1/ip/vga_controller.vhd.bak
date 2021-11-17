@@ -94,9 +94,7 @@ BEGIN
 			end if;
 
 
-			if (reset_n = '0') then frame <= '0'; end if; -- don't assert frame in reset
-
-		end if;
+			if (reset_n = '0') frame <= '0'; end if; -- don't assert frame in reset
 	end process;
 
 	-- calculate horizontal and vertical screen position

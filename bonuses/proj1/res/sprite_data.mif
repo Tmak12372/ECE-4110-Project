@@ -23,7 +23,7 @@ BEGIN
     -- E: XXX
     -- F: white
 
-    -- Maximum area per sprite is 15x6. Graphics are skewed to the top left of the max area.
+    -- Maximum area per sprite is 15x8. Graphics are skewed to the top left of the max area.
     -- Each hex digit here corresponds to one pixel
     -- One line = one memory location
 
@@ -32,8 +32,8 @@ BEGIN
     -- idx: Desc, WxH
 
     -- 0: Player ship, large, 15x6
-    00: 112211111111111;
     -- 00: AAAAAAAAAAAAAAA;
+    00: 112211111111111;
     01: 122221111111111;
     02: 322222111111111;
     03: 124422222667111;

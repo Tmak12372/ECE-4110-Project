@@ -10,6 +10,7 @@ package defender_common is
     function ceil_log2(val : positive) return natural;
     
     -- Constants
+    constant c_bg_color : integer := 16#000#;
     constant c_num_text_elems: integer := 8;
     constant c_screen_width : integer := 640;
     constant c_screen_height : integer := 480;
@@ -43,7 +44,7 @@ package defender_common is
     constant c_transp_color : integer := 16#515#;
     constant c_transp_color_pal : integer := 16#1#;
     
-    constant c_spr_num_elems : integer := 6; -- Number of sprite elements in use
+    constant c_spr_num_elems : integer := 12; -- Number of sprite elements in use
 
     type t_spr_size is
     record
@@ -68,10 +69,26 @@ package defender_common is
     constant c_max_color : integer := 4095;
     constant c_max_speed : integer := 20;
     constant c_max_size  : integer := 100;
-    constant c_min_x : integer := -c_max_size;
-    constant c_max_x : integer := c_screen_width+c_max_size;
-    constant c_min_y : integer := -c_max_size;
-    constant c_max_y : integer := c_screen_height+c_max_size;
+
+    -- VGA timings
+    constant c_h_res	:	INTEGER := 640;		--horiztonal display width in pixels
+    constant c_v_res	:	INTEGER := 480;		--vertical display width in rows
+    constant c_h_fp	    :	INTEGER := 16;		--horiztonal front porch width in pixels
+    constant c_h_sync 	:	INTEGER := 96;    	--horiztonal sync pulse width in pixels
+    constant c_h_bp	    :	INTEGER := 48;		--horiztonal back porch width in pixels
+    constant c_v_fp	    :	INTEGER := 10;			--vertical front porch width in rows
+    constant c_v_sync 	:	INTEGER := 2;			--vertical sync pulse width in rows
+    constant c_v_bp	    :	INTEGER := 33;			--vertical back porch width in rows
+    constant c_coord_min_x :	INTEGER := -(c_h_sync + c_h_fp + c_h_bp);
+    constant c_coord_max_x :	INTEGER :=  c_h_res - 1;
+    constant c_coord_min_y :	INTEGER := -(c_v_sync + c_v_fp + c_v_bp);
+    constant c_coord_max_y :	INTEGER :=  c_v_res - 1;
+
+    constant c_min_x : integer := c_coord_min_x;
+    constant c_max_x : integer := c_coord_max_x-c_coord_min_x; -- Allow some extra space on right side
+    constant c_min_y : integer := c_coord_min_y;
+    constant c_max_y : integer := c_coord_max_y-c_coord_min_y; -- Allow some extra space at bottom
+    
     constant c_max_score : integer := 999999;
     constant c_max_lives : integer := 5;
 
@@ -90,19 +107,10 @@ package defender_common is
 
 
     -- Types
-    subtype t_onscreen_x is integer range 0 to c_screen_width-1;
-    subtype t_onscreen_y is integer range 0 to c_screen_height-1;
-
     type t_point_2d is
     record
         x : integer range c_min_x to c_max_x;
         y : integer range c_min_y to c_max_y;
-    end record;
-
-    type t_point_2d_onscreen is
-    record
-        x : integer range 0 to c_screen_width-1;
-        y : integer range 0 to c_screen_height-1;
     end record;
 
     type t_size_2d is
@@ -156,7 +164,7 @@ package defender_common is
     function in_range_rect_2pt(scan_pos : t_point_2d; top_left : t_point_2d; bott_right : t_point_2d) return boolean;
 
     -- Draw line between two points
-    function in_range_line(scan_pos : t_point_2d_onscreen; p1 : t_point_2d_onscreen; p2 : t_point_2d_onscreen; thick : integer) return boolean;
+    function in_range_line(scan_pos : t_point_2d; p1 : t_point_2d; p2 : t_point_2d; thick : integer) return boolean;
 
     -- Are the two rectangles intersecting? o1 should be smaller than o2
     function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean;
@@ -243,7 +251,7 @@ package body defender_common is
     end function;
 
 
-    function in_range_line(scan_pos : t_point_2d_onscreen; p1 : t_point_2d_onscreen; p2 : t_point_2d_onscreen; thick : integer) return boolean is
+    function in_range_line(scan_pos : t_point_2d; p1 : t_point_2d; p2 : t_point_2d; thick : integer) return boolean is
         variable line_mid : t_point_2d := (0,0);
     begin
         line_mid.y := ((scan_pos.x - p1.x) * (p2.y-p1.y) / (p2.x-p1.x) ) + p1.y; -- Calculate line eqn

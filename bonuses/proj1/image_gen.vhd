@@ -10,21 +10,15 @@ use work.commonPak.all;
 use work.defender_common.all;
 
 ENTITY image_gen IS
-    generic (
-
-        -- RGB, 4 bits each
-        g_bg_color : integer := 16#000#;
-        g_text_color : integer := 16#000#
-
-    );
     port(
         -- Control and pixel clock
         pixel_clk:  IN  STD_LOGIC;
 
         -- VGA controller inputs
         disp_en  :  IN  STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
-        row : in integer range 0 to c_screen_height-1;
-        column : in integer range 0 to c_screen_width-1;
+        i_scan_pos : in t_point_2d;
+        frame : in std_logic;
+        line : in std_logic;
 
         -- Color outputs to VGA
         red      :  OUT STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --red magnitude output to DAC
@@ -54,12 +48,9 @@ ARCHITECTURE behavior OF image_gen IS
 
     -- Signals
     SIGNAL KEY_b       : STD_LOGIC_VECTOR(1 DOWNTO 0);
-    signal r_disp_en_d : std_logic := '0';   -- Registered disp_en input
-    signal r_disp_en_fe : std_logic;         -- Falling edge of disp_en input
     signal r_logic_update : std_logic := '0'; -- Pulse
     signal r_key_d : std_logic_vector(1 downto 0);
     signal r_key_press : std_logic_vector(1 downto 0); -- Pulse, keypress event
-    signal r_scan_pos : t_point_2d_onscreen;
 
     -- Draw outputs from game elements
     signal w_playShipDraw : std_logic;
@@ -126,15 +117,9 @@ BEGIN
     -- Concurrent assignments
     KEY_b <= NOT KEY;
 
-    -- disp_en falling edge
-    r_disp_en_d <= disp_en when rising_edge(pixel_clk); -- DFF
-    r_disp_en_fe <= r_disp_en_d and not disp_en;   -- One-cycle strobe
-
     -- KEY falling edge
     r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF, value of keys at last logical update
     r_key_press <= r_key_d and not KEY;   -- One-cycle strobe, for next logical update
-
-    r_scan_pos <= (column, row); -- Current scan position (x,y)
 
     -- Debug sprites
     process(pixel_clk)
@@ -356,7 +341,7 @@ BEGIN
     
 
     -- Combi-Logic, draw each pixel for current frame
-    PROCESS(disp_en, row, column)
+    PROCESS(disp_en, i_scan_pos)
 
         -- Variables
         variable pix_color_tmp  : integer range 0 to 4095 := 0;
@@ -368,7 +353,7 @@ BEGIN
         IF(disp_en = '1') THEN
 
             -- Background
-            pix_color_tmp := g_bg_color;
+            pix_color_tmp := c_bg_color;
 
             -- Render each object
             if (w_terrainDraw = '1') then
@@ -411,7 +396,7 @@ BEGIN
         if (rising_edge(pixel_clk)) then
 
             -- Just finished drawing frame, command a logical update
-            if (r_disp_en_fe = '1' AND row >= c_screen_height-1 AND column >= c_screen_width-1) then
+            if (frame = '1') then
                 r_logic_update <= '1';
             else
                 r_logic_update <= '0';
@@ -430,8 +415,7 @@ BEGIN
         i_reset_pulse => r_obj_reset,
         accel_scale_x => accel_scale_x, accel_scale_y => accel_scale_y,
         i_key_press => r_key_press,
-        i_row => row,
-        i_column => column, 
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_game_active,
         o_pos_x => w_ship_pos_x,
         o_pos_y => w_ship_pos_y,
@@ -446,8 +430,7 @@ BEGIN
         i_clock => pixel_clk,
         i_update_pulse => r_obj_update,
         i_reset_pulse => r_obj_reset,
-        i_row => row,
-        i_column => column,
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_game_active,
         i_key_press => r_key_press,
         i_score => r_score,
@@ -465,8 +448,7 @@ BEGIN
     hud: entity work.hud port map(
         i_clock => pixel_clk,
         i_update_pulse => r_logic_update,
-        i_row => row,
-        i_column => column,
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_game_active,
         i_num_lives => r_num_lives,
         i_score => r_score,
@@ -486,7 +468,7 @@ BEGIN
         i_clock => pixel_clk,
         i_update_pulse => r_obj_update,
         i_reset_pulse => r_obj_reset,
-        i_scan_pos => (column, row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => '0',
         o_color => w_terrainColor,
         o_draw => w_terrainDraw
@@ -495,8 +477,7 @@ BEGIN
     overlays: entity work.overlays port map(
         i_clock => pixel_clk,
         i_update_pulse => r_logic_update,
-        i_row => row,
-        i_column => column,
+        i_scan_pos => i_scan_pos,
         i_draw_en => '1',
         i_score => r_score,
         i_start_screen => r_game_wait_start,

@@ -84,8 +84,9 @@ architecture top_level of proj1_top is
     -- Signal declarations
     SIGNAL KEY_b         : STD_LOGIC_VECTOR(1 DOWNTO 0);
     signal clk_25_175_MHz, disp_en : STD_LOGIC;
-    signal row : integer range 0 to c_screen_height-1;
-    signal column : INTEGER range 0 to c_screen_width-1;
+    signal scan_pos : t_point_2d;
+    signal frame : std_logic;
+    signal line : std_logic;
 
     -- Accelerometer
     signal data_x, data_y                   : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -103,8 +104,22 @@ begin
     U7 : dual_boot port map ( clk_clk => MAX10_CLK1_50, reset_reset_n => '1' );
 
     -- VGA
-    U8	:	vga_pll_25_175 port map (inclk0 => MAX10_CLK1_50, c0 => clk_25_175_MHz);
-    U9	:	entity work.vga_controller port map (pixel_clk => clk_25_175_MHz, reset_n => '1', h_sync => VGA_HS, v_sync => VGA_VS, disp_ena => disp_en, column => column, row => row, n_blank => open, n_sync => open);
+    U8 : vga_pll_25_175 port map (
+        inclk0 => MAX10_CLK1_50,
+        c0 => clk_25_175_MHz
+    );
+
+    U9 : entity work.vga_controller port map (
+        pixel_clk => clk_25_175_MHz,
+        reset_n => '1',
+        hsync => VGA_HS,
+        vsync => VGA_VS,
+        de => disp_en,
+        frame => frame,
+        line => line,
+        sx => scan_pos.x,
+        sy => scan_pos.y
+    );
 
     -- Accel
     U10 : ADXL345_controller PORT MAP (reset_n => '1', clk => MAX10_CLK1_50, data_valid => data_valid, data_x => data_x,  data_y => data_y, data_z => open, SPI_SDI => GSENSOR_SDI, SPI_SDO => GSENSOR_SDO, SPI_CSN => GSENSOR_CS_N, SPI_CLK => GSENSOR_SCLK );
@@ -114,8 +129,9 @@ begin
     U12	: entity work.image_gen port map (
         pixel_clk => clk_25_175_MHz,
         disp_en => disp_en,
-        row => row,
-        column => column, 
+        i_scan_pos => scan_pos,
+        frame => frame,
+        line => line,
         red => VGA_R, 
         green => VGA_G, 
         blue => VGA_B,

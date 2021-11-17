@@ -23,8 +23,7 @@ entity overlays is
 
         -- Control signals
         i_update_pulse : in std_logic;
-        i_row : in integer range 0 to c_screen_height-1;
-        i_column : in integer range 0 to c_screen_width-1;
+        i_scan_pos : in t_point_2d;
         i_draw_en : in std_logic;
 
         -- Game status
@@ -93,7 +92,7 @@ begin
     -- Concurrent assignments	 
 	 
     -- Set draw output
-    process(i_row, i_column)
+    process(i_scan_pos)
         variable r_draw_tmp : std_logic := '0';
         variable r_color_tmp : integer range 0 to 4095 := 0;
     begin
@@ -171,8 +170,8 @@ begin
 		colorMap => (c_start_length1-1 downto 0 => c_start_text_color),
 		inArbiterPort => inArbiterPortArray(2),
 		outArbiterPort => outArbiterPortArray(2),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(2)
 	);
 
@@ -188,8 +187,8 @@ begin
 		colorMap => (c_start_length2-1 downto 0 => c_start_text_color),
 		inArbiterPort => inArbiterPortArray(3),
 		outArbiterPort => outArbiterPortArray(3),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(3)
 	);
 
@@ -206,8 +205,8 @@ begin
 		colorMap => (c_pause_length1-1 downto 0 => c_pause_text_color),
 		inArbiterPort => inArbiterPortArray(4),
 		outArbiterPort => outArbiterPortArray(4),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(4)
 	);
 
@@ -223,8 +222,8 @@ begin
 		colorMap => (c_pause_length2-1 downto 0 => c_pause_text_color),
 		inArbiterPort => inArbiterPortArray(5),
 		outArbiterPort => outArbiterPortArray(5),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(5)
 	);
 
@@ -241,8 +240,8 @@ begin
 		colorMap => (c_over_length1-1 downto 0 => c_over_text_color),
 		inArbiterPort => inArbiterPortArray(6),
 		outArbiterPort => outArbiterPortArray(6),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(6)
 	);
 
@@ -258,8 +257,8 @@ begin
 		colorMap => (c_over_length2-1 downto 0 => c_over_text_color),
 		inArbiterPort => inArbiterPortArray(7),
 		outArbiterPort => outArbiterPortArray(7),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(7)
 	);
     

@@ -26,8 +26,7 @@ entity hud is
 
         -- Control signals
         i_update_pulse : in std_logic;
-        i_row : in integer range 0 to c_screen_height-1;
-        i_column : in integer range 0 to c_screen_width-1;
+        i_scan_pos : in t_point_2d;
         i_draw_en : in std_logic;
 
         -- Game status
@@ -138,7 +137,7 @@ begin
 	 
 	 
     -- Set draw output
-    process(i_row, i_column)
+    process(i_scan_pos)
         variable draw_tmp : std_logic := '0';
         variable color_tmp : integer range 0 to 4095 := 0;
     begin
@@ -147,8 +146,8 @@ begin
         color_tmp := 0;
 
         -- Bars
-        if (i_row > c_upper_bar_pos and i_row < c_upper_bar_pos + c_bar_height) or
-           (i_row > c_lower_bar_pos and i_row < c_lower_bar_pos + c_bar_height and c_lower_bar_draw_en) then
+        if (i_scan_pos.y > c_upper_bar_pos and i_scan_pos.y < c_upper_bar_pos + c_bar_height) or
+           (i_scan_pos.y > c_lower_bar_pos and i_scan_pos.y < c_lower_bar_pos + c_bar_height and c_lower_bar_draw_en) then
 
             draw_tmp := '1';
             color_tmp := g_bar_color;
@@ -208,11 +207,11 @@ begin
 
     -- Sprite slots 1-5
     -- Index 1: small ship
-    ship1: entity work.sprite_draw port map(
+    spr1: entity work.sprite_draw port map(
         i_clock => i_clock,
         i_reset => '0',
         i_pos => (c_hud_ship_pos_x1, c_hud_ship_pos_y),
-        i_scan_pos => (i_column, i_row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_lives_draw_en(1),
         i_spr_idx => 1,
         i_width => c_spr_sizes(1).w,
@@ -223,11 +222,11 @@ begin
         o_arb_port => spr_port_in_array(1), -- Out from here, in to arbiter
         i_arb_port => spr_port_out_array(1)
     );
-    ship2: entity work.sprite_draw port map(
+    spr2: entity work.sprite_draw port map(
         i_clock => i_clock,
         i_reset => '0',
         i_pos => (c_hud_ship_pos_x2, c_hud_ship_pos_y),
-        i_scan_pos => (i_column, i_row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_lives_draw_en(2),
         i_spr_idx => 1,
         i_width => c_spr_sizes(1).w,
@@ -238,11 +237,11 @@ begin
         o_arb_port => spr_port_in_array(2), -- Out from here, in to arbiter
         i_arb_port => spr_port_out_array(2)
     );
-    ship3: entity work.sprite_draw port map(
+    spr3: entity work.sprite_draw port map(
         i_clock => i_clock,
         i_reset => '0',
         i_pos => (c_hud_ship_pos_x3, c_hud_ship_pos_y),
-        i_scan_pos => (i_column, i_row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_lives_draw_en(3),
         i_spr_idx => 1,
         i_width => c_spr_sizes(1).w,
@@ -253,11 +252,11 @@ begin
         o_arb_port => spr_port_in_array(3), -- Out from here, in to arbiter
         i_arb_port => spr_port_out_array(3)
     );
-    ship4: entity work.sprite_draw port map(
+    spr4: entity work.sprite_draw port map(
         i_clock => i_clock,
         i_reset => '0',
         i_pos => (c_hud_ship_pos_x4, c_hud_ship_pos_y),
-        i_scan_pos => (i_column, i_row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_lives_draw_en(4),
         i_spr_idx => 1,
         i_width => c_spr_sizes(1).w,
@@ -268,11 +267,11 @@ begin
         o_arb_port => spr_port_in_array(4), -- Out from here, in to arbiter
         i_arb_port => spr_port_out_array(4)
     );
-    ship5: entity work.sprite_draw port map(
+    spr5: entity work.sprite_draw port map(
         i_clock => i_clock,
         i_reset => '0',
         i_pos => (c_hud_ship_pos_x5, c_hud_ship_pos_y),
-        i_scan_pos => (i_column, i_row),
+        i_scan_pos => i_scan_pos,
         i_draw_en => r_lives_draw_en(5),
         i_spr_idx => 1,
         i_width => c_spr_sizes(1).w,
@@ -307,8 +306,8 @@ begin
 		colorMap => (c_logo_length-1 downto 0 => c_logo_color),
 		inArbiterPort => inArbiterPortArray(0),
 		outArbiterPort => outArbiterPortArray(0),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(0)
 	);
 
@@ -324,8 +323,8 @@ begin
 		colorMap => (c_num_score_digits-1 downto 0 => g_score_color),
 		inArbiterPort => inArbiterPortArray(1),
 		outArbiterPort => outArbiterPortArray(1),
-		hCount => i_column,
-		vCount => i_row,
+		hCount => i_scan_pos.x,
+		vCount => i_scan_pos.y,
 		drawElement => drawElementArray(1)
 	);
     
