@@ -490,12 +490,17 @@ begin
         );
     end generate gen_spr;
     
-    prng: entity work.lfsr8 port map (
-        clock => i_clock,
-        reset => '0',
-        load => '0',
-        cnt_en => '1',
-        par_in => (others => '0'),
-        value_out => w_lfsr_out_slv
+    prng: entity work.lfsr_n
+    generic map (
+        g_taps => "10111000",
+        g_init_seed => X"FF"
+    )
+    port map (
+        i_clock => i_clock,
+        i_reset => '0',
+        i_load => '0',
+        i_cnt_en => '1',
+        i_data => (others => '0'),
+        o_value => w_lfsr_out_slv
     );
 end architecture rtl;
