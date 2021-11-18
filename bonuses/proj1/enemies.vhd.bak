@@ -33,12 +33,7 @@ entity enemies is
         o_score_inc : out integer range 0 to c_max_score;
 
         o_color : out integer range 0 to c_max_color;
-        o_draw : out std_logic;
-
-        -- Sprites
-        spr_port_in_array : inout t_arb_port_in_array(0 to c_spr_num_elems-1);
-        spr_port_out_array : inout t_arb_port_out_array(0 to c_spr_num_elems-1);
-        spr_draw_array : inout t_spr_draw_elem_array(0 to c_spr_num_elems-1)
+        o_draw : out std_logic
     );
 end entity enemies;
 
@@ -57,7 +52,7 @@ architecture rtl of enemies is
         speed: t_speed_2d;
         var_idx: integer range 0 to c_num_enem_variants-1;
     end record;
-    constant init_t_enemy: t_enemy := ('0', (0,0), (0,0), 0);
+    constant init_t_enemy: t_enemy := (false, (0,0), (0,0), 0);
     type t_enemyArray is array(natural range <>) of t_enemy;
 
     type t_fire is
@@ -70,7 +65,7 @@ architecture rtl of enemies is
         color: integer range 0 to c_max_color;
         rand_slv: std_logic_vector(7 downto 0);
     end record;
-    constant init_t_fire: t_fire := ('0', (0,0), (0,0), (0,0), (0,0), 0, (others => '0'));
+    constant init_t_fire: t_fire := (false, (0,0), (0,0), (0,0), (0,0), 0, (others => '0'));
     type t_fireArray is array(natural range <>) of t_fire;
 
     -- Constants
@@ -79,7 +74,7 @@ architecture rtl of enemies is
     constant c_max_spawn_frame_rate : integer := 120;
 
     -- Enemy variants
-    constant c_enem_var_spr_idx : t_intArray(0 to c_num_enem_variants-1) := (2, 3, 3, 4, 4, 5, 5, 5); -- Which sprite to use for each variant
+    constant c_enem_var_spr_idx : t_intArray(0 to c_num_enem_variants-1) := (2, 3, 3, 4, 4, 5, 6, 6); -- Which sprite to use for each variant
     constant c_enem_var_scale : t_intArray(0 to c_num_enem_variants-1)   := (3, 3, 4, 3, 4, 3, 3, 4); -- Which X and Y scale to use for each variant
     constant c_enem_var_points : t_intArray(0 to c_num_enem_variants-1)  := (21, 14, 7, 7, 21, 14, 7, 7); -- Number of points awarded for each enemy variant
     
@@ -196,15 +191,15 @@ begin
     
     -- Set draw output
     process(i_scan_pos)
-        variable draw_tmp : std_logic := '0';
-        variable color_tmp : integer range 0 to c_max_color := 0;
+        variable r_draw_tmp : std_logic := '0';
+        variable r_color_tmp : integer range 0 to c_max_color := 0;
         variable r_trace_dist : integer range 0 to 31;
         variable r_trace_idx : integer range 0 to 15;
 
     begin
 
-        draw_tmp := '0';
-        color_tmp := 0;
+        r_draw_tmp := '0';
+        r_color_tmp := 0;
 
         -- Draw sprites
         for i in 6 to 11 loop
@@ -217,7 +212,7 @@ begin
         -- Render cannon tracers: Draw a random "dashed" line from spawn x to current x, with a thickness defined by the height of the fire
         for i in 0 to c_max_num_fire-1 loop
 
-            if in_range_rect_2pt(i_scan_pos, fireArray(i).spawn_pos, (fireArray(i).pos.x, fireArray(i).pos.y+fireArray(i).size.h)) and fireArray(i).alive = '1' then
+            if in_range_rect_2pt(i_scan_pos, fireArray(i).spawn_pos, (fireArray(i).pos.x, fireArray(i).pos.y+fireArray(i).size.h)) and fireArray(i).alive then
 
                 r_trace_dist := (i_scan_pos.x - fireArray(i).spawn_pos.x) * c_fire_trace_div / (c_screen_width-c_ship_width); -- Scale distance to range 0 to c_fire_trace_div. Slice the total max distance into c_fire_trace_div pieces.
                 
@@ -226,8 +221,8 @@ begin
 
                 -- Pick out a bit from the random value for this cannon fire. Create the dashed tracer pattern. After half the distance, the tracer should be solid.
                 if (fireArray(i).rand_slv(r_trace_idx) = '1' or fireArray(i).pos.x - i_scan_pos.x < c_fire_bullet_tail_width) then
-                    draw_tmp := '1';
-                    color_tmp := c_fire_tracer_color;
+                    r_draw_tmp := '1';
+                    r_color_tmp := c_fire_tracer_color;
                 end if;
 
             end if;
@@ -238,21 +233,21 @@ begin
             
             if in_range_rect(i_scan_pos, fireArray(i).pos, fireArray(i).size) and fireArray(i).alive = '1' then
 
-                draw_tmp := '1';
-                color_tmp := c_fire_bullet_color;
+                r_draw_tmp := '1';
+                r_color_tmp := c_fire_bullet_color;
 
             end if;
         end loop;
 
         -- Override all drawing
         if (i_draw_en = '0') then
-            draw_tmp := '0';
-            color_tmp := 0;
+            r_draw_tmp := '0';
+            r_color_tmp := 0;
         end if;
 		  
         -- Assign outputs
-        o_draw <= draw_tmp;
-        o_color <= color_tmp;
+        o_draw <= r_draw_tmp;
+        o_color <= r_color_tmp;
     end process;
 
     -- Spawn update clock
@@ -398,7 +393,7 @@ begin
 
 
                         localEnemyArray(open_enemy_slot).alive := '1';
-                        localEnemyArray(open_enemy_slot).var_idx := rand_var_idx;
+                        localEnemyArray(open_enemy_slot).rand_var_idx := rand_var_idx;
                         localEnemyArray(open_enemy_slot).pos := rand_pos;
                         localEnemyArray(open_enemy_slot).speed := rand_speed;
 

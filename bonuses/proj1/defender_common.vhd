@@ -232,8 +232,8 @@ package body defender_common is
 
     function collide_rect(o1_pos : t_point_2d; o1_size : t_size_2d; o2_pos : t_point_2d; o2_size : t_size_2d) return boolean is
     begin
-        if ( ((o1_pos.x >= o2_pos.x and o1_pos.x <= o2_pos.x + o2_size.w - 1) or (o1_pos.x + o1_size.w - 1 >= o2_pos.x and o1_pos.x + o1_size.w - 1 <= o2_pos.x + o2_size.w - 1)) and
-             ((o1_pos.y >= o2_pos.y and o1_pos.y <= o2_pos.y + o2_size.h - 1) or (o1_pos.y + o1_size.h - 1 >= o2_pos.y and o1_pos.y + o1_size.h - 1 <= o2_pos.y + o2_size.h - 1)) ) then
+        if ( (o1_pos.x < o2_pos.x + o2_size.w) and (o1_pos.x + o1_size.w > o2_pos.x) and
+             (o1_pos.y < o2_pos.y + o2_size.h) and (o1_pos.y + o1_size.h > o2_pos.y) ) then
 
             return true;
         else

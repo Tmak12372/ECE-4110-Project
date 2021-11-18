@@ -252,6 +252,11 @@ BEGIN
                 effectTrig := '0';
             end if;
 
+            -- Debug
+            if (SW(8) = '1') then
+                effectTrig := '0';
+            end if;
+
 
             -- Variables to signals
             r_effectSel <= effectSel;
@@ -442,7 +447,10 @@ BEGIN
         o_cannon_fire => w_cannon_fire,
         o_score_inc => w_score_inc,
         o_color => w_enemiesColor,
-        o_draw => w_enemiesDraw
+        o_draw => w_enemiesDraw,
+        spr_port_in_array => spr_port_in_array,
+        spr_port_out_array => spr_port_out_array,
+        spr_draw_array => spr_draw_array
     );
 
     hud: entity work.hud port map(
