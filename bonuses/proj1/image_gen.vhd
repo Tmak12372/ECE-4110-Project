@@ -300,7 +300,11 @@ BEGIN
                 when ST_GAME_OVER => 
                     r_game_over_pulse <= '0';
                     if r_key_press(1) = '1' then
-                        r_game_state <= ST_NEW_GAME;
+                        if SW(0) = '0' then
+                            r_game_state <= ST_NEW_GAME; -- Start a new game immediately
+                        else
+                            r_game_state <= ST_START;    -- Go back to start screen
+                        end if;
                     else
                         r_game_state <= ST_GAME_OVER;
                     end if;
