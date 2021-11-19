@@ -27,7 +27,7 @@ package defender_common is
 
     -- Sprite data
     constant c_spr_data_slots : integer := 32;       -- Max slots available
-    constant c_spr_data_slots_used : integer := 6;   -- Number of slots in use
+    constant c_spr_data_slots_used : integer := 10;   -- Number of slots in use
     constant c_spr_data_width_pix : integer := 15;   -- Max sprite width
     constant c_spr_data_height_pix : integer := 8;   -- Max sprite height
     constant c_spr_data_bits_per_pix : integer := 4; -- 4 bits of color data per pixel
@@ -36,8 +36,8 @@ package defender_common is
     constant c_spr_data_depth : integer := c_spr_data_slots*c_spr_data_height_pix; -- Depth of the sprite ROM. One location per line.
     constant c_spr_addr_bits : integer := ceil_log2(c_spr_data_depth); -- Number of bits in the sprite ROM address.
     
-    constant c_spr_max_scale_x : integer := 8; -- The largest sprite scale factor we will allow
-    constant c_spr_max_scale_y : integer := 8;
+    constant c_spr_max_scale_x : integer := 10; -- The largest sprite scale factor we will allow
+    constant c_spr_max_scale_y : integer := 10;
 
     
     constant c_palette_size : integer := 16; -- Number of colors in the main palette
@@ -53,7 +53,7 @@ package defender_common is
     end record;
     type t_spr_size_array is array(0 to c_spr_data_slots_used-1) of t_spr_size;
 
-    constant c_spr_sizes : t_spr_size_array := ((15,6), (10,4), (9,8), (9,8), (11,4), (8,8)); -- (w, h) of all sprites in memory
+    constant c_spr_sizes : t_spr_size_array := ((15,6), (10,4), (9,8), (9,8), (11,4), (8,8), (8,7), (7,7), (5,4), (9,7)); -- (w, h) of all sprites in memory
     constant c_ship_scale : integer := 4;
     constant c_ship_width : integer := c_spr_sizes(0).w * c_ship_scale;
     constant c_ship_height : integer := c_spr_sizes(0).h * c_ship_scale;

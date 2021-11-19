@@ -11,9 +11,9 @@ entity starfield is
     generic (
         g_width : integer := 800;
         g_height : integer := 525;
-        g_incr : integer := -1; -- Larger negative numbers will increase speed of animation
+        g_incr : integer := -1; -- Larger numbers will impact speed of animation
         g_seed : std_logic_vector(20 downto 0) := std_logic_vector(to_unsigned(16#1FFFFF#, 21)); -- Seed for the LFSR
-        g_mask : std_logic_vector(20 downto 0) := std_logic_vector(to_unsigned(16#FFF#, 21))    -- More ones will increase the density
+        g_mask : std_logic_vector(20 downto 0) := std_logic_vector(to_unsigned(16#FFF#, 21));    -- More ones will increase the density
     );
     port (
         i_clock : in std_logic;
@@ -56,12 +56,12 @@ begin
     -- select some bits to form stars
     process(sf_reg)
     begin
-        if ((sf_reg or g_mask) = "111111111111111111111") then
-            o_sf_on <= '1';
+        if ((sf_reg or g_mask) = (others => '1')) then
+            sf_on <= '1'
         else
-            o_sf_on <= '0';
+            sf_on <= '0';
         end if;
-        o_sf_bright <= sf_reg(7 downto 0);
+        sf_star <= sf_reg(7 downto 0);
     end process;
 
     lfsr_rst <= '1' when (sf_cnt = 0) else '0';

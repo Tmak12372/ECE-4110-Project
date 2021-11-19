@@ -45,7 +45,7 @@ end entity enemies;
 architecture rtl of enemies is
 
     -- Types
-    constant c_num_enem_variants : integer := 8;
+    constant c_num_enem_variants : integer := 11;
 
     type t_sizeArray is array(natural range <>) of t_size_2d;
     type t_intArray is array(natural range <>) of integer;
@@ -79,9 +79,9 @@ architecture rtl of enemies is
     constant c_max_spawn_frame_rate : integer := 120;
 
     -- Enemy variants
-    constant c_enem_var_spr_idx : t_intArray(0 to c_num_enem_variants-1) := (2, 3, 3, 4, 4, 5, 5, 5); -- Which sprite to use for each variant
-    constant c_enem_var_scale : t_intArray(0 to c_num_enem_variants-1)   := (3, 3, 4, 3, 4, 3, 3, 4); -- Which X and Y scale to use for each variant
-    constant c_enem_var_points : t_intArray(0 to c_num_enem_variants-1)  := (21, 14, 7, 7, 21, 14, 7, 7); -- Number of points awarded for each enemy variant
+    constant c_enem_var_spr_idx : t_intArray(0 to c_num_enem_variants-1) := (2,  3,  4,  5, 6,  7,  8, 9, 7, 2, 3); -- Which sprite to use for each variant
+    constant c_enem_var_scale   : t_intArray(0 to c_num_enem_variants-1) := (4,  4,  5,  4, 5,  5,  7, 4, 8, 7, 2); -- Which X and Y scale to use for each variant
+    constant c_enem_var_points  : t_intArray(0 to c_num_enem_variants-1) := (14, 14, 21, 7, 21, 7,  7, 7, 7, 7, 21); -- Number of points awarded for each enemy variant
     
     -- Generate scaled sizes for each enemy variant. These will be used for the bounding box of each enemy.
     function init_enemy_var_size return t_sizeArray is
@@ -119,26 +119,24 @@ architecture rtl of enemies is
     signal r_new_enemy_speed : integer range -c_max_speed to c_max_speed := 0; -- How fast should new enemies go?
     signal r_spawn_frame_rate : integer range 0 to c_max_spawn_frame_rate := 0; -- How often should we spawn enemies (in # of frames)
     signal r_spawn_update : std_logic := '0'; -- Time to update spawn? (Possibly spawn a new enemy)
-    signal w_lfsr_out_slv : std_logic_vector(7 downto 0);
-    signal w_lfsr_out_int : integer range 0 to 2**8-1;
+    signal w_lfsr_out_slv : std_logic_vector(20 downto 0);
+    signal w_lfsr_out_int : integer range 0 to 2**21-1;
 
 begin
 
     -- Set stage from score
     process(i_score)
     begin
-        if i_score >= 0 and i_score < 100 then
+        if i_score >= 0 and i_score < 150 then
             r_stage <= 1;
-        elsif i_score >= 100 and i_score < 300 then
+        elsif i_score >= 150 and i_score < 400 then
             r_stage <= 2;
-        elsif i_score >= 300 and i_score < 500 then
+        elsif i_score >= 400 and i_score < 700 then
             r_stage <= 3;
-        elsif i_score >= 500 and i_score < 700 then
+        elsif i_score >= 700 and i_score < 1000 then
             r_stage <= 4;
-        elsif i_score >= 700 and i_score < 900 then
+        elsif i_score >= 1000 then
             r_stage <= 5;
-        elsif i_score >= 900 then
-            r_stage <= 6;
         else
             r_stage <= 0;
         end if;
@@ -381,11 +379,11 @@ begin
                     if num_alive < r_num_enemy_target then
                         
                         -- 3 bits to pick variant index
-                        rand_var_idx := to_integer(unsigned(w_lfsr_out_slv(7 downto 5))) mod c_num_enem_variants;
+                        rand_var_idx := to_integer(unsigned(w_lfsr_out_slv)) mod c_num_enem_variants;
                         rand_size := c_enem_var_size(rand_var_idx);
 
                         -- Pick y pos
-                        rand_pos.y := w_lfsr_out_int * c_spawn_range / 255; -- Scale to spawn range
+                        rand_pos.y := w_lfsr_out_int mod c_spawn_range; -- Scale to spawn range
                         rand_pos.y := rand_pos.y + c_spawn_ylim_upper;
                         -- Too low? Fix if so
                         if rand_pos.y + rand_size.h > c_spawn_ylim_lower then
@@ -443,7 +441,7 @@ begin
                     localFireArray(open_fire_slot).spawn_pos := localFireArray(open_fire_slot).pos;
                     -- Moving right
                     localFireArray(open_fire_slot).speed := (c_fire_speed, 0);
-                    localFireArray(open_fire_slot).rand_slv := w_lfsr_out_slv;
+                    localFireArray(open_fire_slot).rand_slv := w_lfsr_out_slv(7 downto 0);
 
                     cannon_fire := '1';
                 end if;
@@ -492,14 +490,14 @@ begin
     
     prng: entity work.lfsr_n
     generic map (
-        g_taps => "10111000",
-        g_init_seed => X"FF"
+        g_taps => "101000000000000000000",
+        g_init_seed => std_logic_vector(to_unsigned(16#9A9A9#, 21))
     )
     port map (
         i_clock => i_clock,
         i_reset => '0',
         i_load => '0',
-        i_cnt_en => '1',
+        i_cnt_en => i_update_pulse,
         i_data => (others => '0'),
         o_value => w_lfsr_out_slv
     );

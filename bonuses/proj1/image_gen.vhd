@@ -92,6 +92,8 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_cannon_collide : std_logic;
     signal w_cannon_fire : std_logic;
     signal w_score_inc : integer;
+
+    signal r_terrain_en : std_logic; -- Should the starfields be animated?
     
     -- vgaText
     signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
@@ -412,6 +414,7 @@ BEGIN
 
     -- Object update signals
     r_obj_update <= r_logic_update and not r_game_paused and not r_game_over and not r_game_wait_start;
+    r_terrain_en <= '1';
 
     -- Game objects
     player: entity work.player_ship port map(
@@ -474,10 +477,9 @@ BEGIN
     -- Terrain
     terrain: entity work.terrain port map(
         i_clock => pixel_clk,
-        i_update_pulse => r_obj_update,
-        i_reset_pulse => r_obj_reset,
+        i_en => r_terrain_en,
         i_scan_pos => i_scan_pos,
-        i_draw_en => '0',
+        i_draw_en => '1',
         o_color => w_terrainColor,
         o_draw => w_terrainDraw
     );
