@@ -26,8 +26,8 @@ package defender_common is
     
 
     -- Sprite data
-    constant c_spr_data_slots : integer := 32;       -- Max slots available
-    constant c_spr_data_slots_used : integer := 10;   -- Number of slots in use
+    constant c_spr_data_slots : integer := 64;       -- Max slots available
+    constant c_spr_data_slots_used : integer := 36;   -- Number of slots in use
     constant c_spr_data_width_pix : integer := 15;   -- Max sprite width
     constant c_spr_data_height_pix : integer := 8;   -- Max sprite height
     constant c_spr_data_bits_per_pix : integer := 4; -- 4 bits of color data per pixel
@@ -44,7 +44,7 @@ package defender_common is
     constant c_transp_color : integer := 16#515#;
     constant c_transp_color_pal : integer := 16#1#;
     
-    constant c_spr_num_elems : integer := 12; -- Number of sprite elements in use
+    constant c_spr_num_elems : integer := 24; -- Number of sprite elements in use
 
     type t_spr_size is
     record
@@ -53,7 +53,7 @@ package defender_common is
     end record;
     type t_spr_size_array is array(0 to c_spr_data_slots_used-1) of t_spr_size;
 
-    constant c_spr_sizes : t_spr_size_array := ((15,6), (10,4), (9,8), (9,8), (11,4), (8,8), (8,7), (7,7), (5,4), (9,7)); -- (w, h) of all sprites in memory
+    constant c_spr_sizes : t_spr_size_array := ((15,6), (10,4), (9,8), (9,8), (11,4), (8,8), (8,7), (7,7), (5,4), (9,7), others => (8,8)); -- (w, h) of all sprites in memory
     constant c_ship_scale : integer := 4;
     constant c_ship_width : integer := c_spr_sizes(0).w * c_ship_scale;
     constant c_ship_height : integer := c_spr_sizes(0).h * c_ship_scale;
@@ -124,6 +124,9 @@ package defender_common is
         x : integer range -c_max_speed to c_max_speed;
         y : integer range -c_max_speed to c_max_speed;
     end record;
+    type t_intArray is array(natural range <>) of integer;
+    type t_pointArray is array(natural range <>) of t_point_2d;
+
 
     -- Arbitration
     type t_arb_port_in is

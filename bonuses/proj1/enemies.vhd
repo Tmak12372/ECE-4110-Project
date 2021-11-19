@@ -18,6 +18,7 @@ entity enemies is
         -- Control Signals
         i_scan_pos : in t_point_2d;
         i_draw_en : in std_logic;
+        i_lfsr_free_run : in std_logic; -- Allow the LFSR to free run?
 
         -- HMI Inputs
         i_key_press : in std_logic_vector(1 downto 0); -- Pulse, keypress event, read on logical update
@@ -48,7 +49,6 @@ architecture rtl of enemies is
     constant c_num_enem_variants : integer := 11;
 
     type t_sizeArray is array(natural range <>) of t_size_2d;
-    type t_intArray is array(natural range <>) of integer;
 
     type t_enemy is
     record
@@ -121,6 +121,7 @@ architecture rtl of enemies is
     signal r_spawn_update : std_logic := '0'; -- Time to update spawn? (Possibly spawn a new enemy)
     signal w_lfsr_out_slv : std_logic_vector(20 downto 0);
     signal w_lfsr_out_int : integer range 0 to 2**21-1;
+    signal lfsr_cnt_en : std_logic;
 
 begin
 
@@ -464,6 +465,7 @@ begin
 
     -- Concurrent assignments
     w_lfsr_out_int <= to_integer(unsigned(w_lfsr_out_slv));
+    lfsr_cnt_en <= i_update_pulse or i_lfsr_free_run;
     
     -- Instantiation
     
@@ -497,7 +499,7 @@ begin
         i_clock => i_clock,
         i_reset => '0',
         i_load => '0',
-        i_cnt_en => i_update_pulse,
+        i_cnt_en => lfsr_cnt_en,
         i_data => (others => '0'),
         o_value => w_lfsr_out_slv
     );

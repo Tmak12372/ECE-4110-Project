@@ -438,6 +438,8 @@ BEGIN
         i_clock => pixel_clk,
         i_update_pulse => r_obj_update,
         i_reset_pulse => r_obj_reset,
+        -- Allow the main LFSR to be freely clocked while on start screen. This will ensure the game starts at a random point in the sequence each time.
+        i_lfsr_free_run => r_game_wait_start,
         i_scan_pos => i_scan_pos,
         i_draw_en => r_game_active,
         i_key_press => r_key_press,
@@ -489,6 +491,7 @@ BEGIN
         i_update_pulse => r_logic_update,
         i_scan_pos => i_scan_pos,
         i_draw_en => '1',
+        i_line => line,
         i_score => r_score,
         i_start_screen => r_game_wait_start,
         i_pause_screen => r_game_paused,
@@ -497,7 +500,10 @@ BEGIN
         o_draw => w_overlaysDraw,
         inArbiterPortArray => inArbiterPortArray,
         outArbiterPortArray => outArbiterPortArray,
-        drawElementArray => drawElementArray
+        drawElementArray => drawElementArray,
+        spr_port_in_array => spr_port_in_array,
+        spr_port_out_array => spr_port_out_array,
+        spr_draw_array => spr_draw_array
     
     );
 

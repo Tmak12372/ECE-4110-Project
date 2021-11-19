@@ -64,7 +64,7 @@ architecture rtl of overlays is
     constant c_start_pos_x1 : integer := c_screen_width/2 - (c_start_length1*c_char_width)/2;
     constant c_start_pos_x2 : integer := c_screen_width/2 - (c_start_length2*c_char_width)/2;
     constant c_start_pos_y1 : integer := c_screen_height/2 - (c_char_height);
-    constant c_start_pos_y2 : integer := 350;
+    constant c_start_pos_y2 : integer := 400;
     constant c_start_text_color : integer := 16#00F#;
 
     constant c_start_spr_num : integer := 12;
@@ -78,15 +78,13 @@ architecture rtl of overlays is
     constant c_start_spr_message : t_intArray(0 to c_start_spr_num-1) := (15,25,16,10, 13,14,15,14,23,13,14,27); -- 'A' starts at sprite index (code point) 10
 
     -- Font colors
-    constant c_colr_a     : integer := 16#202#;  -- initial colour A
-    constant c_colr_inc_a : integer := 16#101#;  -- increment for colour A
-    constant c_colr_b     : integer := 16#002#;  -- initial colour b
-    constant c_colr_inc_b : integer := 16#001#;  -- increment for colour B
-    constant c_slin_1a    : integer := 150;  -- 1st line of colour a
-    constant c_slin_1b    : integer := 178;  -- 1st line of colour b
-    constant c_slin_2a    : integer := 250;  -- 2nd line of colour a
-    constant c_slin_2b    : integer := 278;  -- 2nd line of colour b
-    constant c_line_inc   : integer := 3;      -- lines of each colour
+    constant c_colr_a   : integer := 16#125#;  -- initial colour A
+    constant c_colr_b   : integer := 16#421#;  -- initial colour b
+    constant c_slin_1a  : integer := 150;  -- 1st line of colour a
+    constant c_slin_1b  : integer := 178;  -- 1st line of colour b
+    constant c_slin_2a  : integer := 250;  -- 2nd line of colour a
+    constant c_slin_2b  : integer := 278;  -- 2nd line of colour b
+    constant c_line_inc : integer := 3;      -- lines of each colour
 
     -- Pause Screen
     constant c_pause_text1 : string := "Game Paused";
@@ -115,8 +113,7 @@ architecture rtl of overlays is
     -- Signals
     signal font_colr : integer range 0 to c_max_color;
     signal cnt_line : integer range 0 to c_line_inc;
-    signal colr_sel : std_logic := '0'; -- 0 for color A, 1 for color B
-	
+	 
 begin
     -- Concurrent assignments	
 
@@ -128,20 +125,14 @@ begin
                 if (i_scan_pos.y = c_slin_1a or i_scan_pos.y = c_slin_2a) then
                     cnt_line <= 0;
                     font_colr <= c_colr_a;
-                    colr_sel <= '0';
                 elsif (i_scan_pos.y = c_slin_1b or i_scan_pos.y = c_slin_2b) then
                     cnt_line <= 0;
                     font_colr <= c_colr_b;
-                    colr_sel <= '1';
                 else
                     cnt_line <= cnt_line + 1;
-                    if (cnt_line = c_line_inc-1) then
+                    if (cnt_line == LINE_INC-1) then
                         cnt_line <= 0;
-                        if (colr_sel = '0') then
-                            font_colr <= font_colr + c_colr_inc_a;
-                        else
-                            font_colr <= font_colr + c_colr_inc_b;
-                        end if;
+                        font_colr <= font_colr + 16#111#;
                     end if;
                 end if;
             end if;
@@ -168,8 +159,7 @@ begin
 
         -- Render vgaText
         if (i_start_screen = '1') then
-            -- Element 4 was removed, welcome text replaced with sprites
-            for i in 3 to 3 loop
+            for i in 2 to 3 loop
                 if drawElementArray(i).pixelOn then
                     draw_tmp := '1';
                     color_tmp := drawElementArray(i).rgb;
@@ -177,7 +167,8 @@ begin
             end loop;
         end if;
         if (i_pause_screen = '1') then
-            for i in 4 to 5 loop
+            -- Element 4 was removed, welcome text replaced with sprites
+            for i in 5 to 5 loop
                 if drawElementArray(i).pixelOn then
                     draw_tmp := '1';
                     color_tmp := drawElementArray(i).rgb;

@@ -140,7 +140,8 @@ begin
         case r_state is
             when ST_IDLE =>
                 -- Get started fetching first line of data, one scanline early, since other sprites are also using the bus.
-                if (i_scan_pos.x = i_pos.x-1 and i_scan_pos.y = i_pos.y-1) then
+                -- Don't fetch any data if we're not enabled
+                if (i_scan_pos.x = i_pos.x-1 and i_scan_pos.y = i_pos.y-1 and i_draw_en = '1') then
                     r_next_state <= ST_START;
                 else
                     r_next_state <= ST_IDLE;
