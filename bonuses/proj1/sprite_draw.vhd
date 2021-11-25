@@ -9,9 +9,9 @@ use work.defender_common.all;
 
 entity sprite_draw is port(
 
-    i_clock : in std_logic;              -- clock
-    i_reset : in std_logic;              -- synchronous reset
-    i_pos : in t_point_2d;               -- top left of sprite
+    i_clock : in std_logic;     -- clock
+    i_reset : in std_logic;     -- synchronous reset
+    i_pos : in t_point_2d;      -- top left of sprite
     i_scan_pos : in t_point_2d; -- current VGA scan position
     i_draw_en : in std_logic;
 

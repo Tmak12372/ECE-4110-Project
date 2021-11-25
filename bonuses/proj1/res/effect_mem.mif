@@ -1,14 +1,14 @@
 DEPTH = 1024;
-WIDTH = 12;
+WIDTH = 13;
 ADDRESS_RADIX = HEX;
 DATA_RADIX = UNS;
 CONTENT
 BEGIN
     -- Effect program (8 effect slots):
-    -- n = # of steps (63 max)
-    -- Step 0...n-1 : freq (hz) and duration (msec) (12 bits each)
+    -- n = # of steps (63 max per slot)
+    -- Step 0...n-1 : freq (hz) and duration (msec) (13 bits each), max value = 8191
 
-    -- Effect 0 : Launch (10 ramp segments of inc max freq, each ramp is 6 steps, 44 msec each)
+    -- Effect 0 : Game Start (10 ramp segments of inc max freq, each ramp is 6 steps, 44 msec each)
     000: 60;
 
     -- Ramp 1
@@ -325,7 +325,7 @@ BEGIN
     197: 511;
     198: 50;
 
-    -- Effect 4 : Player destroy (static explosion or "waa-waa-waa :("  )
+    -- Effect 4 : Game over ( "waa-waa-waa :(" )
     200: 12;
     
     201: 500;  -- Step 0: 10 Hz for 511 msec
@@ -366,8 +366,30 @@ BEGIN
 
 
 
-    -- Effect 5
-    280:10;
+    -- Effect 5 : Player hit, life lost (static explosion)
+    280: 10; -- 10 steps
+
+    281: 1400;
+    282: 50;
+    283: 1812;
+    284: 50;
+    285: 1624;
+    286: 50;
+    287: 1436;
+    288: 50;
+    289: 1248;
+    28A: 50;
+    28B: 1060;
+    28C: 50;
+    28D: 872;
+    28E: 50;
+    28F: 684;
+    290: 50;
+    291: 496;
+    292: 50;
+    293: 308;
+    294: 50;
+
 
     -- Effect 6
     300:10;

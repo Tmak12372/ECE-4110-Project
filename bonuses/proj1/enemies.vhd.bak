@@ -46,7 +46,7 @@ end entity enemies;
 architecture rtl of enemies is
 
     -- Types
-    constant c_num_enem_variants : integer := 12;
+    constant c_num_enem_variants : integer := 11;
 
     type t_sizeArray is array(natural range <>) of t_size_2d;
 
@@ -79,9 +79,9 @@ architecture rtl of enemies is
     constant c_max_spawn_frame_rate : integer := 120;
 
     -- Enemy variants
-    constant c_enem_var_spr_idx : t_intArray(0 to c_num_enem_variants-1) := (2,  3,  4,  5, 6,  7,  8, 9, 7, 2, 3,  5); -- Which sprite to use for each variant
-    constant c_enem_var_scale   : t_intArray(0 to c_num_enem_variants-1) := (4,  4,  5,  4, 5,  5,  7, 4, 8, 7, 2,  6); -- Which X and Y scale to use for each variant
-    constant c_enem_var_points  : t_intArray(0 to c_num_enem_variants-1) := (14, 14, 21, 7, 21, 7,  7, 7, 7, 7, 21, 7); -- Number of points awarded for each enemy variant
+    constant c_enem_var_spr_idx : t_intArray(0 to c_num_enem_variants-1) := (2,  3,  4,  5, 6,  7,  8, 9, 7, 2, 3); -- Which sprite to use for each variant
+    constant c_enem_var_scale   : t_intArray(0 to c_num_enem_variants-1) := (4,  4,  5,  4, 5,  5,  7, 4, 8, 7, 2); -- Which X and Y scale to use for each variant
+    constant c_enem_var_points  : t_intArray(0 to c_num_enem_variants-1) := (14, 14, 21, 7, 21, 7,  7, 7, 7, 7, 21); -- Number of points awarded for each enemy variant
     
     -- Generate scaled sizes for each enemy variant. These will be used for the bounding box of each enemy.
     function init_enemy_var_size return t_sizeArray is
@@ -102,7 +102,7 @@ architecture rtl of enemies is
     constant c_fire_bullet_color : integer := 16#FFF#;
     constant c_fire_size : integer := 4;
     constant c_fire_bullet_tail_width : integer := 38; -- Fixed width of the tail on the bullet, at end of tracer
-    constant c_fire_speed : integer := 7;
+    constant c_fire_speed : integer := 6;
     constant c_fire_trace_div : integer := 64; -- Number of divisions of max path length of a bullet. Defines the minimum dash size in the tracer pattern. Higher values result in smaller dashes.
 
     constant c_spawn_ylim_upper : integer := c_upper_bar_pos + c_bar_height;
@@ -309,7 +309,7 @@ begin
                 end loop;
             
             -- Time to update state
-            elsif (i_update_pulse = '1') then
+            elsif (i_update_pulse = '1')
 
                 -- Handle enemy collision with ship
                 ship_collide := '0';

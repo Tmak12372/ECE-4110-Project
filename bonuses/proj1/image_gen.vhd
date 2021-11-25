@@ -27,8 +27,8 @@ ENTITY image_gen IS
 
         -- HMI Inputs
         accel_scale_x, accel_scale_y : integer;
-        KEY                          : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        SW                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
+        KEY_state, KEY_down, KEY_up  : IN STD_LOGIC_VECTOR(1 DOWNTO 0); -- Synch to pixel_clk domain
+        SW_state                           : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
 
         -- HMI Outputs
         o_buzzPin : out std_logic;
@@ -47,10 +47,9 @@ ARCHITECTURE behavior OF image_gen IS
     type t_state is (ST_START, ST_NEW_GAME, ST_PLAY, ST_PAUSE, ST_GAME_OVER);
 
     -- Signals
-    SIGNAL KEY_b       : STD_LOGIC_VECTOR(1 DOWNTO 0);
     signal r_logic_update : std_logic := '0'; -- Pulse
     signal r_key_d : std_logic_vector(1 downto 0);
-    signal r_key_press : std_logic_vector(1 downto 0); -- Pulse, keypress event
+    signal r_key_press : std_logic_vector(1 downto 0); -- Pulse, keypress event, on logic_update
 
     -- Draw outputs from game elements
     signal w_playShipDraw : std_logic;
@@ -76,6 +75,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_score_bcd : std_logic_vector(23 downto 0);
 
     signal r_game_state : t_state := ST_START;
+    signal r_next_state : t_state;
     signal r_game_paused : std_logic := '0';
     signal r_game_wait_start : std_logic := '0';
     signal r_game_over : std_logic := '0';
@@ -93,7 +93,7 @@ ARCHITECTURE behavior OF image_gen IS
     signal w_cannon_fire : std_logic;
     signal w_score_inc : integer;
 
-    signal r_terrain_en : std_logic; -- Should the starfields be animated?
+    signal r_terrain_anim_en : std_logic; -- Should the starfields be animated?
     
     -- vgaText
     signal inArbiterPortArray: type_inArbiterPortArray(0 to c_num_text_elems-1) := (others => init_type_inArbiterPort);
@@ -116,12 +116,9 @@ ARCHITECTURE behavior OF image_gen IS
 
 BEGIN
 
-    -- Concurrent assignments
-    KEY_b <= NOT KEY;
-
     -- KEY falling edge
-    r_key_d <= KEY when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF, value of keys at last logical update
-    r_key_press <= r_key_d and not KEY;   -- One-cycle strobe, for next logical update
+    r_key_d <= KEY_state when rising_edge(pixel_clk) and r_logic_update='1'; -- DFF, value of keys at last logical update
+    r_key_press <= not r_key_d and KEY_state;   -- One-cycle strobe, for next logical update
 
     -- Debug sprites
     process(pixel_clk)
@@ -129,7 +126,7 @@ BEGIN
         if rising_edge(pixel_clk) and r_logic_update = '1' then
 
             -- Debug
-            if SW(9) = '1' and r_key_press(0) = '1' then
+            if SW_state(9) = '1' and r_key_press(0) = '1' then
                 if r_spr_sel < c_spr_data_slots_used-1 then
                     r_spr_sel <= r_spr_sel+1;
                 else
@@ -184,7 +181,7 @@ BEGIN
                 r_extra_life_award <= '1';
 
             -- Debug
-            elsif SW(9) = '1' and r_key_press(0) = '1' and r_num_lives < c_max_lives then
+            elsif SW_state(9) = '1' and r_key_press(0) = '1' and r_num_lives < c_max_lives then
                 r_num_lives <= r_num_lives+1;
             end if;
             
@@ -202,7 +199,7 @@ BEGIN
                 r_score <= r_score+w_score_inc;
 
             -- Debug
-            elsif SW(9) = '1' and r_key_press(1) = '1' and r_score < c_max_score then
+            elsif SW_state(9) = '1' and r_key_press(1) = '1' and r_score < c_max_score then
                 r_score <= r_score+100;
             end if;
             
@@ -244,7 +241,7 @@ BEGIN
 			end if;
 
             -- Override
-            -- Cannon fire sound will not override "special" sounds
+            -- Cannon fire sound can only override itself
             if (effectSel = c_sound_player_fire and w_effectPlaying = '1' and w_currEffect /= c_sound_player_fire) then
                 effectTrig := '0';
             end if;
@@ -254,8 +251,13 @@ BEGIN
                 effectTrig := '0';
             end if;
 
-            -- Debug
-            if (SW(8) = '1') then
+            -- Do not interrupt "player hit" sound
+            if (w_effectPlaying = '1' and w_currEffect = c_sound_player_hit) then
+                effectTrig := '0';
+            end if;
+
+            -- Debug switch sound override
+            if (SW_state(8) = '1') then
                 effectTrig := '0';
             end if;
 
@@ -270,58 +272,84 @@ BEGIN
     process(pixel_clk)
     begin
         if rising_edge(pixel_clk) and r_logic_update = '1' then
+            r_game_state <= r_next_state;
 
             case r_game_state is
-                when ST_START =>
-                    if r_key_press(1) = '1' then
-                        r_game_state <= ST_NEW_GAME;
-                    else
-                        r_game_state <= ST_START;
-                    end if;
 
-                -- Prepare for new game
                 when ST_NEW_GAME => 
-                    r_game_state <= ST_PLAY;
-                when ST_PLAY => 
-                    if r_key_press(1) = '1' then
-                        r_game_state <= ST_PAUSE;
-                    elsif (r_num_lives = 0) then
-                        r_game_state <= ST_GAME_OVER;
-                        r_game_over_pulse <= '1';
-                    else
-                        r_game_state <= ST_PLAY;
-                    end if;
-                when ST_PAUSE => 
-                    if r_key_press(1) = '1' then
-                        r_game_state <= ST_PLAY;
-                    else
-                        r_game_state <= ST_PAUSE;
-                    end if;
+
                 when ST_GAME_OVER => 
-                    r_game_over_pulse <= '0';
-                    if r_key_press(1) = '1' then
-                        if SW(0) = '0' then
-                            r_game_state <= ST_NEW_GAME; -- Start a new game immediately
-                        else
-                            r_game_state <= ST_START;    -- Go back to start screen
-                        end if;
-                    else
-                        r_game_state <= ST_GAME_OVER;
-                    end if;
+                    
                 when others =>
-                    r_game_state <= ST_START;
-            
+                    
             end case;
         end if;
     end process;
 
-    -- FSM outputs
-    process(r_game_state)
+    -- FSM status signals
+
+    -- FSM next state logic
+    process(r_game_state, r_key_press, r_num_lives, SW_state)
     begin
-        if r_game_state = ST_NEW_GAME then
-            r_obj_reset <= '1'; -- Prepare all objects to reset upon transition to ST_PLAY
+        case r_game_state is
+            when ST_START =>
+                if (r_key_press(1) = '1') then -- Start button pressed
+                    r_next_state <= ST_NEW_GAME;
+                else
+                    r_next_state <= ST_START;
+                end if;
+
+            when ST_NEW_GAME => r_next_state <= ST_PLAY;
+
+            when ST_PLAY =>
+
+                if (r_key_press(1) = '1') then -- Pause button pressed
+                    r_next_state <= ST_PAUSE;
+                elsif (r_num_lives = 0) then   -- Game over condition
+                    r_next_state <= ST_GAME_OVER;
+                else
+                    r_next_state <= ST_PLAY;
+                end if;
+
+            when ST_PAUSE =>
+
+                if (r_key_press(1) = '1') then
+                    r_next_state <= ST_PLAY;  -- Pause button pressed
+                else
+                    r_next_state <= ST_PAUSE;
+                end if;
+
+            when ST_GAME_OVER =>
+
+                if (r_key_press(1) = '1') then
+                    if (SW_state(0) = '0') then
+                        r_next_state <= ST_NEW_GAME; -- Start a new game immediately
+                    else
+                        r_next_state <= ST_START;    -- Go back to start screen
+                    end if;
+                else
+                    r_next_state <= ST_GAME_OVER;
+                end if;
+
+            when others => r_next_state <= ST_START;
+        
+        end case;
+    end process;
+
+
+    -- FSM outputs
+    process(r_game_state, r_next_state)
+    begin
+        if r_next_state = ST_NEW_GAME then
+            r_obj_reset <= '1'; -- Prepare all objects to reset upon transition to ST_NEW_GAME
         else
             r_obj_reset <= '0';
+        end if;
+
+        if r_next_state = ST_GAME_OVER and r_game_state /= ST_GAME_OVER then
+            r_game_over_pulse <= '1';
+        else
+            r_game_over_pulse <= '0';
         end if;
 
         if r_game_state = ST_PAUSE then
@@ -348,8 +376,6 @@ BEGIN
             r_game_active <= '0';
         end if;
     end process;
-
-    
 
     -- Combi-Logic, draw each pixel for current frame
     PROCESS(disp_en, i_scan_pos)
@@ -418,7 +444,7 @@ BEGIN
 
     -- Object update signals
     r_obj_update <= r_logic_update and not r_game_paused and not r_game_over and not r_game_wait_start;
-    r_terrain_en <= '1';
+    r_terrain_anim_en <= not r_game_paused and not r_game_over;
 
     -- Game objects
     player: entity work.player_ship port map(
@@ -483,7 +509,7 @@ BEGIN
     -- Terrain
     terrain: entity work.terrain port map(
         i_clock => pixel_clk,
-        i_en => r_terrain_en,
+        i_anim_en => r_terrain_anim_en,
         i_scan_pos => i_scan_pos,
         i_draw_en => '1',
         o_color => w_terrainColor,

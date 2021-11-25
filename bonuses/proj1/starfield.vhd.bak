@@ -57,7 +57,7 @@ begin
     end process;
 
     -- select some bits to form stars
-    process(sf_reg, i_draw_en)
+    process(sf_reg)
     begin
         if ((sf_reg or g_mask) = "111111111111111111111") then
             o_sf_on <= '1';

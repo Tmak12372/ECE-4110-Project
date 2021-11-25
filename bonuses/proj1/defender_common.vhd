@@ -97,8 +97,8 @@ package defender_common is
     constant c_sound_player_fire : std_logic_vector(2 downto 0) := "001";
     constant c_sound_enemy_fire : std_logic_vector(2 downto 0) := "010";
     constant c_sound_enemy_destroy : std_logic_vector(2 downto 0) := "011";
-    constant c_sound_player_hit : std_logic_vector(2 downto 0) := "011";
     constant c_sound_game_over : std_logic_vector(2 downto 0) := "100";
+    constant c_sound_player_hit : std_logic_vector(2 downto 0) := "101";
 
     -- Terrain
     constant c_terrain_height : integer := 75;

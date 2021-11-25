@@ -82,11 +82,12 @@ architecture top_level of proj1_top is
 	end component;
     
     -- Signal declarations
-    SIGNAL KEY_b         : STD_LOGIC_VECTOR(1 DOWNTO 0);
     signal clk_25_175_MHz, disp_en : STD_LOGIC;
     signal scan_pos : t_point_2d;
     signal frame : std_logic;
     signal line : std_logic;
+    signal KEY_state, KEY_down, KEY_up : std_logic_vector(1 downto 0);
+    signal SW_state, SW_down, SW_up : std_logic_vector(9 downto 0);
 
     -- Accelerometer
     signal data_x, data_y                   : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -96,9 +97,32 @@ architecture top_level of proj1_top is
 begin
 
     -- Concurrent assignments
-    KEY_b <= NOT KEY;
 
     -- Instantiation and port mapping
+
+    sw_deb: for i in 0 to 9 generate
+        sw_deb_x : entity work.pb_debounce
+        generic map (
+            g_pol => '1'
+        )
+        port map (
+            i_clk => clk_25_175_MHz,
+            i_pb => SW(i),
+            o_pb_state => SW_state(i),
+            o_pb_down => SW_down(i),
+            o_pb_up => SW_up(i)
+        );
+    end generate sw_deb;
+
+    pb_deb: for i in 0 to 1 generate
+        pb_deb_x : entity work.pb_debounce port map (
+            i_clk => clk_25_175_MHz,
+            i_pb => KEY(i),
+            o_pb_state => KEY_state(i),
+            o_pb_down => KEY_down(i),
+            o_pb_up => KEY_up(i)
+        );
+    end generate pb_deb;
 
     -- Dual boot
     U7 : dual_boot port map ( clk_clk => MAX10_CLK1_50, reset_reset_n => '1' );
@@ -138,8 +162,10 @@ begin
 
         accel_scale_x => accel_scale_x,
         accel_scale_y => accel_scale_y,
-        KEY => KEY,
-        SW => SW,
+        KEY_state => KEY_state,
+        KEY_down => KEY_down,
+        KEY_up => KEY_up,
+        SW_state => SW_state,
 
         o_buzzPin => ARDUINO_IO(12),
         HEX5 => HEX5, HEX4 => HEX4, HEX3 => HEX3, HEX2 => HEX2, HEX1 => HEX1, HEX0 => HEX0,

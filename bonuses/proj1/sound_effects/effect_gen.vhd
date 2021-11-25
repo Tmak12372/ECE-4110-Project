@@ -36,20 +36,12 @@ end entity effect_gen;
 
 architecture rtl of effect_gen is
     -- Constants
+    constant    rom_depth : integer := 1024;
     CONSTANT	effect_size	:	integer := 128; -- Size of each effect "slot" in words
-    CONSTANT    word_size   :   integer := 12; -- Word size of the ROM
+    CONSTANT    word_size   :   integer := 13; -- Word size of the ROM
     CONSTANT    clks_per_msec : integer := (g_clk_freq_in)/(1e3);
 
     -- Components
-    component effect_mem is
-        port
-        (
-            address		: in std_logic_vector (9 downto 0);  -- registered
-            clock		: in std_logic  := '1';
-            q		    : out std_logic_vector (11 downto 0)  -- NOT registered
-        );
-    end component;
-
     component clock_div IS
         GENERIC (n : NATURAL := 8);
         PORT ( clock_in, reset  : IN  STD_LOGIC;
@@ -119,6 +111,12 @@ begin
                             v_romAddr := 3*effect_size;
                         when "100" => 
                             v_romAddr := 4*effect_size;
+                        when "101" => 
+                            v_romAddr := 5*effect_size;
+                        when "110" => 
+                            v_romAddr := 6*effect_size;
+                        when "111" => 
+                            v_romAddr := 7*effect_size;
                         when others =>
                             v_romAddr := 0*effect_size;
                     end case;
@@ -206,10 +204,17 @@ begin
     o_playing <= '1' when (r_state /= S_IDLE) else '0';
 
     -- Instantiation and port mapping
-    U1 : effect_mem port map (
-        address => r_romAddr,
-        clock => i_clock,
-        q => w_romData
+    eff_mem: entity work.sync_ram_init generic map(
+        numElements => rom_depth,
+        dataWidth => word_size,
+        initFile => "../res/effect_mem.mif"
+    )
+    port map(
+        clkA => i_clock,
+        writeEnableA => '0',
+        addrA => r_romAddr,
+        dataOutA => w_romData,
+        dataInA => (others => '0')
     );
 
     U2 : clock_div generic map (

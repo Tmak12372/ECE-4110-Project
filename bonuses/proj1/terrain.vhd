@@ -12,7 +12,7 @@ use work.defender_common.all;
 entity terrain is
     port (
         i_clock : in std_logic;
-        i_en : in std_logic;
+        i_anim_en : in std_logic;
 
         -- Control Signals
         i_scan_pos : in t_point_2d;
@@ -84,7 +84,8 @@ begin
     )
     port map (
         i_clock => i_clock,
-        i_en => i_en,
+        i_anim_en => i_anim_en,
+        i_draw_en => i_draw_en,
         i_reset => '0',
         o_sf_on => w_sf_on(0),
         o_sf_bright => w_sf_bright_0
@@ -97,7 +98,8 @@ begin
     )
     port map (
         i_clock => i_clock,
-        i_en => i_en,
+        i_anim_en => i_anim_en,
+        i_draw_en => i_draw_en,
         i_reset => '0',
         o_sf_on => w_sf_on(1),
         o_sf_bright => w_sf_bright_1
@@ -110,7 +112,8 @@ begin
     )
     port map (
         i_clock => i_clock,
-        i_en => i_en,
+        i_anim_en => i_anim_en,
+        i_draw_en => i_draw_en,
         i_reset => '0',
         o_sf_on => w_sf_on(2),
         o_sf_bright => w_sf_bright_2
