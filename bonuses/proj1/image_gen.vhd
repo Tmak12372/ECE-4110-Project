@@ -191,17 +191,26 @@ BEGIN
 
     -- Handle score
     process(pixel_clk)
-    begin   
+        variable new_score : integer range 0 to 2*c_max_score := 0;
+    begin
         if rising_edge(pixel_clk) and r_logic_update = '1' then
             if r_obj_reset = '1' then
-                r_score <= 0;
+                new_score := 0;
             elsif w_cannon_collide = '1' then
-                r_score <= r_score+w_score_inc;
-
+                new_score := r_score+w_score_inc;
             -- Debug
-            elsif SW_state(9) = '1' and r_key_press(1) = '1' and r_score < c_max_score then
-                r_score <= r_score+100;
+            elsif SW_state(9) = '1' and r_key_press(1) = '1' then
+                new_score := r_score+100;
+            elsif SW_state(7) = '1' and r_key_press(1) = '1' then
+                new_score := c_max_score-100;
             end if;
+
+            -- Clip the score count at the maximum
+            if (new_score >= c_max_score) then
+                new_score := c_max_score;
+            end if;
+
+            r_score <= new_score;
             
         end if;
     end process;
@@ -210,57 +219,84 @@ BEGIN
     process(pixel_clk)
         variable effectSel : std_logic_vector(2 downto 0);
         variable effectTrig : std_logic := '0';
-    begin   
-        if rising_edge(pixel_clk) and r_logic_update = '1' then
-            if r_obj_reset = '1' then
-                -- Play start sound
-                effectSel := c_sound_game_start;
-                effectTrig := '1';
-            elsif (w_cannon_fire = '1') then
+    begin
+        if rising_edge(pixel_clk) then
+            effectTrig := '0'; -- Bring trigger low on next clock cycle
+
+            -- Play a sound once per frame
+            if r_logic_update = '1' then
+                
                 -- Play player fire sound
-                effectSel := c_sound_player_fire;
-                effectTrig := '1';
-            elsif w_cannon_collide = '1' then
+                if (w_cannon_fire = '1') then
+                    effectSel := c_sound_player_fire;
+                    effectTrig := '1';
+                end if;
                 -- Play enemy destroy sound
-                effectSel := c_sound_enemy_destroy;
-                effectTrig := '1';
-            elsif r_extra_life_award = '1' then
-                -- Play extra life sound
-                effectSel := c_sound_game_start;
-                effectTrig := '1';
-            elsif w_ship_collide = '1' and r_num_lives > 1 then
+                if w_cannon_collide = '1' then
+                    effectSel := c_sound_enemy_destroy;
+                    effectTrig := '1';
+                end if;
                 -- Play "life lost" sound
-                effectSel := c_sound_player_hit;
-                effectTrig := '1';
-            elsif r_game_over_pulse = '1' then
+                if w_ship_collide = '1' and r_num_lives > 1 then
+                    effectSel := c_sound_player_hit;
+                    effectTrig := '1';
+                end if;
+                -- Play extra life sound
+                if r_extra_life_award = '1' then
+                    effectSel := c_sound_game_start;
+                    effectTrig := '1';
+                end if;
+                -- Play start sound
+                if r_obj_reset = '1' then
+                    effectSel := c_sound_game_start;
+                    effectTrig := '1'; -- Bring trigger high
+                end if;
                 -- Play game over sound
-                effectSel := c_sound_game_over;
-                effectTrig := '1';
-            else
-                effectTrig := '0';
-			end if;
+                if r_game_over_pulse = '1' then
+                    effectSel := c_sound_game_over;
+                    effectTrig := '1';
+                end if;
 
-            -- Override
-            -- Cannon fire sound can only override itself
-            if (effectSel = c_sound_player_fire and w_effectPlaying = '1' and w_currEffect /= c_sound_player_fire) then
-                effectTrig := '0';
-            end if;
+                -- Handle sound collisions
+                if w_effectPlaying = '1' and effectTrig = '1' then
 
-            -- Do not interrupt "game start" sound
-            if (w_effectPlaying = '1' and w_currEffect = c_sound_game_start) then
-                effectTrig := '0';
-            end if;
+                    -- Which sound are we trying to play?
+                    case effectSel is
 
-            -- Do not interrupt "player hit" sound
-            if (w_effectPlaying = '1' and w_currEffect = c_sound_player_hit) then
-                effectTrig := '0';
+                        -- Can override all
+                        when c_sound_game_start =>
+                            
+                        -- Can only override another player fire
+                        when c_sound_player_fire => 
+                            if (w_currEffect /= c_sound_player_fire) then
+                                effectTrig := '0';
+                            end if;
+
+                        -- Can't override game start, game over, or player hit
+                        when c_sound_enemy_destroy => 
+                            if (w_currEffect = c_sound_game_start or w_currEffect = c_sound_game_over or w_currEffect = c_sound_player_hit) then
+                                effectTrig := '0';
+                            end if;
+                            
+                        -- Can't override game start, game over
+                        when c_sound_player_hit => 
+                            if (w_currEffect = c_sound_game_start or w_currEffect = c_sound_game_over) then
+                                effectTrig := '0';
+                            end if;
+                            
+                        -- Can override all
+                        when c_sound_game_over => 
+                            
+                        when others =>
+        
+                    end case;
+                end if;
             end if;
 
             -- Debug switch sound override
             if (SW_state(8) = '1') then
                 effectTrig := '0';
             end if;
-
 
             -- Variables to signals
             r_effectSel <= effectSel;
@@ -322,11 +358,7 @@ BEGIN
             when ST_GAME_OVER =>
 
                 if (r_key_press(1) = '1') then
-                    if (SW_state(0) = '0') then
-                        r_next_state <= ST_NEW_GAME; -- Start a new game immediately
-                    else
-                        r_next_state <= ST_START;    -- Go back to start screen
-                    end if;
+                    r_next_state <= ST_START;    -- Go back to start screen
                 else
                     r_next_state <= ST_GAME_OVER;
                 end if;
